@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, isValidObjectId } from 'mongoose';
 
 
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Rol } from './entities/role.entity';
 import { customHandlerCatchException } from 'src/utils/utils';
+import { ERR_MSG_INVALID_VALUE } from 'src/utils/contants';
 
 @Injectable()
 export class RolesService {
@@ -33,11 +34,34 @@ export class RolesService {
     return `This action returns all roles`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} role`;
+  async findOne(id: string) {
+    
+    if ( !isValidObjectId( id ) ) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_VALUE,
+        invalidValue: id,
+      });
+    }
+
+    const rol: Rol = await this.rolModel.findById( id ) ;
+
+    if (!rol) {
+      throw new NotFoundException({
+        succes: false,
+        message: ERR_MSG_INVALID_VALUE,
+        invalidValue: id,
+      });
+    }
+
+    return {
+      success: true,
+      data: rol,
+    }
   }
 
-  update(id: number, updateRoleDto: UpdateRoleDto) {
+  async update(id: string, updateRoleDto: UpdateRoleDto) {
+
     return `This action updates a #${id} role`;
   }
 
