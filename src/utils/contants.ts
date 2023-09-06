@@ -1,5 +1,5 @@
 export const USER_VALID_ROLES = ['superadmin', 'admin', 'user'];
-export const MONGP_URI = 'mongodb+srv://admin:admin@clusterguardian.2c73dvk.mongodb.net/admin-guardian-pro'
+export const MONGO_URI = process.env.MONGO_URI
 // Errors codes
 export const DUPLICATED_RECORD = 11000;
 

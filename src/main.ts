@@ -19,7 +19,7 @@ async function initProyect() {
     }),
   );
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT_DEVELOP);
 }
 
 initProyect();
