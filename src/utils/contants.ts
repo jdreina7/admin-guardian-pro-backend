@@ -1,0 +1,11 @@
+export const USER_VALID_ROLES = ['superadmin', 'admin', 'user'];
+export const MONGP_URI = 'mongodb+srv://admin:admin@clusterguardian.2c73dvk.mongodb.net/admin-guardian-pro'
+// Errors codes
+export const DUPLICATED_RECORD = 11000;
+
+// Errors Messages
+export const ERR_MSG_GENERAL = 'An internal server error has occurred, please check the logs.';
+export const ERR_MSG_DUPLICATED_VALUE = 'The entered value already exists in the database.';
+export const ERR_MSG_INVALID_VALUE = 'The entered value is invalid.';
+export const ERR_MSG_DATA_NOT_FOUND = 'No results were found with the search value entered.';
+export const ERR_MSG_INVALID_PAYLOAD = 'The data entered is invalid or empty.';
