@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 
 async function initProyect() {
   const app = await NestFactory.create(AppModule);
@@ -7,7 +8,18 @@ async function initProyect() {
   // Defining the global prefix
   app.setGlobalPrefix('/api/v1');
 
-  await app.listen(3000);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
+
+  await app.listen(process.env.PORT_DEVELOP);
 }
 
 initProyect();
