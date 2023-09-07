@@ -1,4 +1,4 @@
-import { IsBoolean, IsDate, IsIn, IsOptional, IsString, MinLength } from "class-validator";
+import { IsBoolean, IsIn, IsOptional, IsString, MinLength } from "class-validator";
 import { USER_VALID_ROLES } from "src/utils/contants";
 
 export class CreateRoleDto {

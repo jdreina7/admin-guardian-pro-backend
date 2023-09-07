@@ -7,7 +7,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Rol } from './schemas/role.schema';
 import { customHandlerCatchException } from 'src/utils/utils';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_PAYLOAD, ERR_MSG_INVALID_VALUE, SUCC_MSG_GENERAL } from 'src/utils/contants';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_PAYLOAD, ERR_MSG_INVALID_ROLE_ID, ERR_MSG_INVALID_VALUE, SUCC_MSG_GENERAL } from 'src/utils/contants';
 
 @Injectable()
 export class RolesService {
@@ -15,15 +15,15 @@ export class RolesService {
 
 // Create a rol
   async create(createRoleDto: CreateRoleDto) {
+
     createRoleDto.name = createRoleDto.name.toLowerCase();
 
     try {
-      const rolCreated = this.rolModel.create(createRoleDto);
+      const rolCreated = await this.rolModel.create(createRoleDto);
 
       return {
         success: true,
-        message: SUCC_MSG_GENERAL,
-        data: {rolCreated}
+        data: rolCreated
       }
 
     } catch (error) {
@@ -32,9 +32,19 @@ export class RolesService {
     
   }
 
-// Det all roles
-  findAll() {
-    return `This action returns all roles`;
+// Get all roles
+  async findAll() {
+    try {
+      const data = await this.rolModel.find()
+      .sort({ name: 1 });
+      
+      return{
+        data
+      }
+
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
 // Search Rol by Id
@@ -43,38 +53,31 @@ export class RolesService {
     if ( !isValidObjectId( id ) ) {
       throw new BadRequestException({
         success: false,
-        message: ERR_MSG_INVALID_VALUE,
+        message: ERR_MSG_INVALID_ID,
         invalidValue: id,
       });
     }
 
-    const name: Rol = await this.rolModel.findById( id ) ;
+    const existRol: Rol = await this.rolModel.findById( id ) ;
 
-    if (!name) {
+    if (!existRol) {
       throw new NotFoundException({
         succes: false,
-        message: ERR_MSG_INVALID_VALUE,
+        message: ERR_MSG_DATA_NOT_FOUND,
         invalidValue: id,
       });
     }
 
     return {
       success: true,
-      data: name,
+      data: existRol,
     }
   }
 
 // Update Rol
   async update(id: string, updateRoleDto: UpdateRoleDto) {
 
-    const existingRol = await this.findOne(id);
-
-    // Puede estar de mas
-    if ( !existingRol ) {
-      throw new BadRequestException(ERR_MSG_DATA_NOT_FOUND);
-    }
-    
-    console.log(updateRoleDto);
+    await this.findOne(id);
 
     if (updateRoleDto?.name?.length <= 0) {
       throw new BadRequestException({
@@ -85,11 +88,12 @@ export class RolesService {
     }
 
     try {
-      await this.rolModel.findByIdAndUpdate(id, updateRoleDto, {
-        new: true,
+      const fullData = await this.rolModel.findByIdAndUpdate(id, updateRoleDto,{new: true})
+      .select('-updatedAt -createdAt')
+      return  {
         success: true,
-        data: {... updateRoleDto},
-      })
+        data:  fullData
+      }
   
     } catch (error) {
       return await customHandlerCatchException(error, updateRoleDto);    
@@ -98,13 +102,13 @@ export class RolesService {
 
 //Delete Rol
   async remove(id: string) {
-    const existRol = await this.findOne(id);
+    await this.findOne(id);
     
     try {
       await this.rolModel.findByIdAndDelete(id);
       return{
         success: true,
-        message: SUCC_MSG_GENERAL,
+        data: id,
       }
     } catch (error) {
       throw new BadRequestException(
