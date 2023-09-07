@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import * as moment from 'moment';
 
 @Schema({
     // Esto oculta el campo __v y transforma el _id en id en las respuestas
@@ -11,6 +10,7 @@ import * as moment from 'moment';
         delete ret._id;
       },
     },
+    timestamps: true,
   })
   
 export class Rol extends Document{
@@ -19,7 +19,7 @@ export class Rol extends Document{
         index: true,
         required: true
     })
-    rol: string;
+    name: string;
     
     @Prop()
     description: string;
@@ -28,14 +28,6 @@ export class Rol extends Document{
       default: true,
     })
     status: boolean;
-  
-    @Prop({
-      default: moment(Date.now()).format('YYYY-MM-DD:HH:mm:ss'),
-    })
-    createdAt: string;
-  
-    @Prop()
-    updatedAt: string;
 
 }
 

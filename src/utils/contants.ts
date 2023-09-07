@@ -3,6 +3,9 @@ export const MONGO_URI = process.env.MONGO_URI
 // Errors codes
 export const DUPLICATED_RECORD = 11000;
 
+// Success Messages
+export const SUCC_MSG_GENERAL = 'The accion was executed succesfully';
+
 // Errors Messages
 export const ERR_MSG_GENERAL = 'An internal server error has occurred, please check the logs.';
 export const ERR_MSG_DUPLICATED_VALUE = 'The entered value already exists in the database.';

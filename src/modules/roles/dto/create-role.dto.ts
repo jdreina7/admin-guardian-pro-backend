@@ -5,7 +5,7 @@ export class CreateRoleDto {
     @IsString()
     @MinLength(1)
     @IsIn(USER_VALID_ROLES)
-    rol: string;
+    name: string;
 
     @IsOptional()
     @IsString()
@@ -14,12 +14,4 @@ export class CreateRoleDto {
     @IsOptional()
     @IsBoolean()
     status: boolean;
-
-    @IsOptional()
-    @IsDate()
-    created_at: string;
-
-    @IsOptional()
-    @IsDate()
-    updated_at: string;
 }
