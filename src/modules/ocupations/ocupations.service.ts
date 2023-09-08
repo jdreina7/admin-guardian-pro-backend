@@ -27,11 +27,19 @@ export class OcupationsService {
     }
   }
 
-  findAll() {
-    return `This action returns all ocupations`;
+  // Get all ocupations
+  async findAll() {
+    try {
+      const data = await this.ocupationModel.find().sort({ name: 1 });
+
+      return { data };
+    } catch (error) {
+      return await customHandlerCatchException(error);
+    }
   }
 
-  findOne(id: number) {
+  // Get one ocupation
+  async findOne(id: number) {
     return `This action returns a #${id} ocupation`;
   }
 

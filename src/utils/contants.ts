@@ -3,7 +3,7 @@ export const MONGO_URI = process.env.MONGO_URI;
 
 // Defined ENUMs
 export const USER_VALID_ROLES = ['superadmin', 'admin', 'user'];
-export const USER_VALID_OCUPATIONS = ['Employee', 'Independent', 'Retired', 'Student', 'None'];
+export const USER_VALID_OCUPATIONS = ['employee', 'independent', 'retired', 'student', 'none'];
 
 // Errors codes
 export const DUPLICATED_RECORD = 11000;
