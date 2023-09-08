@@ -1,11 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMaritalStatusDto } from './dto/create-marital-status.dto';
 import { UpdateMaritalStatusDto } from './dto/update-marital-status.dto';
+import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/utils/utils';
+import { InjectModel } from '@nestjs/mongoose';
+import { MaritalStatus } from './schemas/marital-status.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class MaritalStatusesService {
-  create(createMaritalStatusDto: CreateMaritalStatusDto) {
-    return 'This action adds a new maritalStatus';
+  constructor(@InjectModel(MaritalStatus.name) private readonly MaritalStatusModel: Model<MaritalStatus>) {}
+
+  // Create Marital Status
+  async create(createMaritalStatusDto: CreateMaritalStatusDto) {
+    createMaritalStatusDto.name = await customCapitalizeFirstLetter(createMaritalStatusDto.name);
+
+    try {
+      const MaritalStatusCreated = await this.MaritalStatusModel.create(createMaritalStatusDto);
+
+      return {
+        success: true,
+        data: MaritalStatusCreated,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error, createMaritalStatusDto);
+    }
   }
 
   findAll() {
