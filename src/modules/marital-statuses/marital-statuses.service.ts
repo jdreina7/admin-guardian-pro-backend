@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMaritalStatusDto } from './dto/create-marital-status.dto';
 import { UpdateMaritalStatusDto } from './dto/update-marital-status.dto';
 import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/utils/utils';
 import { InjectModel } from '@nestjs/mongoose';
 import { MaritalStatus } from './schemas/marital-status.schema';
-import { Model } from 'mongoose';
+import { Model, isValidObjectId } from 'mongoose';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID } from 'src/utils/contants';
 
 @Injectable()
 export class MaritalStatusesService {
@@ -40,8 +41,30 @@ export class MaritalStatusesService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} maritalStatus`;
+  // Get one Marital status
+  async findOne(id: string) {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_ID,
+        invalidValue: id,
+      });
+    }
+
+    const existMaritalStatus: MaritalStatus = await this.MaritalStatusModel.findById(id);
+
+    if (!existMaritalStatus) {
+      throw new NotFoundException({
+        succes: false,
+        message: ERR_MSG_DATA_NOT_FOUND,
+        invalidValue: id,
+      });
+    }
+
+    return {
+      success: true,
+      data: existMaritalStatus,
+    };
   }
 
   update(id: number, updateMaritalStatusDto: UpdateMaritalStatusDto) {

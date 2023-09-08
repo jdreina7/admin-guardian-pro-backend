@@ -19,7 +19,7 @@ export class MaritalStatusesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.maritalStatusesService.findOne(+id);
+    return this.maritalStatusesService.findOne(id);
   }
 
   @Patch(':id')
