@@ -76,7 +76,7 @@ export class User extends mongoose.Document {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'MaritalStatuses',
+    ref: 'MaritalStatus',
     required: true,
   })
   maritalStatusId: mongoose.Types.ObjectId;
