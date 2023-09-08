@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 
 import { RolesModule } from './modules/roles/roles.module';
+import { CredentialsModule } from './modules/credentials/credentials.module';
  
 
 
@@ -10,6 +11,7 @@ import { RolesModule } from './modules/roles/roles.module';
   imports: [
     ConfigModule.forRoot(),
     RolesModule, 
-    MongooseModule.forRoot(process.env.MONGO_URI)],
+    MongooseModule.forRoot(process.env.MONGO_URI), 
+    CredentialsModule],
 })
 export class AppModule {}

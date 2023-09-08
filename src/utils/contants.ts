@@ -1,4 +1,5 @@
 export const USER_VALID_ROLES = ['superadmin', 'admin', 'user'];
+export const USER_VALID_CREDENTIALS = ['cc', 'ce', 'nip', 'nit', 'ti', 'pap', 'rc'];
 export const MONGO_URI = process.env.MONGO_URI
 // Errors codes
 export const DUPLICATED_RECORD = 11000;

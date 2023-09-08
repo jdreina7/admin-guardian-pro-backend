@@ -1,5 +1,6 @@
 import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
-import { DUPLICATED_RECORD, ERR_MSG_DUPLICATED_VALUE, ERR_MSG_GENERAL, SUCC_MSG_GENERAL } from './contants';
+import { DUPLICATED_RECORD, ERR_MSG_DUPLICATED_VALUE, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID, SUCC_MSG_GENERAL } from './contants';
+import { isValidObjectId } from 'mongoose';
 
 /**
  * Function for handling the uncontrolled errors
@@ -23,3 +24,16 @@ export const customHandlerCatchException = async (error: any, data: any) => {
     message: ERR_MSG_GENERAL,
   });
 };
+
+
+//Validate id
+
+export const customValidateMongoId = async (id:string) => {
+  if (!isValidObjectId(id)) {
+    throw new BadRequestException({
+      success: false,
+      message: ERR_MSG_INVALID_ID,
+      invalidValue: id,
+    });
+  }
+} 
