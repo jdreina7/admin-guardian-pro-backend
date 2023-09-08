@@ -1,10 +1,10 @@
 import { IsBoolean, IsIn, IsOptional, IsString, MinLength } from 'class-validator';
-import { USER_VALID_ROLES } from 'src/utils/contants';
+import { VALID_ROLES } from 'src/utils/contants';
 
 export class CreateRoleDto {
   @IsString()
   @MinLength(1)
-  @IsIn(USER_VALID_ROLES)
+  @IsIn(VALID_ROLES)
   name: string;
 
   @IsOptional()
