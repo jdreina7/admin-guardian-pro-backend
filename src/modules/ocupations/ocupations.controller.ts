@@ -19,7 +19,7 @@ export class OcupationsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.ocupationsService.findOne(+id);
+    return this.ocupationsService.findOne(id);
   }
 
   @Patch(':id')

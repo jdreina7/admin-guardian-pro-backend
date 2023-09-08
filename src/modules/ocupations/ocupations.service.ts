@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, isValidObjectId } from 'mongoose';
 
 import { CreateOcupationDto } from './dto/create-ocupation.dto';
 import { UpdateOcupationDto } from './dto/update-ocupation.dto';
 import { Ocupation } from './schemas/ocupation.schema';
 import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/utils/utils';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID } from 'src/utils/contants';
 
 @Injectable()
 export class OcupationsService {
@@ -39,8 +40,29 @@ export class OcupationsService {
   }
 
   // Get one ocupation
-  async findOne(id: number) {
-    return `This action returns a #${id} ocupation`;
+  async findOne(id: string) {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_ID,
+        invalidValue: id,
+      });
+    }
+
+    const existOcupation: Ocupation = await this.ocupationModel.findById(id);
+
+    if (!existOcupation) {
+      throw new NotFoundException({
+        succes: false,
+        message: ERR_MSG_DATA_NOT_FOUND,
+        invalidValue: id,
+      });
+    }
+
+    return {
+      success: true,
+      data: existOcupation,
+    };
   }
 
   update(id: number, updateOcupationDto: UpdateOcupationDto) {
