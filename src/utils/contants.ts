@@ -1,10 +1,12 @@
+// DB Connection
+export const MONGO_URI = process.env.MONGO_URI;
+
+// Defined ENUMs
 export const USER_VALID_ROLES = ['superadmin', 'admin', 'user'];
-export const MONGO_URI = process.env.MONGO_URI
+export const USER_VALID_OCUPATIONS = ['employee', 'independent', 'retired', 'student', 'none'];
+
 // Errors codes
 export const DUPLICATED_RECORD = 11000;
-
-// Success Messages
-export const SUCC_MSG_GENERAL = 'The accion was executed succesfully';
 
 // Errors Messages
 export const ERR_MSG_GENERAL = 'An internal server error has occurred, please check the logs.';
