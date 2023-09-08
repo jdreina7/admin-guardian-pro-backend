@@ -1,10 +1,10 @@
 import { IsString, MinLength, IsIn, IsOptional, IsBoolean } from 'class-validator';
-import { VALID_OCUPATIONS } from 'src/utils/contants';
+import { VALID_MARITAL_STATUSES } from 'src/utils/contants';
 
-export class CreateOcupationDto {
+export class CreateMaritalStatusDto {
   @IsString()
   @MinLength(1)
-  @IsIn(VALID_OCUPATIONS)
+  @IsIn(VALID_MARITAL_STATUSES)
   name: string;
 
   @IsOptional()

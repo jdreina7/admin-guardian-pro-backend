@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { RolesModule } from './modules/roles/roles.module';
 import { OcupationsModule } from './modules/ocupations/ocupations.module';
+import { MaritalStatusesModule } from './modules/marital-statuses/marital-statuses.module';
 
 @Module({
   // eslint-disable-next-line prettier/prettier
@@ -12,6 +13,7 @@ import { OcupationsModule } from './modules/ocupations/ocupations.module';
     RolesModule,
     MongooseModule.forRoot(process.env.MONGO_URI),
     OcupationsModule,
+    MaritalStatusesModule,
   ],
 })
 export class AppModule {}
