@@ -37,6 +37,7 @@ export const customValidateMongoId = async (id:string) => {
     });
   }
 } 
+
 /**
  * Function for capitalize a word
  * @param word The word for be capitalized
