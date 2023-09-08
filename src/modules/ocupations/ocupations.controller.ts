@@ -29,6 +29,6 @@ export class OcupationsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.ocupationsService.remove(+id);
+    return this.ocupationsService.remove(id);
   }
 }

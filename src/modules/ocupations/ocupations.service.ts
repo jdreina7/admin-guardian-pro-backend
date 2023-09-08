@@ -6,7 +6,12 @@ import { CreateOcupationDto } from './dto/create-ocupation.dto';
 import { UpdateOcupationDto } from './dto/update-ocupation.dto';
 import { Ocupation } from './schemas/ocupation.schema';
 import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/utils/utils';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_PAYLOAD } from 'src/utils/contants';
+import {
+  ERR_MSG_DATA_NOT_FOUND,
+  ERR_MSG_GENERAL,
+  ERR_MSG_INVALID_ID,
+  ERR_MSG_INVALID_PAYLOAD,
+} from 'src/utils/contants';
 
 @Injectable()
 export class OcupationsService {
@@ -80,6 +85,10 @@ export class OcupationsService {
       });
     }
 
+    if (updateOcupationDto?.name) {
+      updateOcupationDto.name = await customCapitalizeFirstLetter(updateOcupationDto?.name);
+    }
+
     try {
       const data = await this.ocupationModel
         .findByIdAndUpdate(id, updateOcupationDto, { new: true })
@@ -94,7 +103,22 @@ export class OcupationsService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ocupation`;
+  // Delete one ocupation
+  async remove(id: string) {
+    await this.findOne(id);
+
+    try {
+      await this.ocupationModel.findByIdAndDelete(id);
+
+      return {
+        success: true,
+        data: id,
+      };
+    } catch (error) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_GENERAL,
+      });
+    }
   }
 }
