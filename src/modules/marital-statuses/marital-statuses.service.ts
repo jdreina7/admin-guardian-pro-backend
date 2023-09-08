@@ -26,8 +26,18 @@ export class MaritalStatusesService {
     }
   }
 
-  findAll() {
-    return `This action returns all maritalStatuses`;
+  // Get all Marital Statuses
+  async findAll() {
+    try {
+      const data = await this.MaritalStatusModel.find().sort({ name: 1 });
+
+      return {
+        success: true,
+        data,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error);
+    }
   }
 
   findOne(id: number) {
