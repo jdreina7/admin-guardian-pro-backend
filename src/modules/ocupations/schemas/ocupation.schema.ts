@@ -12,7 +12,7 @@ import { Document } from 'mongoose';
   },
   timestamps: true,
 })
-export class Rol extends Document {
+export class Ocupation extends Document {
   @Prop({
     unique: true,
     index: true,
@@ -29,4 +29,4 @@ export class Rol extends Document {
   status: boolean;
 }
 
-export const RolSchema = SchemaFactory.createForClass(Rol);
+export const OcupationSchema = SchemaFactory.createForClass(Ocupation);

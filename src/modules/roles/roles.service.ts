@@ -2,20 +2,23 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId } from 'mongoose';
 
-
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Rol } from './schemas/role.schema';
 import { customHandlerCatchException } from 'src/utils/utils';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_PAYLOAD, ERR_MSG_INVALID_ROLE_ID, ERR_MSG_INVALID_VALUE, SUCC_MSG_GENERAL } from 'src/utils/contants';
+import {
+  ERR_MSG_DATA_NOT_FOUND,
+  ERR_MSG_GENERAL,
+  ERR_MSG_INVALID_ID,
+  ERR_MSG_INVALID_PAYLOAD,
+} from 'src/utils/contants';
 
 @Injectable()
 export class RolesService {
   constructor(@InjectModel(Rol.name) private readonly rolModel: Model<Rol>) {}
 
-// Create a rol
+  // Create a rol
   async create(createRoleDto: CreateRoleDto) {
-
     createRoleDto.name = createRoleDto.name.toLowerCase();
 
     try {
@@ -23,34 +26,30 @@ export class RolesService {
 
       return {
         success: true,
-        data: rolCreated
-      }
-
+        data: rolCreated,
+      };
     } catch (error) {
       return await customHandlerCatchException(error, createRoleDto);
     }
-    
   }
 
-// Get all roles
+  // Get all roles
   async findAll() {
     try {
-      const data = await this.rolModel.find()
-      .sort({ name: 1 });
-      
-      return{
-        data
-      }
+      const data = await this.rolModel.find().sort({ name: 1 });
 
+      return {
+        success: true,
+        data,
+      };
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
-// Search Rol by Id
+  // Search Rol by Id
   async findOne(id: string) {
-    
-    if ( !isValidObjectId( id ) ) {
+    if (!isValidObjectId(id)) {
       throw new BadRequestException({
         success: false,
         message: ERR_MSG_INVALID_ID,
@@ -58,7 +57,7 @@ export class RolesService {
       });
     }
 
-    const existRol: Rol = await this.rolModel.findById( id ) ;
+    const existRol: Rol = await this.rolModel.findById(id);
 
     if (!existRol) {
       throw new NotFoundException({
@@ -71,12 +70,11 @@ export class RolesService {
     return {
       success: true,
       data: existRol,
-    }
+    };
   }
 
-// Update Rol
+  // Update Rol
   async update(id: string, updateRoleDto: UpdateRoleDto) {
-
     await this.findOne(id);
 
     if (updateRoleDto?.name?.length <= 0) {
@@ -88,37 +86,33 @@ export class RolesService {
     }
 
     try {
-      const fullData = await this.rolModel.findByIdAndUpdate(id, updateRoleDto,{new: true})
-      .select('-updatedAt -createdAt')
-      return  {
+      const fullData = await this.rolModel
+        .findByIdAndUpdate(id, updateRoleDto, { new: true })
+        .select('-updatedAt -createdAt');
+      return {
         success: true,
-        data:  fullData
-      }
-  
+        data: fullData,
+      };
     } catch (error) {
-      return await customHandlerCatchException(error, updateRoleDto);    
+      return await customHandlerCatchException(error, updateRoleDto);
     }
   }
 
-//Delete Rol
+  //Delete Rol
   async remove(id: string) {
     await this.findOne(id);
-    
+
     try {
       await this.rolModel.findByIdAndDelete(id);
-      return{
+      return {
         success: true,
         data: id,
-      }
+      };
     } catch (error) {
-      throw new BadRequestException(
-        {
-          success: false,
-          message: ERR_MSG_GENERAL
-        }
-      )
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_GENERAL,
+      });
     }
-
   }
 }
-
