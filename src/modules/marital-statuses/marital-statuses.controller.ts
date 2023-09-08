@@ -29,6 +29,6 @@ export class MaritalStatusesController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.maritalStatusesService.remove(+id);
+    return this.maritalStatusesService.remove(id);
   }
 }

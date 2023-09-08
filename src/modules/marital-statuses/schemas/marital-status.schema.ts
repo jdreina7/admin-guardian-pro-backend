@@ -11,7 +11,7 @@ import { Document } from 'mongoose';
     },
   },
   timestamps: true,
-  collection: 'MaritalStatuses',
+  collection: 'maritalStatuses',
 })
 export class MaritalStatus extends Document {
   @Prop({

@@ -5,7 +5,12 @@ import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/ut
 import { InjectModel } from '@nestjs/mongoose';
 import { MaritalStatus } from './schemas/marital-status.schema';
 import { Model, isValidObjectId } from 'mongoose';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_PAYLOAD } from 'src/utils/contants';
+import {
+  ERR_MSG_DATA_NOT_FOUND,
+  ERR_MSG_GENERAL,
+  ERR_MSG_INVALID_ID,
+  ERR_MSG_INVALID_PAYLOAD,
+} from 'src/utils/contants';
 
 @Injectable()
 export class MaritalStatusesService {
@@ -97,7 +102,22 @@ export class MaritalStatusesService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} maritalStatus`;
+  // Delete one Marital Status
+  async remove(id: string) {
+    await this.findOne(id);
+
+    try {
+      await this.MaritalStatusModel.findByIdAndDelete(id);
+
+      return {
+        success: true,
+        data: id,
+      };
+    } catch (error) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_GENERAL,
+      });
+    }
   }
 }
