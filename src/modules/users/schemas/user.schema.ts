@@ -49,7 +49,9 @@ export class User extends mongoose.Document {
   })
   lastName: string;
 
-  @Prop()
+  @Prop({
+    type: Number,
+  })
   contactPhone: number;
 
   @Prop()
@@ -91,7 +93,7 @@ export class User extends mongoose.Document {
     ref: 'Rol',
     required: true,
   })
-  rolId: mongoose.Types.ObjectId;
+  roleId: mongoose.Types.ObjectId;
 
   @Prop({
     default: true,

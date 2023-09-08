@@ -16,4 +16,7 @@ export const ERR_MSG_INVALID_VALUE = 'The entered value is invalid.';
 export const ERR_MSG_DATA_NOT_FOUND = 'No results were found with the search value entered.';
 export const ERR_MSG_INVALID_PAYLOAD = 'The data entered is invalid or empty.';
 export const ERR_MSG_INVALID_ROLE_ID = 'The role ID is invalid or not exist';
+export const ERR_MSG_INVALID_MARITAL_STATUS_ID = 'The marital status ID is invalid or not exist';
+export const ERR_MSG_INVALID_OCUPATION_ID = 'The ocupation ID is invalid or not exist';
 export const ERR_MSG_INVALID_ID = 'The ID is invalid, please enter a correct ID number';
+export const ERR_MSG_INVALID_UID = 'The user UID is invalid, please enter a correct user UID number';

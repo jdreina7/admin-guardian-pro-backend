@@ -17,7 +17,6 @@ export class CreateUserDto {
   firstName: string;
 
   @IsString()
-  @MinLength(5)
   @IsOptional()
   middleName: string;
 
@@ -25,28 +24,23 @@ export class CreateUserDto {
   @MinLength(3)
   lastName: string;
 
-  @IsString()
-  @MinLength(5)
+  @IsNumber()
   @IsOptional()
-  contactPhone: string;
+  contactPhone: number;
 
   @IsString()
-  @MinLength(5)
   @IsOptional()
   address: string;
 
   @IsString()
-  @MinLength(5)
   @IsOptional()
   city: string;
 
   @IsString()
-  @MinLength(5)
   @IsOptional()
   birthday: string;
 
   @IsString()
-  @MinLength(5)
   @IsOptional()
   userImg: string;
 
@@ -69,14 +63,13 @@ export class CreateUserDto {
 
   @IsString()
   @IsMongoId()
-  rolId: string;
+  roleId: string;
 
   @IsBoolean()
   @IsOptional()
   status: boolean;
 
   @IsString()
-  @MinLength(5)
   @IsOptional()
   lastLogin: string;
 }
