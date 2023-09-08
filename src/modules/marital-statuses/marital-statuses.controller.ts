@@ -24,7 +24,7 @@ export class MaritalStatusesController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateMaritalStatusDto: UpdateMaritalStatusDto) {
-    return this.maritalStatusesService.update(+id, updateMaritalStatusDto);
+    return this.maritalStatusesService.update(id, updateMaritalStatusDto);
   }
 
   @Delete(':id')

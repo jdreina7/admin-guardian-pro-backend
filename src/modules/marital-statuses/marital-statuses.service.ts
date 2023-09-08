@@ -5,7 +5,7 @@ import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/ut
 import { InjectModel } from '@nestjs/mongoose';
 import { MaritalStatus } from './schemas/marital-status.schema';
 import { Model, isValidObjectId } from 'mongoose';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID } from 'src/utils/contants';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_PAYLOAD } from 'src/utils/contants';
 
 @Injectable()
 export class MaritalStatusesService {
@@ -67,8 +67,34 @@ export class MaritalStatusesService {
     };
   }
 
-  update(id: number, updateMaritalStatusDto: UpdateMaritalStatusDto) {
-    return `This action updates a #${id} maritalStatus`;
+  // Patch one Marital Status
+  async update(id: string, updateMaritalStatusDto: UpdateMaritalStatusDto) {
+    await this.findOne(id);
+
+    if (updateMaritalStatusDto?.name?.length <= 0) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_PAYLOAD,
+        invalidValue: { ...updateMaritalStatusDto },
+      });
+    }
+
+    if (updateMaritalStatusDto?.name) {
+      updateMaritalStatusDto.name = await customCapitalizeFirstLetter(updateMaritalStatusDto?.name);
+    }
+
+    try {
+      const data = await this.MaritalStatusModel.findByIdAndUpdate(id, updateMaritalStatusDto, { new: true }).select(
+        '-updatedAt -createdAt',
+      );
+
+      return {
+        success: true,
+        data,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error, updateMaritalStatusDto);
+    }
   }
 
   remove(id: number) {
