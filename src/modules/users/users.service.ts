@@ -9,6 +9,7 @@ import { ERR_MSG_INVALID_OCUPATION_ID, ERR_MSG_INVALID_ROLE_ID, ERR_MSG_INVALID_
 import { Rol } from '../roles/schemas/role.schema';
 import { MaritalStatus } from '../marital-statuses/schemas/marital-status.schema';
 import { Ocupation } from '../ocupations/schemas/ocupation.schema';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class UsersService {
@@ -102,8 +103,24 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  // Get all users
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+
+    // eslint-disable-next-line prettier/prettier
+    const data = await this.userModel.find()
+      // .populate('identificationTypeId', 'name')
+      .populate('maritalStatusId', 'name')
+      .populate('ocupationId', 'name')
+      .populate('roleId', 'name')
+      .limit(limit)
+      .skip(offset)
+      .sort({ firstName: 1 });
+
+    return {
+      success: true,
+      data,
+    };
   }
 
   findOne(id: number) {

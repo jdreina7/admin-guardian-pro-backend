@@ -4,13 +4,19 @@ import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
 import { Rol, RolSchema } from '../roles/schemas/role.schema';
-import { MaritalStatus, MaritalStatusSchema } from '../marital-statuses/schemas/marital-status.schema';
+import { MaritalStatus, MaritalStatusesSchema } from '../marital-statuses/schemas/marital-status.schema';
 import { Ocupation, OcupationSchema } from '../ocupations/schemas/ocupation.schema';
+import { MaritalStatusesModule } from '../marital-statuses/marital-statuses.module';
+import { OcupationsModule } from '../ocupations/ocupations.module';
+import { RolesModule } from '../roles/roles.module';
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
+    MaritalStatusesModule,
+    OcupationsModule,
+    RolesModule,
     MongooseModule.forFeature([
       {
         name: User.name,
@@ -22,7 +28,7 @@ import { Ocupation, OcupationSchema } from '../ocupations/schemas/ocupation.sche
       },
       {
         name: MaritalStatus.name,
-        schema: MaritalStatusSchema,
+        schema: MaritalStatusesSchema,
       },
       {
         name: Ocupation.name,

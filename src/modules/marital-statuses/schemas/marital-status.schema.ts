@@ -30,4 +30,4 @@ export class MaritalStatus extends Document {
   status: boolean;
 }
 
-export const MaritalStatusSchema = SchemaFactory.createForClass(MaritalStatus);
+export const MaritalStatusesSchema = SchemaFactory.createForClass(MaritalStatus);

@@ -12,7 +12,9 @@ import { UsersModule } from './modules/users/users.module';
   imports: [
     ConfigModule.forRoot(),
     RolesModule,
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot(process.env.MONGO_URI, {
+      autoIndex: true,
+    }),
     OcupationsModule,
     MaritalStatusesModule,
     UsersModule,
