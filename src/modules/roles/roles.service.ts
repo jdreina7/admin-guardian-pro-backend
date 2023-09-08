@@ -39,6 +39,7 @@ export class RolesService {
       const data = await this.rolModel.find().sort({ name: 1 });
 
       return {
+        success: true,
         data,
       };
     } catch (error) {

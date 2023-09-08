@@ -6,7 +6,7 @@ import { CreateOcupationDto } from './dto/create-ocupation.dto';
 import { UpdateOcupationDto } from './dto/update-ocupation.dto';
 import { Ocupation } from './schemas/ocupation.schema';
 import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/utils/utils';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID } from 'src/utils/contants';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_PAYLOAD } from 'src/utils/contants';
 
 @Injectable()
 export class OcupationsService {
@@ -33,7 +33,10 @@ export class OcupationsService {
     try {
       const data = await this.ocupationModel.find().sort({ name: 1 });
 
-      return { data };
+      return {
+        success: true,
+        data,
+      };
     } catch (error) {
       return await customHandlerCatchException(error);
     }
@@ -65,8 +68,30 @@ export class OcupationsService {
     };
   }
 
-  update(id: number, updateOcupationDto: UpdateOcupationDto) {
-    return `This action updates a #${id} ocupation`;
+  // Patch one ocupation
+  async update(id: string, updateOcupationDto: UpdateOcupationDto) {
+    await this.findOne(id);
+
+    if (updateOcupationDto?.name?.length <= 0) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_PAYLOAD,
+        invalidValue: { ...updateOcupationDto },
+      });
+    }
+
+    try {
+      const data = await this.ocupationModel
+        .findByIdAndUpdate(id, updateOcupationDto, { new: true })
+        .select('-updatedAt -createdAt');
+
+      return {
+        success: true,
+        data,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error, updateOcupationDto);
+    }
   }
 
   remove(id: number) {

@@ -24,7 +24,7 @@ export class OcupationsController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateOcupationDto: UpdateOcupationDto) {
-    return this.ocupationsService.update(+id, updateOcupationDto);
+    return this.ocupationsService.update(id, updateOcupationDto);
   }
 
   @Delete(':id')
