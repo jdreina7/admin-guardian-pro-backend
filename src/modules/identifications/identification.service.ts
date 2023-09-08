@@ -6,7 +6,7 @@ import { CreateIdentificationDto } from './dto/create-identification.dto';
 import { UpdateIdentificationDto } from './dto/update-identification.dto';
 import { customHandlerCatchException, customValidateMongoId } from 'src/utils/utils';
 import { Identification } from './schemas/identification.schema';
-import { ERR_MSG_DATA_NOT_FOUND } from 'src/utils/contants';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_PAYLOAD } from 'src/utils/contants';
 
 @Injectable()
 export class IdentificationsService {
@@ -63,12 +63,46 @@ export class IdentificationsService {
   }
 
   // find and update a credential by ID
-  update(id: string, updateIdentificationDto: UpdateIdentificationDto) {
-    return `This action updates a #${id} credential`;
+  async update(id: string, updateIdentificationDto: UpdateIdentificationDto) {
+    await this.findOne(id);
+
+    if (updateIdentificationDto?.type?.length <= 0) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_PAYLOAD,
+        invalidValue: { ...updateIdentificationDto },
+      });
+    }
+
+    try {
+      const fullData = await this.IdentificationModel.findByIdAndUpdate(id, updateIdentificationDto, {
+        new: true,
+      }).select('-updatedAt -createdAt');
+      return {
+        success: true,
+        data: fullData,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error, updateIdentificationDto);
+    }
   }
 
   // Delete credential
-  remove(id: string) {
-    return `This action removes a #${id} credential`;
+  async remove(id: string) {
+    const existIdent = await this.findOne(id);
+
+    try {
+      await this.IdentificationModel.findByIdAndDelete(id);
+
+      return {
+        success: true,
+        data: existIdent,
+      };
+    } catch (error) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_GENERAL,
+      });
+    }
   }
 }

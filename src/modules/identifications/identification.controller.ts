@@ -5,30 +5,30 @@ import { UpdateIdentificationDto } from './dto/update-identification.dto';
 
 @Controller('identifications')
 export class IdentificationsController {
-  constructor(private readonly credentialsService: IdentificationsService) {}
+  constructor(private readonly identificationService: IdentificationsService) {}
 
   @Post()
   create(@Body() createIdentificationDto: CreateIdentificationDto) {
-    return this.credentialsService.create(createIdentificationDto);
+    return this.identificationService.create(createIdentificationDto);
   }
 
   @Get()
   findAll() {
-    return this.credentialsService.findAll();
+    return this.identificationService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.credentialsService.findOne(id);
+    return this.identificationService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateIdentificationDto: UpdateIdentificationDto) {
-    return this.credentialsService.update(id, updateIdentificationDto);
+    return this.identificationService.update(id, updateIdentificationDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.credentialsService.remove(id);
+    return this.identificationService.remove(id);
   }
 }

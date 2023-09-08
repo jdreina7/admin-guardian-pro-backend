@@ -25,10 +25,9 @@ export const customHandlerCatchException = async (error: any, data?: any) => {
   });
 };
 
-
 //Validate id
 
-export const customValidateMongoId = async (id:string) => {
+export const customValidateMongoId = async (id: string) => {
   if (!isValidObjectId(id)) {
     throw new BadRequestException({
       success: false,
@@ -36,7 +35,7 @@ export const customValidateMongoId = async (id:string) => {
       invalidValue: id,
     });
   }
-} 
+};
 
 /**
  * Function for capitalize a word

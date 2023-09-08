@@ -36,13 +36,12 @@ export class RolesService {
   // Get all roles
   async findAll() {
     try {
-      const data = await this.rolModel.find()
-      .sort({ name: 1 });
-      
-      return{
+      const data = await this.rolModel.find().sort({ name: 1 });
+
+      return {
         success: true,
-        data
-      }
+        data,
+      };
 
       return {
         success: true,

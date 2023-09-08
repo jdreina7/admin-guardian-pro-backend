@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './modules/roles/roles.module';
 import { OcupationsModule } from './modules/ocupations/ocupations.module';
 import { MaritalStatusesModule } from './modules/marital-statuses/marital-statuses.module';
-import { IdentificationsModule } from './modules/credentials/identification.module';
+import { IdentificationsModule } from './modules/identifications/identification.module';
 
 @Module({
   // eslint-disable-next-line prettier/prettier
