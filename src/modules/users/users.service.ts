@@ -13,6 +13,7 @@ import { Ocupation } from '../ocupations/schemas/ocupation.schema';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import {
   ERR_MSG_DATA_NOT_FOUND,
+  ERR_MSG_GENERAL,
   ERR_MSG_INVALID_ID,
   ERR_MSG_INVALID_OCUPATION_ID,
   ERR_MSG_INVALID_PAYLOAD,
@@ -190,7 +191,22 @@ export class UsersService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  // Delete user
+  async remove(id: string) {
+    await this.findOne(id);
+
+    try {
+      await this.userModel.findByIdAndDelete(id);
+
+      return {
+        success: true,
+        data: id,
+      };
+    } catch (error) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_GENERAL,
+      });
+    }
   }
 }
