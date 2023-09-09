@@ -3,6 +3,7 @@ export const MONGO_URI = process.env.MONGO_URI;
 
 // Defined ENUMs
 export const VALID_ROLES = ['superadmin', 'admin', 'user'];
+export const VALID_CREDENTIALS = ['cc', 'ce', 'nip', 'nit', 'ti', 'pap', 'rc'];
 export const VALID_OCUPATIONS = ['employee', 'independent', 'retired', 'student', 'none'];
 export const VALID_MARITAL_STATUSES = ['single', 'married', 'free union', 'separate', 'divorced', 'widower'];
 export const VALID_GENDERS = ['male', 'female', 'undefined'];
