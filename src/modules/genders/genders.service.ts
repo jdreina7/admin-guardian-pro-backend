@@ -6,7 +6,7 @@ import { CreateGenderDto } from './dto/create-gender.dto';
 import { UpdateGenderDto } from './dto/update-gender.dto';
 import { Gender } from './schemas/gender.schema';
 import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/utils/utils';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID } from 'src/utils/contants';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_PAYLOAD } from 'src/utils/contants';
 
 @Injectable()
 export class GendersService {
@@ -68,8 +68,34 @@ export class GendersService {
     };
   }
 
-  update(id: number, updateGenderDto: UpdateGenderDto) {
-    return `This action updates a #${id} gender`;
+  // Patch gender
+  async update(id: string, updateGenderDto: UpdateGenderDto) {
+    await this.findOne(id);
+
+    if (updateGenderDto?.name?.length <= 0) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_PAYLOAD,
+        invalidValue: { ...updateGenderDto },
+      });
+    }
+
+    if (updateGenderDto?.name) {
+      updateGenderDto.name = await customCapitalizeFirstLetter(updateGenderDto?.name);
+    }
+
+    try {
+      const data = await this.genderModel
+        .findByIdAndUpdate(id, updateGenderDto, { new: true })
+        .select('-updatedAt -createdAt');
+
+      return {
+        success: true,
+        data,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error, updateGenderDto);
+    }
   }
 
   remove(id: number) {

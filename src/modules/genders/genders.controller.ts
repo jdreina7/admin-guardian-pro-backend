@@ -24,7 +24,7 @@ export class GendersController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateGenderDto: UpdateGenderDto) {
-    return this.gendersService.update(+id, updateGenderDto);
+    return this.gendersService.update(id, updateGenderDto);
   }
 
   @Delete(':id')
