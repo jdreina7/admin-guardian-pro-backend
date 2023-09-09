@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Model, isValidObjectId } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+
 import { CreateMaritalStatusDto } from './dto/create-marital-status.dto';
 import { UpdateMaritalStatusDto } from './dto/update-marital-status.dto';
 import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/utils/utils';
-import { InjectModel } from '@nestjs/mongoose';
 import { MaritalStatus } from './schemas/marital-status.schema';
-import { Model, isValidObjectId } from 'mongoose';
 import {
   ERR_MSG_DATA_NOT_FOUND,
   ERR_MSG_GENERAL,

@@ -5,15 +5,19 @@ import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './modules/roles/roles.module';
 import { OcupationsModule } from './modules/ocupations/ocupations.module';
 import { MaritalStatusesModule } from './modules/marital-statuses/marital-statuses.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   // eslint-disable-next-line prettier/prettier
   imports: [
     ConfigModule.forRoot(),
     RolesModule,
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot(process.env.MONGO_URI, {
+      autoIndex: true,
+    }),
     OcupationsModule,
     MaritalStatusesModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
