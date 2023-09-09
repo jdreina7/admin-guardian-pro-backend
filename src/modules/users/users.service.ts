@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -20,14 +20,24 @@ import {
   ERR_MSG_INVALID_ROLE_ID,
   ERR_MSG_INVALID_UID,
 } from 'src/utils/contants';
+import { MaritalStatusesService } from '../marital-statuses/marital-statuses.service';
+import { GendersService } from '../genders/genders.service';
+import { OcupationsService } from '../ocupations/ocupations.service';
+import { RolesService } from '../roles/roles.service';
 
 @Injectable()
 export class UsersService {
   constructor(
+    // Models injection
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(Rol.name) private readonly rolModel: Model<Rol>,
     @InjectModel(MaritalStatus.name) private readonly MaritalStatusModel: Model<MaritalStatus>,
     @InjectModel(Ocupation.name) private readonly ocupationModel: Model<Ocupation>,
+    // Services injection
+    @Inject(GendersService) private readonly genderService: GendersService,
+    @Inject(MaritalStatusesService) private readonly maritalService: MaritalStatusesService,
+    @Inject(OcupationsService) private readonly ocupationervice: OcupationsService,
+    @Inject(RolesService) private readonly rolesService: RolesService,
   ) {}
 
   // Create user
@@ -51,51 +61,17 @@ export class UsersService {
       });
     }
 
-    // IdentificationTypeId validation
-    // const idTypeExist: Partial<IdentificationType> = (await this.rolModel.findById(createUserDto.roleId)) as any;
+    // genderId validation
+    createUserDto.genderId ? await this.genderService.findOne(createUserDto.genderId) : '';
 
-    // if (!rolExist) {
-    //   throw new NotFoundException({
-    //     succes: false,
-    //     message: ERR_MSG_INVALID_ROLE_ID,
-    //     invalidValue: createUserDto.roleId,
-    //   });
-    // }
+    // maritalStatusId validation
+    createUserDto.maritalStatusId ? await this.maritalService.findOne(createUserDto.maritalStatusId) : '';
 
-    // RoleId validation
-    const maritalStatusExist: Partial<MaritalStatus> = (await this.MaritalStatusModel.findById(
-      createUserDto.maritalStatusId,
-    )) as any;
+    // ocupationId validation
+    createUserDto.ocupationId ? await this.ocupationervice.findOne(createUserDto.ocupationId) : '';
 
-    if (!maritalStatusExist) {
-      throw new NotFoundException({
-        succes: false,
-        message: ERR_MSG_INVALID_ROLE_ID,
-        invalidValue: createUserDto.roleId,
-      });
-    }
-
-    // OcupationId validation
-    const ocupationExist: Partial<Ocupation> = (await this.ocupationModel.findById(createUserDto.ocupationId)) as any;
-
-    if (!ocupationExist) {
-      throw new NotFoundException({
-        succes: false,
-        message: ERR_MSG_INVALID_OCUPATION_ID,
-        invalidValue: createUserDto.roleId,
-      });
-    }
-
-    // RoleId validation
-    const roleExist: Partial<Rol> = (await this.rolModel.findById(createUserDto.roleId)) as any;
-
-    if (!roleExist) {
-      throw new NotFoundException({
-        succes: false,
-        message: ERR_MSG_INVALID_ROLE_ID,
-        invalidValue: createUserDto.roleId,
-      });
-    }
+    // roleId validation
+    createUserDto.roleId ? await this.rolesService.findOne(createUserDto.roleId) : '';
 
     // capitalize the user names
     createUserDto.firstName
@@ -122,9 +98,9 @@ export class UsersService {
   async findAll(paginationDto: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto;
 
-    // eslint-disable-next-line prettier/prettier
-    const data = await this.userModel.find()
-      // .populate('identificationTypeId', 'name')
+    const data = await this.userModel
+      .find()
+      .populate('genderId', 'name')
       .populate('maritalStatusId', 'name')
       .populate('ocupationId', 'name')
       .populate('roleId', 'name')
@@ -144,17 +120,22 @@ export class UsersService {
       throw new BadRequestException({
         success: false,
         message: ERR_MSG_INVALID_ID,
-        invalidValue: id,
+        invalidValue: `User ID: ${id}`,
       });
     }
 
-    const existUser: User = await this.userModel.findById(id);
+    const existUser: User = await this.userModel
+      .findById(id)
+      .populate('genderId', 'name')
+      .populate('maritalStatusId', 'name')
+      .populate('ocupationId', 'name')
+      .populate('roleId', 'name');
 
     if (!existUser) {
       throw new NotFoundException({
         succes: false,
         message: ERR_MSG_DATA_NOT_FOUND,
-        invalidValue: id,
+        invalidValue: `User ID: ${id}`,
       });
     }
 
@@ -167,6 +148,18 @@ export class UsersService {
   // Patch user
   async update(id: string, updateUserDto: UpdateUserDto) {
     await this.findOne(id);
+
+    // genderId validation
+    updateUserDto.genderId ? await this.genderService.findOne(updateUserDto.genderId) : '';
+
+    // maritalStatusId validation
+    updateUserDto.maritalStatusId ? await this.maritalService.findOne(updateUserDto.maritalStatusId) : '';
+
+    // ocupationId validation
+    updateUserDto.ocupationId ? await this.ocupationervice.findOne(updateUserDto.ocupationId) : '';
+
+    // roleId validation
+    updateUserDto.roleId ? await this.rolesService.findOne(updateUserDto.roleId) : '';
 
     // capitalize the user names
     updateUserDto.firstName

@@ -50,6 +50,13 @@ export class User extends mongoose.Document {
   lastName: string;
 
   @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Gender',
+    required: true,
+  })
+  genderId: mongoose.Types.ObjectId;
+
+  @Prop({
     type: Number,
   })
   contactPhone: number;

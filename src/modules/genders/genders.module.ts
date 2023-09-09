@@ -15,5 +15,6 @@ import { Gender, GenderSchema } from './schemas/gender.schema';
       },
     ]),
   ],
+  exports: [GendersService],
 })
 export class GendersModule {}
