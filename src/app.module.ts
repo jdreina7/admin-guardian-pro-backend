@@ -7,6 +7,7 @@ import { OcupationsModule } from './modules/ocupations/ocupations.module';
 import { MaritalStatusesModule } from './modules/marital-statuses/marital-statuses.module';
 import { UsersModule } from './modules/users/users.module';
 import { GendersModule } from './modules/genders/genders.module';
+import { DocumentTypesModule } from './modules/document-types/document-types.module';
 
 @Module({
   // eslint-disable-next-line prettier/prettier
@@ -20,6 +21,7 @@ import { GendersModule } from './modules/genders/genders.module';
     MaritalStatusesModule,
     UsersModule,
     GendersModule,
+    DocumentTypesModule,
   ],
 })
 export class AppModule {}
