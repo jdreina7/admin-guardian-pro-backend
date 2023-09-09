@@ -15,5 +15,6 @@ import { MaritalStatus, MaritalStatusesSchema } from './schemas/marital-status.s
       },
     ]),
   ],
+  exports: [MaritalStatusesService],
 })
 export class MaritalStatusesModule {}

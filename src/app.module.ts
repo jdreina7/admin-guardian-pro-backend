@@ -8,20 +8,20 @@ import { MaritalStatusesModule } from './modules/marital-statuses/marital-status
 import { UsersModule } from './modules/users/users.module';
 import { GendersModule } from './modules/genders/genders.module';
 import { DocumentTypesModule } from './modules/document-types/document-types.module';
+import { IdentificationsTypesModule } from './modules/identificationsTypes/identificationTypes.module';
 
 @Module({
   // eslint-disable-next-line prettier/prettier
   imports: [
     ConfigModule.forRoot(),
     RolesModule,
-    MongooseModule.forRoot(process.env.MONGO_URI, {
-      autoIndex: true,
-    }),
+    MongooseModule.forRoot(process.env.MONGO_URI),
     OcupationsModule,
     MaritalStatusesModule,
     UsersModule,
     GendersModule,
     DocumentTypesModule,
+    IdentificationsTypesModule,
   ],
 })
 export class AppModule {}

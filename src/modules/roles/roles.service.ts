@@ -42,6 +42,11 @@ export class RolesService {
         success: true,
         data,
       };
+
+      return {
+        success: true,
+        data,
+      };
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -53,7 +58,7 @@ export class RolesService {
       throw new BadRequestException({
         success: false,
         message: ERR_MSG_INVALID_ID,
-        invalidValue: id,
+        invalidValue: `Role ID: ${id}`,
       });
     }
 
@@ -63,7 +68,7 @@ export class RolesService {
       throw new NotFoundException({
         succes: false,
         message: ERR_MSG_DATA_NOT_FOUND,
-        invalidValue: id,
+        invalidValue: `Role ID: ${id}`,
       });
     }
 
