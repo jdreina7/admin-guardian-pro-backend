@@ -9,6 +9,8 @@ import { Ocupation, OcupationSchema } from '../ocupations/schemas/ocupation.sche
 import { MaritalStatusesModule } from '../marital-statuses/marital-statuses.module';
 import { OcupationsModule } from '../ocupations/ocupations.module';
 import { RolesModule } from '../roles/roles.module';
+import { Gender, GenderSchema } from '../genders/schemas/gender.schema';
+import { GendersModule } from '../genders/genders.module';
 
 @Module({
   controllers: [UsersController],
@@ -17,6 +19,7 @@ import { RolesModule } from '../roles/roles.module';
     MaritalStatusesModule,
     OcupationsModule,
     RolesModule,
+    GendersModule,
     MongooseModule.forFeature([
       {
         name: User.name,
@@ -33,6 +36,10 @@ import { RolesModule } from '../roles/roles.module';
       {
         name: Ocupation.name,
         schema: OcupationSchema,
+      },
+      {
+        name: Gender.name,
+        schema: GenderSchema,
       },
     ]),
   ],

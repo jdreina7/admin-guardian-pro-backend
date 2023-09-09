@@ -24,6 +24,10 @@ export class CreateUserDto {
   @MinLength(3)
   lastName: string;
 
+  @IsString()
+  @IsMongoId()
+  genderId: string;
+
   @IsNumber()
   @IsOptional()
   contactPhone: number;
