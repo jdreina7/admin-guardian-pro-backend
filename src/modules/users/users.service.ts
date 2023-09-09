@@ -4,12 +4,20 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { Model } from 'mongoose';
+import { isValidObjectId } from 'mongoose';
+
 import { customCapitalizeFirstLetter, customHandlerCatchException, validateUID } from 'src/utils/utils';
-import { ERR_MSG_INVALID_OCUPATION_ID, ERR_MSG_INVALID_ROLE_ID, ERR_MSG_INVALID_UID } from 'src/utils/contants';
 import { Rol } from '../roles/schemas/role.schema';
 import { MaritalStatus } from '../marital-statuses/schemas/marital-status.schema';
 import { Ocupation } from '../ocupations/schemas/ocupation.schema';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import {
+  ERR_MSG_DATA_NOT_FOUND,
+  ERR_MSG_INVALID_ID,
+  ERR_MSG_INVALID_OCUPATION_ID,
+  ERR_MSG_INVALID_ROLE_ID,
+  ERR_MSG_INVALID_UID,
+} from 'src/utils/contants';
 
 @Injectable()
 export class UsersService {
@@ -123,8 +131,30 @@ export class UsersService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  // Get one User
+  async findOne(id: string) {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_ID,
+        invalidValue: id,
+      });
+    }
+
+    const existUser: User = await this.userModel.findById(id);
+
+    if (!existUser) {
+      throw new NotFoundException({
+        succes: false,
+        message: ERR_MSG_DATA_NOT_FOUND,
+        invalidValue: id,
+      });
+    }
+
+    return {
+      success: true,
+      data: existUser,
+    };
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
