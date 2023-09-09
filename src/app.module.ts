@@ -5,7 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './modules/roles/roles.module';
 import { OcupationsModule } from './modules/ocupations/ocupations.module';
 import { MaritalStatusesModule } from './modules/marital-statuses/marital-statuses.module';
-import { IdentificationsModule } from './modules/identifications/identification.module';
+import { UsersModule } from './modules/users/users.module';
+import { GendersModule } from './modules/genders/genders.module';
 
 @Module({
   // eslint-disable-next-line prettier/prettier
@@ -13,10 +14,10 @@ import { IdentificationsModule } from './modules/identifications/identification.
     ConfigModule.forRoot(),
     RolesModule,
     MongooseModule.forRoot(process.env.MONGO_URI),
-    IdentificationsModule,
-    MongooseModule.forRoot(process.env.MONGO_URI),
     OcupationsModule,
     MaritalStatusesModule,
+    UsersModule,
+    GendersModule,
   ],
 })
 export class AppModule {}

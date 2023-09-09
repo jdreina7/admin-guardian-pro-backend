@@ -47,3 +47,16 @@ export const customCapitalizeFirstLetter = async (word: string) => {
 
   return wordCapitalized;
 };
+
+/**
+ * Function for evaluate if an user ID is valid or not
+ * @param uid The user unique ID
+ * @returns True or false
+ */
+export const validateUID = async (uid: number) => {
+  if (uid === 0 || uid?.toString().length < 5) {
+    return false;
+  }
+
+  return true;
+};

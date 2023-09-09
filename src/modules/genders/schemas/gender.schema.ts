@@ -11,9 +11,8 @@ import { Document } from 'mongoose';
     },
   },
   timestamps: true,
-  collection: 'maritalStatuses',
 })
-export class MaritalStatus extends Document {
+export class Gender extends Document {
   @Prop({
     unique: true,
     index: true,
@@ -30,4 +29,4 @@ export class MaritalStatus extends Document {
   status: boolean;
 }
 
-export const MaritalStatusesSchema = SchemaFactory.createForClass(MaritalStatus);
+export const GenderSchema = SchemaFactory.createForClass(Gender);
