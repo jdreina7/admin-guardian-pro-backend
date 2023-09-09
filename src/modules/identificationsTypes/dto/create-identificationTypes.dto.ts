@@ -1,7 +1,7 @@
 import { IsBoolean, IsIn, IsOptional, IsString, MinLength } from 'class-validator';
 import { VALID_CREDENTIALS } from 'src/utils/contants';
 
-export class CreateIdentificationDto {
+export class CreateIdentificationTypesDto {
   @IsString()
   @MinLength(2)
   @IsIn(VALID_CREDENTIALS)

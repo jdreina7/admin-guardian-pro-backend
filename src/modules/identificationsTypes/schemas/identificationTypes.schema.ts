@@ -11,7 +11,7 @@ import { Document } from 'mongoose';
   },
   timestamps: true,
 })
-export class Identification extends Document {
+export class IdentificationTypes extends Document {
   @Prop({
     index: true,
     unique: true,
@@ -28,4 +28,4 @@ export class Identification extends Document {
   status: boolean;
 }
 
-export const IdentificationSchema = SchemaFactory.createForClass(Identification);
+export const IdentificationTypesSchema = SchemaFactory.createForClass(IdentificationTypes);
