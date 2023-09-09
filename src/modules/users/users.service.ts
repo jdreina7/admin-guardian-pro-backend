@@ -15,6 +15,7 @@ import {
   ERR_MSG_DATA_NOT_FOUND,
   ERR_MSG_INVALID_ID,
   ERR_MSG_INVALID_OCUPATION_ID,
+  ERR_MSG_INVALID_PAYLOAD,
   ERR_MSG_INVALID_ROLE_ID,
   ERR_MSG_INVALID_UID,
 } from 'src/utils/contants';
@@ -95,9 +96,14 @@ export class UsersService {
       });
     }
 
-    createUserDto.firstName = await customCapitalizeFirstLetter(createUserDto.firstName);
-    createUserDto.middleName = await customCapitalizeFirstLetter(createUserDto.middleName);
-    createUserDto.lastName = await customCapitalizeFirstLetter(createUserDto.lastName);
+    // capitalize the user names
+    createUserDto.firstName
+      ? (createUserDto.firstName = await customCapitalizeFirstLetter(createUserDto.firstName))
+      : '';
+    createUserDto.middleName
+      ? (createUserDto.middleName = await customCapitalizeFirstLetter(createUserDto.middleName))
+      : '';
+    createUserDto.lastName ? (createUserDto.lastName = await customCapitalizeFirstLetter(createUserDto.lastName)) : '';
 
     try {
       const userCreated = await this.userModel.create(createUserDto);
@@ -157,8 +163,31 @@ export class UsersService {
     };
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  // Patch user
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    await this.findOne(id);
+
+    // capitalize the user names
+    updateUserDto.firstName
+      ? (updateUserDto.firstName = await customCapitalizeFirstLetter(updateUserDto.firstName))
+      : '';
+    updateUserDto.middleName
+      ? (updateUserDto.middleName = await customCapitalizeFirstLetter(updateUserDto.middleName))
+      : '';
+    updateUserDto.lastName ? (updateUserDto.lastName = await customCapitalizeFirstLetter(updateUserDto.lastName)) : '';
+
+    try {
+      const data = await this.userModel
+        .findByIdAndUpdate(id, updateUserDto, { new: true })
+        .select('-updatedAt -createdAt');
+
+      return {
+        success: true,
+        data,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error, updateUserDto);
+    }
   }
 
   remove(id: number) {
