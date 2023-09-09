@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Model, isValidObjectId } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { CreateGenderDto } from './dto/create-gender.dto';
 import { UpdateGenderDto } from './dto/update-gender.dto';
 import { Gender } from './schemas/gender.schema';
 import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/utils/utils';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID } from 'src/utils/contants';
 
 @Injectable()
 export class GendersService {
@@ -41,8 +42,30 @@ export class GendersService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} gender`;
+  // Get one gender
+  async findOne(id: string) {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_ID,
+        invalidValue: id,
+      });
+    }
+
+    const existGender: Gender = await this.genderModel.findById(id);
+
+    if (!existGender) {
+      throw new NotFoundException({
+        succes: false,
+        message: ERR_MSG_DATA_NOT_FOUND,
+        invalidValue: id,
+      });
+    }
+
+    return {
+      success: true,
+      data: existGender,
+    };
   }
 
   update(id: number, updateGenderDto: UpdateGenderDto) {
