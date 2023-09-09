@@ -53,7 +53,7 @@ export class GendersService {
       throw new BadRequestException({
         success: false,
         message: ERR_MSG_INVALID_ID,
-        invalidValue: id,
+        invalidValue: `Gender ID: ${id}`,
       });
     }
 
@@ -63,7 +63,7 @@ export class GendersService {
       throw new NotFoundException({
         succes: false,
         message: ERR_MSG_DATA_NOT_FOUND,
-        invalidValue: id,
+        invalidValue: `Gender ID: ${id}`,
       });
     }
 

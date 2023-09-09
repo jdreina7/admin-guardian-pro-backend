@@ -15,5 +15,6 @@ import { Ocupation, OcupationSchema } from './schemas/ocupation.schema';
       },
     ]),
   ],
+  exports: [OcupationsService],
 })
 export class OcupationsModule {}
