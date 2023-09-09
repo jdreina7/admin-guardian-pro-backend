@@ -29,6 +29,6 @@ export class GendersController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.gendersService.remove(+id);
+    return this.gendersService.remove(id);
   }
 }

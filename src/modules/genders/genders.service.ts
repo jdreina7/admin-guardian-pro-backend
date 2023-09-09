@@ -6,7 +6,12 @@ import { CreateGenderDto } from './dto/create-gender.dto';
 import { UpdateGenderDto } from './dto/update-gender.dto';
 import { Gender } from './schemas/gender.schema';
 import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/utils/utils';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_PAYLOAD } from 'src/utils/contants';
+import {
+  ERR_MSG_DATA_NOT_FOUND,
+  ERR_MSG_GENERAL,
+  ERR_MSG_INVALID_ID,
+  ERR_MSG_INVALID_PAYLOAD,
+} from 'src/utils/contants';
 
 @Injectable()
 export class GendersService {
@@ -98,7 +103,22 @@ export class GendersService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} gender`;
+  // Delete gender
+  async remove(id: string) {
+    await this.findOne(id);
+
+    try {
+      await this.genderModel.findByIdAndDelete(id);
+
+      return {
+        success: true,
+        data: id,
+      };
+    } catch (error) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_GENERAL,
+      });
+    }
   }
 }
