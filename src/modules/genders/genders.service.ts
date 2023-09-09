@@ -27,8 +27,18 @@ export class GendersService {
     }
   }
 
-  findAll() {
-    return `This action returns all genders`;
+  // Get all Genders
+  async findAll() {
+    try {
+      const data = await this.genderModel.find().sort({ name: 1 });
+
+      return {
+        success: true,
+        data,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error);
+    }
   }
 
   findOne(id: number) {
