@@ -10,6 +10,7 @@ import { customCapitalizeFirstLetter, customHandlerCatchException, validateUID }
 import { Rol } from '../roles/schemas/role.schema';
 import { MaritalStatus } from '../marital-statuses/schemas/marital-status.schema';
 import { Ocupation } from '../ocupations/schemas/ocupation.schema';
+import { IdentificationTypes } from '../identificationsTypes/schemas/identificationTypes.schema';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import {
   ERR_MSG_DATA_NOT_FOUND,
@@ -24,6 +25,7 @@ import { MaritalStatusesService } from '../marital-statuses/marital-statuses.ser
 import { GendersService } from '../genders/genders.service';
 import { OcupationsService } from '../ocupations/ocupations.service';
 import { RolesService } from '../roles/roles.service';
+import { IdentificationsTypesService } from '../identificationsTypes/identificationTypes.service';
 
 @Injectable()
 export class UsersService {
@@ -33,11 +35,13 @@ export class UsersService {
     @InjectModel(Rol.name) private readonly rolModel: Model<Rol>,
     @InjectModel(MaritalStatus.name) private readonly MaritalStatusModel: Model<MaritalStatus>,
     @InjectModel(Ocupation.name) private readonly ocupationModel: Model<Ocupation>,
+    @InjectModel(IdentificationTypes.name) private readonly IdentificationTypes: Model<IdentificationTypes>,
     // Services injection
     @Inject(GendersService) private readonly genderService: GendersService,
     @Inject(MaritalStatusesService) private readonly maritalService: MaritalStatusesService,
     @Inject(OcupationsService) private readonly ocupationervice: OcupationsService,
     @Inject(RolesService) private readonly rolesService: RolesService,
+    @Inject(IdentificationsTypesService) private readonly identificationsTypesService: IdentificationsTypesService,
   ) {}
 
   // Create user
@@ -73,6 +77,11 @@ export class UsersService {
     // roleId validation
     createUserDto.roleId ? await this.rolesService.findOne(createUserDto.roleId) : '';
 
+    // idetificationTypeId validation
+    createUserDto.identificationTypeId
+      ? await this.identificationsTypesService.findOne(createUserDto.identificationTypeId)
+      : '';
+
     // capitalize the user names
     createUserDto.firstName
       ? (createUserDto.firstName = await customCapitalizeFirstLetter(createUserDto.firstName))
@@ -100,6 +109,7 @@ export class UsersService {
 
     const data = await this.userModel
       .find()
+      .populate('identificationTypeId', 'type')
       .populate('genderId', 'name')
       .populate('maritalStatusId', 'name')
       .populate('ocupationId', 'name')
@@ -126,6 +136,7 @@ export class UsersService {
 
     const existUser: User = await this.userModel
       .findById(id)
+      .populate('identificationTypeId', 'type')
       .populate('genderId', 'name')
       .populate('maritalStatusId', 'name')
       .populate('ocupationId', 'name')
@@ -160,6 +171,11 @@ export class UsersService {
 
     // roleId validation
     updateUserDto.roleId ? await this.rolesService.findOne(updateUserDto.roleId) : '';
+
+    // idetificationTypeId validation
+    updateUserDto.identificationTypeId
+      ? await this.identificationsTypesService.findOne(updateUserDto.identificationTypeId)
+      : '';
 
     // capitalize the user names
     updateUserDto.firstName

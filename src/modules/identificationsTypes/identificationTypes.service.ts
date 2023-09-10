@@ -14,7 +14,7 @@ export class IdentificationsTypesService {
     @InjectModel(IdentificationTypes.name) private readonly IdentificationTypesModel: Model<IdentificationTypes>,
   ) {}
 
-  // Create a Credential
+  // Create a Identification
   async create(createIdentificationTypesDto: CreateIdentificationTypesDto) {
     createIdentificationTypesDto.type = createIdentificationTypesDto.type.toLowerCase();
 
@@ -23,32 +23,32 @@ export class IdentificationsTypesService {
 
       return {
         succes: true,
-        createdCred,
+        data: createdCred,
       };
     } catch (error) {
       return await customHandlerCatchException(error, createIdentificationTypesDto);
     }
   }
 
-  // Get all existing credentials
+  // Get all existing Identifications
   async findAll() {
     try {
       const data = await this.IdentificationTypesModel.find().sort({ type: 1 });
 
       return {
         success: true,
-        data,
+        data: data,
       };
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
-  // Find a credential by ID
+  // Find a Identification by ID
   async findOne(id: string) {
     await customValidateMongoId(id);
 
-    const existCred = await this.IdentificationTypesModel.findById(id);
+    const existCred: IdentificationTypes = await this.IdentificationTypesModel.findById(id);
 
     if (!existCred) {
       throw new NotFoundException({
@@ -60,11 +60,11 @@ export class IdentificationsTypesService {
 
     return {
       success: true,
-      existCred,
+      data: existCred,
     };
   }
 
-  // find and update a credential by ID
+  // find and update a Identification by ID
   async update(id: string, updateIdentificationTypesDto: UpdateIdentificationTypesDto) {
     await this.findOne(id);
 
@@ -89,7 +89,7 @@ export class IdentificationsTypesService {
     }
   }
 
-  // Delete credential
+  // Delete Identification
   async remove(id: string) {
     const existIdent = await this.findOne(id);
 

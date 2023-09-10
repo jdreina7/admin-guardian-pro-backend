@@ -23,7 +23,7 @@ export class User extends mongoose.Document {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'IdentificationType',
+    ref: 'IdentificationTypes',
     required: true,
   })
   identificationTypeId: mongoose.Types.ObjectId;
