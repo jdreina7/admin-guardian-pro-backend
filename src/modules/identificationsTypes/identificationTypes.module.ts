@@ -15,5 +15,6 @@ import { IdentificationTypes, IdentificationTypesSchema } from './schemas/identi
       },
     ]),
   ],
+  exports: [IdentificationsTypesService],
 })
 export class IdentificationsTypesModule {}
