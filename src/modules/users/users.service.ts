@@ -109,6 +109,7 @@ export class UsersService {
 
     const data = await this.userModel
       .find()
+      .populate('identificationTypeId', 'type')
       .populate('genderId', 'name')
       .populate('maritalStatusId', 'name')
       .populate('ocupationId', 'name')
@@ -170,6 +171,11 @@ export class UsersService {
 
     // roleId validation
     updateUserDto.roleId ? await this.rolesService.findOne(updateUserDto.roleId) : '';
+
+    // idetificationTypeId validation
+    updateUserDto.identificationTypeId
+      ? await this.identificationsTypesService.findOne(updateUserDto.identificationTypeId)
+      : '';
 
     // capitalize the user names
     updateUserDto.firstName
