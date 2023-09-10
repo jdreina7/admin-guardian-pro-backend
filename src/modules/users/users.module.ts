@@ -11,6 +11,11 @@ import { OcupationsModule } from '../ocupations/ocupations.module';
 import { RolesModule } from '../roles/roles.module';
 import { Gender, GenderSchema } from '../genders/schemas/gender.schema';
 import { GendersModule } from '../genders/genders.module';
+import { IdentificationsTypesModule } from '../identificationsTypes/identificationTypes.module';
+import {
+  IdentificationTypes,
+  IdentificationTypesSchema,
+} from '../identificationsTypes/schemas/identificationTypes.schema';
 
 @Module({
   controllers: [UsersController],
@@ -20,6 +25,7 @@ import { GendersModule } from '../genders/genders.module';
     OcupationsModule,
     RolesModule,
     GendersModule,
+    IdentificationsTypesModule,
     MongooseModule.forFeature([
       {
         name: User.name,
@@ -40,6 +46,10 @@ import { GendersModule } from '../genders/genders.module';
       {
         name: Gender.name,
         schema: GenderSchema,
+      },
+      {
+        name: IdentificationTypes.name,
+        schema: IdentificationTypesSchema,
       },
     ]),
   ],
