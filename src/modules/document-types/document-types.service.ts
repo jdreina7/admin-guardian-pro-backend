@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateDocumentTypeDto } from './dto/create-document-type.dto';
 import { UpdateDocumentTypeDto } from './dto/update-document-type.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { DocumentType } from './schemas/document-type.schema';
 import { Model } from 'mongoose';
-import { customHandlerCatchException, customValidateMongoId } from '../../utils/utils';
-import { ERR_MSG_DATA_NOT_FOUND } from 'src/utils/contants';
+import { customCapitalizeFirstLetter, customHandlerCatchException, customValidateMongoId } from '../../utils/utils';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_PAYLOAD } from 'src/utils/contants';
 
 @Injectable()
 export class DocumentTypesService {
@@ -61,11 +61,48 @@ export class DocumentTypesService {
   }
 
   //Update a type of doc by id
-  update(id: string, updateDocumentTypeDto: UpdateDocumentTypeDto) {
-    return `This action updates a #${id} documentType`;
+  async update(id: string, updateDocumentTypeDto: UpdateDocumentTypeDto) {
+    await this.findOne(id);
+
+    if (updateDocumentTypeDto?.type?.length <= 0) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_PAYLOAD,
+        invalidValue: { ...updateDocumentTypeDto },
+      });
+    }
+
+    if (updateDocumentTypeDto?.type) {
+      updateDocumentTypeDto.type = await customCapitalizeFirstLetter(updateDocumentTypeDto?.type);
+    }
+
+    try {
+      const dataToUpdate = await this.documetTypeModel
+        .findByIdAndUpdate(id, updateDocumentTypeDto, { new: true })
+        .select('-createdAt');
+
+      return {
+        success: true,
+        data: dataToUpdate,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error, updateDocumentTypeDto);
+    }
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} documentType`;
+  //Remove a type of doc by id
+  async remove(id: string) {
+    const docTypeToDelete = await this.findOne(id);
+
+    try {
+      await this.documetTypeModel.findByIdAndDelete(id);
+
+      return {
+        success: true,
+        data: docTypeToDelete,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error);
+    }
   }
 }
