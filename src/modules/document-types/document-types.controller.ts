@@ -19,16 +19,16 @@ export class DocumentTypesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.documentTypesService.findOne(+id);
+    return this.documentTypesService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDocumentTypeDto: UpdateDocumentTypeDto) {
-    return this.documentTypesService.update(+id, updateDocumentTypeDto);
+    return this.documentTypesService.update(id, updateDocumentTypeDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.documentTypesService.remove(+id);
+    return this.documentTypesService.remove(id);
   }
 }
