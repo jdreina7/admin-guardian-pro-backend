@@ -6,6 +6,7 @@ export const VALID_ROLES = ['superadmin', 'admin', 'user'];
 export const VALID_CREDENTIALS = ['cc', 'ce', 'nip', 'nit', 'ti', 'pap', 'rc'];
 export const VALID_OCUPATIONS = ['employee', 'independent', 'retired', 'student', 'none'];
 export const VALID_MARITAL_STATUSES = ['single', 'married', 'free union', 'separate', 'divorced', 'widower'];
+export const VALID_DOCUMENT_TYPES = ['di', 'ag', 'rp', 'ot'];
 export const VALID_GENDERS = ['male', 'female', 'undefined'];
 
 // Errors codes

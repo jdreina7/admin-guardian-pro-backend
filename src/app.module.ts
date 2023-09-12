@@ -7,6 +7,7 @@ import { OcupationsModule } from './modules/ocupations/ocupations.module';
 import { MaritalStatusesModule } from './modules/marital-statuses/marital-statuses.module';
 import { UsersModule } from './modules/users/users.module';
 import { GendersModule } from './modules/genders/genders.module';
+import { DocumentTypesModule } from './modules/document-types/document-types.module';
 import { IdentificationsTypesModule } from './modules/identificationsTypes/identificationTypes.module';
 
 @Module({
@@ -19,6 +20,7 @@ import { IdentificationsTypesModule } from './modules/identificationsTypes/ident
     MaritalStatusesModule,
     UsersModule,
     GendersModule,
+    DocumentTypesModule,
     IdentificationsTypesModule,
   ],
 })
