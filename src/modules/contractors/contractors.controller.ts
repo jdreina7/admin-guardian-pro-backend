@@ -19,7 +19,7 @@ export class ContractorsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.contractorsService.findOne(+id);
+    return this.contractorsService.findOne(id);
   }
 
   @Patch(':id')
