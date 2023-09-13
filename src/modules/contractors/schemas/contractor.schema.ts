@@ -16,6 +16,8 @@ export class Contractor extends Document {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Users',
+    unique: true,
+    index: true,
     required: true,
   })
   userId: mongoose.Types.ObjectId;
