@@ -9,6 +9,7 @@ import { UsersModule } from './modules/users/users.module';
 import { GendersModule } from './modules/genders/genders.module';
 import { DocumentTypesModule } from './modules/document-types/document-types.module';
 import { IdentificationsTypesModule } from './modules/identificationsTypes/identificationTypes.module';
+import { DocumentsModule } from './modules/documents/documents.module';
 
 @Module({
   // eslint-disable-next-line prettier/prettier
@@ -22,6 +23,7 @@ import { IdentificationsTypesModule } from './modules/identificationsTypes/ident
     GendersModule,
     DocumentTypesModule,
     IdentificationsTypesModule,
+    DocumentsModule,
   ],
 })
 export class AppModule {}
