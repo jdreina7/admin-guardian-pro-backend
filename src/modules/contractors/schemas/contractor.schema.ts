@@ -15,7 +15,7 @@ import mongoose, { Document } from 'mongoose';
 export class Contractor extends Document {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Users',
+    ref: 'User',
     unique: true,
     index: true,
     required: true,

@@ -51,8 +51,14 @@ export class ContractorsService {
     }
   }
 
-  findAll() {
-    return `This action returns all contractors`;
+  // Get all contractor
+  async findAll() {
+    const data = await this.contractorModel.find().populate('userId').sort({ firstName: 1 });
+
+    return {
+      success: true,
+      data,
+    };
   }
 
   // Find one contractor
