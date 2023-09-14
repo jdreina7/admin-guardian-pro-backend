@@ -96,8 +96,25 @@ export class ContractorsService {
     };
   }
 
-  update(id: number, updateContractorDto: UpdateContractorDto) {
-    return `This action updates a #${id} contractor`;
+  // Patch a contractor
+  async update(id: string, updateContractorDto: UpdateContractorDto) {
+    if (updateContractorDto.userId) {
+      await this.findOne(id);
+      await this.userService.findOne(updateContractorDto.userId);
+    }
+
+    try {
+      const data = await this.contractorModel
+        .findByIdAndUpdate(id, updateContractorDto, { new: true })
+        .select('-updatedAt -createdAt');
+
+      return {
+        success: true,
+        data,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error, updateContractorDto);
+    }
   }
 
   remove(id: number) {

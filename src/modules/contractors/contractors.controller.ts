@@ -24,7 +24,7 @@ export class ContractorsController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateContractorDto: UpdateContractorDto) {
-    return this.contractorsService.update(+id, updateContractorDto);
+    return this.contractorsService.update(id, updateContractorDto);
   }
 
   @Delete(':id')
