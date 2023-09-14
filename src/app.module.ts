@@ -10,6 +10,7 @@ import { GendersModule } from './modules/genders/genders.module';
 import { DocumentTypesModule } from './modules/document-types/document-types.module';
 import { IdentificationsTypesModule } from './modules/identificationsTypes/identificationTypes.module';
 import { DocumentsModule } from './modules/documents/documents.module';
+import { ContractorsModule } from './modules/contractors/contractors.module';
 
 @Module({
   // eslint-disable-next-line prettier/prettier
@@ -24,6 +25,7 @@ import { DocumentsModule } from './modules/documents/documents.module';
     DocumentTypesModule,
     IdentificationsTypesModule,
     DocumentsModule,
+    ContractorsModule,
   ],
 })
 export class AppModule {}
