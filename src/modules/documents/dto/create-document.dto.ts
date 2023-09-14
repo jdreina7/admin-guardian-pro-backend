@@ -1,13 +1,13 @@
-import { IsBoolean, IsInt, IsOptional, IsPositive, IsString, MinLength } from 'class-validator';
+import { IsBoolean, IsMongoId, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CreateDocumentDto {
   @IsString()
   @MinLength(4)
   documentName: string;
 
-  @IsInt()
-  @IsPositive()
-  documentType: number;
+  @IsString()
+  @IsMongoId()
+  documentTypeId: string;
 
   @IsString()
   @IsOptional()
@@ -17,9 +17,9 @@ export class CreateDocumentDto {
   @MinLength(10)
   documentUrl: string;
 
-  @IsInt()
-  @IsPositive()
-  userOwner: number;
+  @IsString()
+  @IsMongoId()
+  userOwnerId: string;
 
   @IsBoolean()
   @IsOptional()

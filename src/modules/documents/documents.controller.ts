@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('documents')
 export class DocumentsController {
@@ -13,8 +14,8 @@ export class DocumentsController {
   }
 
   @Get()
-  findAll() {
-    return this.documentsService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.documentsService.findAll(paginationDto);
   }
 
   @Get(':id')

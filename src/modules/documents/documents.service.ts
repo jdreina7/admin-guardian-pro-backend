@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { Model } from 'mongoose';
@@ -8,18 +8,35 @@ import { UpdateDocumentDto } from './dto/update-document.dto';
 import { Documents } from './schemas/document.schema';
 import { customCapitalizeFirstLetter, customHandlerCatchException, customValidateMongoId } from 'src/utils/utils';
 import { ERR_MSG_GENERAL, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_PAYLOAD } from 'src/utils/contants';
+import { User } from '../users/schemas/user.schema';
+import { DocumentType } from '../document-types/schemas/document-type.schema';
+import { UsersService } from '../users/users.service';
+import { DocumentTypesService } from '../document-types/document-types.service';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class DocumentsService {
   constructor(
     @InjectModel(Documents.name)
     private readonly documentModel: Model<Documents>,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(DocumentType.name)
+    private readonly documentTypeModel: Model<DocumentType>,
+
+    @Inject(UsersService) private readonly userService: UsersService,
+    @Inject(DocumentTypesService)
+    private readonly documentTypeService: DocumentTypesService,
   ) {}
 
   //Create new document
   async create(createDocumentDto: CreateDocumentDto) {
     createDocumentDto.documentName = createDocumentDto.documentName.toLocaleLowerCase();
 
+    // UderId validation
+    createDocumentDto.userOwnerId ? await this.userService.findOne(createDocumentDto.userOwnerId) : '';
+
+    // DocumentTypeId validation
+    createDocumentDto.documentTypeId ? await this.documentTypeService.findOne(createDocumentDto.documentTypeId) : '';
     try {
       const data = await this.documentModel.create(createDocumentDto);
 
@@ -33,9 +50,18 @@ export class DocumentsService {
   }
 
   // Find all documents created
-  async findAll() {
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+
     try {
-      const allDocs = await this.documentModel.find().sort({ name: 1 }).select('-createdAt -updatedAt');
+      const allDocs = await this.documentModel
+        .find()
+        .populate('documentTypeId', 'type')
+        .populate('userOwnerId', 'uid')
+        .limit(limit)
+        .skip(offset)
+        .sort({ name: 1 })
+        .select('-createdAt -updatedAt');
       return {
         success: true,
         data: allDocs,
@@ -49,7 +75,10 @@ export class DocumentsService {
   async findOne(id: string) {
     await customValidateMongoId(id);
 
-    const existDoc: Documents = await this.documentModel.findById(id);
+    const existDoc: Documents = await this.documentModel
+      .findById(id)
+      .populate('documentTypeId', 'type')
+      .populate('userOwnerId', 'uid');
 
     if (!existDoc) {
       throw new BadRequestException({
@@ -68,17 +97,11 @@ export class DocumentsService {
   async update(id: string, updateDocumentDto: UpdateDocumentDto) {
     await this.findOne(id);
 
-    if (updateDocumentDto?.documentName?.length <= 0) {
-      throw new BadRequestException({
-        success: false,
-        message: ERR_MSG_INVALID_PAYLOAD,
-        invalidValue: { ...updateDocumentDto },
-      });
-    }
+    // UderId validation
+    updateDocumentDto.userOwnerId ? await this.userService.findOne(updateDocumentDto.userOwnerId) : '';
 
-    if (updateDocumentDto?.documentName) {
-      updateDocumentDto.documentName = await customCapitalizeFirstLetter(updateDocumentDto?.documentName);
-    }
+    // DocumentTypeId validation
+    updateDocumentDto.documentTypeId ? await this.documentTypeService.findOne(updateDocumentDto.documentTypeId) : '';
 
     try {
       const data = await this.documentModel

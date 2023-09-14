@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import * as mongoose from 'mongoose';
 
 @Schema({
   // Esto oculta el campo __v y transforma el _id en id en las respuestas
@@ -12,17 +12,19 @@ import { Document } from 'mongoose';
   },
   timestamps: true,
 })
-export class Documents extends Document {
+export class Documents extends mongoose.Document {
   @Prop({
     required: true,
   })
   documentName: string;
 
   @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'DocumentType',
     index: true,
     required: true,
   })
-  documentType: number;
+  documentTypeId: mongoose.Types.ObjectId;
 
   @Prop()
   description: string;
@@ -33,10 +35,12 @@ export class Documents extends Document {
   documentUrl: string;
 
   @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     index: true,
     required: true,
   })
-  userOwner: number;
+  userOwnerId: mongoose.Types.ObjectId;
 
   @Prop({
     default: true,
