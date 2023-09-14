@@ -12,15 +12,7 @@ import { MaritalStatus } from '../marital-statuses/schemas/marital-status.schema
 import { Ocupation } from '../ocupations/schemas/ocupation.schema';
 import { IdentificationTypes } from '../identificationsTypes/schemas/identificationTypes.schema';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import {
-  ERR_MSG_DATA_NOT_FOUND,
-  ERR_MSG_GENERAL,
-  ERR_MSG_INVALID_ID,
-  ERR_MSG_INVALID_OCUPATION_ID,
-  ERR_MSG_INVALID_PAYLOAD,
-  ERR_MSG_INVALID_ROLE_ID,
-  ERR_MSG_INVALID_UID,
-} from 'src/utils/contants';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_UID } from 'src/utils/contants';
 import { MaritalStatusesService } from '../marital-statuses/marital-statuses.service';
 import { GendersService } from '../genders/genders.service';
 import { OcupationsService } from '../ocupations/ocupations.service';

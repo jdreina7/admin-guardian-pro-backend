@@ -53,5 +53,6 @@ import {
       },
     ]),
   ],
+  exports: [UsersService],
 })
 export class UsersModule {}
