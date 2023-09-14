@@ -4,7 +4,7 @@ import { UpdateContractorDto } from './dto/update-contractor.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Contractor } from './schemas/contractor.schema';
 import { Model, isValidObjectId } from 'mongoose';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_UID } from 'src/utils/contants';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_UID } from 'src/utils/contants';
 import { User } from '../users/schemas/user.schema';
 import { customHandlerCatchException } from 'src/utils/utils';
 import { UsersService } from '../users/users.service';
@@ -117,7 +117,22 @@ export class ContractorsService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} contractor`;
+  // delete one contractor
+  async remove(id: string) {
+    await this.findOne(id);
+
+    try {
+      await this.contractorModel.findByIdAndDelete(id);
+
+      return {
+        success: true,
+        data: id,
+      };
+    } catch (error) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_GENERAL,
+      });
+    }
   }
 }

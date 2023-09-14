@@ -29,6 +29,6 @@ export class ContractorsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.contractorsService.remove(+id);
+    return this.contractorsService.remove(id);
   }
 }
