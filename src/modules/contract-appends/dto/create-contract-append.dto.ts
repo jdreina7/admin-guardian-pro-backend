@@ -1,1 +1,28 @@
-export class CreateContractAppendDto {}
+import { IsString, MinLength, IsOptional, IsBoolean, IsMongoId } from 'class-validator';
+import mongoose from 'mongoose';
+
+export class CreateContractAppendDto {
+  @IsString()
+  @MinLength(1)
+  name: string;
+
+  @IsString()
+  @MinLength(5)
+  title: string;
+
+  @IsString()
+  @MinLength(25)
+  content: string;
+
+  @IsOptional()
+  @IsString()
+  attach: string;
+
+  @IsString()
+  @IsMongoId()
+  createdByUserId: mongoose.Types.ObjectId;
+
+  @IsOptional()
+  @IsBoolean()
+  status: boolean;
+}
