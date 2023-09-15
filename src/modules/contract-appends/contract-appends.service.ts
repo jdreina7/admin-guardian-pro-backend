@@ -7,6 +7,7 @@ import { Model, isValidObjectId } from 'mongoose';
 import { UsersService } from '../users/users.service';
 import { ERR_MSG_INVALID_ID, ERR_MSG_INVALID_UID } from 'src/utils/contants';
 import { customHandlerCatchException } from 'src/utils/utils';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class ContractAppendsService {
@@ -50,8 +51,21 @@ export class ContractAppendsService {
     }
   }
 
-  findAll() {
-    return `This action returns all contractAppends`;
+  // Get all contracts appends
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+
+    const data = await this.contractAppendModel
+      .find()
+      .populate('createdByUserId')
+      .limit(limit)
+      .skip(offset)
+      .sort({ title: 1 });
+
+    return {
+      success: true,
+      data,
+    };
   }
 
   findOne(id: number) {

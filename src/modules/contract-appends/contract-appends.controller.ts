@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ContractAppendsService } from './contract-appends.service';
 import { CreateContractAppendDto } from './dto/create-contract-append.dto';
 import { UpdateContractAppendDto } from './dto/update-contract-append.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('contract-appends')
 export class ContractAppendsController {
@@ -13,8 +14,8 @@ export class ContractAppendsController {
   }
 
   @Get()
-  findAll() {
-    return this.contractAppendsService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.contractAppendsService.findAll(paginationDto);
   }
 
   @Get(':id')
