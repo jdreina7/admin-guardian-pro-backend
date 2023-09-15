@@ -51,7 +51,7 @@ export class DocumentTypesService {
       throw new NotFoundException({
         succes: false,
         message: ERR_MSG_DATA_NOT_FOUND,
-        invalidValue: `Ocupation ID: ${id}`,
+        invalidValue: `Document-Type ID: ${id}`,
       });
     }
     return {
