@@ -11,6 +11,7 @@ import { ContractAppendsService } from '../contract-appends/contract-appends.ser
 import { customHandlerCatchException } from 'src/utils/utils';
 import { User } from '../users/schemas/user.schema';
 import { UsersService } from '../users/users.service';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class ContractsService {
@@ -25,6 +26,7 @@ export class ContractsService {
     @Inject(UsersService) private readonly userService: UsersService,
   ) {}
 
+  // Create a Contract
   async create(createContractDto: CreateContractDto) {
     //Comprobaremos si existen los Id
     // ContractAppend Id
@@ -50,19 +52,41 @@ export class ContractsService {
     }
   }
 
-  findAll() {
-    return `This action returns all contracts`;
+  // Find all Contracts
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+    try {
+      const allContracts = await this.contractModel
+        .find()
+        .populate('contractorId', 'userId')
+        .populate('contractHolderuserId', 'uid')
+        .populate('createdByUserId', 'uid')
+        .populate('contractAppendsId', 'title')
+        .limit(limit)
+        .skip(offset)
+        .sort({ name: 1 })
+        .select('-createdAt -updatedAt');
+      return {
+        success: true,
+        data: allContracts,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} contract`;
+  // Find a Contract by Id
+  async findOne(id: string) {
+    return `This action return a #${id} contract`;
   }
 
-  update(id: number, updateContractDto: UpdateContractDto) {
+  // Update a Contract by Id
+  update(id: string, updateContractDto: UpdateContractDto) {
     return `This action updates a #${id} contract`;
   }
 
-  remove(id: number) {
+  // Delete a Contract
+  remove(id: string) {
     return `This action removes a #${id} contract`;
   }
 }

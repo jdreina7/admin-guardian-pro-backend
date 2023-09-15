@@ -1,4 +1,15 @@
-import { IsBoolean, IsDateString, IsInt, IsMongoId, IsOptional, IsPositive, IsString, IsUrl } from 'class-validator';
+import {
+  IsBoolean,
+  IsDate,
+  IsDateString,
+  IsInt,
+  IsMongoId,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsUrl,
+  MinDate,
+} from 'class-validator';
 
 export class CreateContractDto {
   @IsInt()
@@ -37,9 +48,11 @@ export class CreateContractDto {
   @IsMongoId()
   contractAppendsId: string;
 
-  @IsDateString()
-  contractStartDate: string;
+  @IsDate()
+  @MinDate(new Date())
+  contractStartDate: Date;
 
-  @IsDateString()
-  contractEndDate: string;
+  @IsDate()
+  @MinDate(new Date())
+  contractEndDate: Date;
 }
