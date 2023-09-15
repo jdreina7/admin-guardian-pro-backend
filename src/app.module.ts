@@ -11,6 +11,7 @@ import { DocumentTypesModule } from './modules/document-types/document-types.mod
 import { IdentificationsTypesModule } from './modules/identificationsTypes/identificationTypes.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { ContractorsModule } from './modules/contractors/contractors.module';
+import { ContractAppendsModule } from './modules/contract-appends/contract-appends.module';
 
 @Module({
   // eslint-disable-next-line prettier/prettier
@@ -26,6 +27,7 @@ import { ContractorsModule } from './modules/contractors/contractors.module';
     IdentificationsTypesModule,
     DocumentsModule,
     ContractorsModule,
+    ContractAppendsModule,
   ],
 })
 export class AppModule {}
