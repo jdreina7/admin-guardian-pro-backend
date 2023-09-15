@@ -9,6 +9,7 @@ import { UsersModule } from './modules/users/users.module';
 import { GendersModule } from './modules/genders/genders.module';
 import { DocumentTypesModule } from './modules/document-types/document-types.module';
 import { IdentificationsTypesModule } from './modules/identificationsTypes/identificationTypes.module';
+import { DocumentsModule } from './modules/documents/documents.module';
 import { ContractorsModule } from './modules/contractors/contractors.module';
 
 @Module({
@@ -23,6 +24,7 @@ import { ContractorsModule } from './modules/contractors/contractors.module';
     GendersModule,
     DocumentTypesModule,
     IdentificationsTypesModule,
+    DocumentsModule,
     ContractorsModule,
   ],
 })
