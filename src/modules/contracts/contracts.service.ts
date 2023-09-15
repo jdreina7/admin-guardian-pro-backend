@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -8,10 +8,11 @@ import { ContractAppend } from '../contract-appends/schemas/contract-append.sche
 import { Contractor } from '../contractors/schemas/contractor.schema';
 import { ContractorsService } from '../contractors/contractors.service';
 import { ContractAppendsService } from '../contract-appends/contract-appends.service';
-import { customHandlerCatchException } from 'src/utils/utils';
+import { customHandlerCatchException, customValidateMongoId } from 'src/utils/utils';
 import { User } from '../users/schemas/user.schema';
 import { UsersService } from '../users/users.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID } from 'src/utils/contants';
 
 @Injectable()
 export class ContractsService {
@@ -77,16 +78,78 @@ export class ContractsService {
 
   // Find a Contract by Id
   async findOne(id: string) {
-    return `This action return a #${id} contract`;
+    await customValidateMongoId(id);
+
+    const contract: Contract = await this.contractModel
+      .findById(id)
+      .populate('contractorId', 'userId')
+      .populate('contractHolderuserId', 'uid')
+      .populate('createdByUserId', 'uid')
+      .populate('contractAppendsId', 'title')
+      .select('-createdAt -updatedAt');
+
+    if (!contract) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_DATA_NOT_FOUND,
+        invalidValue: `Contract ID: ${id}`,
+      });
+    }
+
+    return {
+      success: true,
+      data: contract,
+    };
   }
 
   // Update a Contract by Id
-  update(id: string, updateContractDto: UpdateContractDto) {
-    return `This action updates a #${id} contract`;
+  async update(id: string, updateContractDto: UpdateContractDto) {
+    await this.findOne(id);
+
+    updateContractDto.contractAppendsId
+      ? await this.contractAppendsService.findOne(updateContractDto.contractAppendsId)
+      : '';
+    //Contract ID
+    updateContractDto.contractorId ? await this.contractorService.findOne(updateContractDto.contractorId) : '';
+    //User ID
+    updateContractDto.contractHolderuserId
+      ? await this.userService.findOne(updateContractDto.contractHolderuserId)
+      : '';
+    updateContractDto.createdByUserId ? await this.userService.findOne(updateContractDto.createdByUserId) : '';
+
+    try {
+      const contractToUpdate = await this.contractModel
+        .findByIdAndUpdate(id, updateContractDto, { new: true })
+        .populate('contractorId', 'userId')
+        .populate('contractHolderuserId', 'uid')
+        .populate('createdByUserId', 'uid')
+        .populate('contractAppendsId', 'title')
+        .select('-createdAt -updatedAt');
+
+      return {
+        success: true,
+        data: contractToUpdate,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error, updateContractDto);
+    }
   }
 
   // Delete a Contract
-  remove(id: string) {
-    return `This action removes a #${id} contract`;
+  async remove(id: string) {
+    await this.findOne(id);
+    try {
+      await this.contractModel.findByIdAndDelete(id);
+
+      return {
+        success: true,
+        data: { id },
+      };
+    } catch (error) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_GENERAL,
+      });
+    }
   }
 }

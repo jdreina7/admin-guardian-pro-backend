@@ -21,15 +21,12 @@ export class Contract extends mongoose.Document {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Contractor',
-    index: true,
-    unique: true,
   })
   contractorId: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    index: true,
   })
   contractHolderuserId: mongoose.Types.ObjectId;
 
@@ -42,7 +39,6 @@ export class Contract extends mongoose.Document {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    index: true,
   })
   createdByUserId: mongoose.Types.ObjectId;
 
@@ -57,7 +53,6 @@ export class Contract extends mongoose.Document {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ContractAppend',
-    index: true,
   })
   contractAppendsId: mongoose.Types.ObjectId;
 
