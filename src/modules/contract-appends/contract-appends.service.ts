@@ -1,11 +1,11 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateContractAppendDto } from './dto/create-contract-append.dto';
 import { UpdateContractAppendDto } from './dto/update-contract-append.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { ContractAppend } from './schemas/contract-append.schema';
 import { Model, isValidObjectId } from 'mongoose';
 import { UsersService } from '../users/users.service';
-import { ERR_MSG_INVALID_ID, ERR_MSG_INVALID_UID } from 'src/utils/contants';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_UID } from 'src/utils/contants';
 import { customHandlerCatchException } from 'src/utils/utils';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 
@@ -68,8 +68,39 @@ export class ContractAppendsService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} contractAppend`;
+  // Get one contract append
+  async findOne(id: string) {
+    // UID validations
+    if (!id) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_UID,
+        invalidValue: `ID: ${id}`,
+      });
+    }
+
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_ID,
+        invalidValue: `Contract Append ID: ${id}`,
+      });
+    }
+
+    const existContractAppend: ContractAppend = await this.contractAppendModel.findById(id).populate('createdByUserId');
+
+    if (!existContractAppend) {
+      throw new NotFoundException({
+        succes: false,
+        message: ERR_MSG_DATA_NOT_FOUND,
+        invalidValue: `Contract Append ID: ${id}`,
+      });
+    }
+
+    return {
+      success: true,
+      data: existContractAppend,
+    };
   }
 
   update(id: number, updateContractAppendDto: UpdateContractAppendDto) {

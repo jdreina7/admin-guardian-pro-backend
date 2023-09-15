@@ -20,7 +20,7 @@ export class ContractAppendsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.contractAppendsService.findOne(+id);
+    return this.contractAppendsService.findOne(id);
   }
 
   @Patch(':id')
