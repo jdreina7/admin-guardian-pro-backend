@@ -103,8 +103,25 @@ export class ContractAppendsService {
     };
   }
 
-  update(id: number, updateContractAppendDto: UpdateContractAppendDto) {
-    return `This action updates a #${id} contractAppend`;
+  // Patch one contract append
+  async update(id: string, updateContractAppendDto: UpdateContractAppendDto) {
+    if (updateContractAppendDto.createdByUserId) {
+      await this.findOne(id);
+      await this.userService.findOne(updateContractAppendDto.createdByUserId);
+    }
+
+    try {
+      const data = await this.contractAppendModel
+        .findByIdAndUpdate(id, updateContractAppendDto, { new: true })
+        .select('-updatedAt -createdAt');
+
+      return {
+        success: true,
+        data,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error, updateContractAppendDto);
+    }
   }
 
   remove(id: number) {

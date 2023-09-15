@@ -25,7 +25,7 @@ export class ContractAppendsController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateContractAppendDto: UpdateContractAppendDto) {
-    return this.contractAppendsService.update(+id, updateContractAppendDto);
+    return this.contractAppendsService.update(id, updateContractAppendDto);
   }
 
   @Delete(':id')
