@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ContractAppend } from './schemas/contract-append.schema';
 import { Model, isValidObjectId } from 'mongoose';
 import { UsersService } from '../users/users.service';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_UID } from 'src/utils/contants';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_UID } from 'src/utils/contants';
 import { customHandlerCatchException } from 'src/utils/utils';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 
@@ -124,7 +124,22 @@ export class ContractAppendsService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} contractAppend`;
+  // Delete one contract append
+  async remove(id: string) {
+    await this.findOne(id);
+
+    try {
+      await this.contractAppendModel.findByIdAndDelete(id);
+
+      return {
+        success: true,
+        data: id,
+      };
+    } catch (error) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_GENERAL,
+      });
+    }
   }
 }

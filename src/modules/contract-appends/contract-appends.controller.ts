@@ -30,6 +30,6 @@ export class ContractAppendsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.contractAppendsService.remove(+id);
+    return this.contractAppendsService.remove(id);
   }
 }
