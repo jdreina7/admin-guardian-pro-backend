@@ -3,10 +3,6 @@ import mongoose from 'mongoose';
 
 export class CreateContractAppendDto {
   @IsString()
-  @MinLength(1)
-  name: string;
-
-  @IsString()
   @MinLength(5)
   title: string;
 
@@ -20,7 +16,7 @@ export class CreateContractAppendDto {
 
   @IsString()
   @IsMongoId()
-  createdByUserId: mongoose.Types.ObjectId;
+  createdByUserId: string;
 
   @IsOptional()
   @IsBoolean()
