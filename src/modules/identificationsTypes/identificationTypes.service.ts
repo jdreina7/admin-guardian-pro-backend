@@ -54,7 +54,7 @@ export class IdentificationsTypesService {
       throw new NotFoundException({
         succes: false,
         message: ERR_MSG_DATA_NOT_FOUND,
-        invalidValue: id,
+        invalidValue: `Identification Type ID: ${id}`,
       });
     }
 
