@@ -18,6 +18,7 @@ import { GendersService } from '../genders/genders.service';
 import { OcupationsService } from '../ocupations/ocupations.service';
 import { RolesService } from '../roles/roles.service';
 import { IdentificationsTypesService } from '../identificationsTypes/identificationTypes.service';
+import { encryptPassword } from 'src/utils/password-manager';
 
 @Injectable()
 export class UsersService {
@@ -82,6 +83,9 @@ export class UsersService {
       ? (createUserDto.middleName = await customCapitalizeFirstLetter(createUserDto.middleName))
       : '';
     createUserDto.lastName ? (createUserDto.lastName = await customCapitalizeFirstLetter(createUserDto.lastName)) : '';
+
+    // User password encryption
+    createUserDto.password = await encryptPassword(createUserDto.password);
 
     try {
       const userCreated = await this.userModel.create(createUserDto);
@@ -177,6 +181,9 @@ export class UsersService {
       ? (updateUserDto.middleName = await customCapitalizeFirstLetter(updateUserDto.middleName))
       : '';
     updateUserDto.lastName ? (updateUserDto.lastName = await customCapitalizeFirstLetter(updateUserDto.lastName)) : '';
+
+    // User password encryption
+    updateUserDto.password = await encryptPassword(updateUserDto.password);
 
     try {
       const data = await this.userModel
