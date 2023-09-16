@@ -22,5 +22,6 @@ import { User, UserSchema } from '../users/schemas/user.schema';
       },
     ]),
   ],
+  exports: [ContractAppendsService],
 })
 export class ContractAppendsModule {}

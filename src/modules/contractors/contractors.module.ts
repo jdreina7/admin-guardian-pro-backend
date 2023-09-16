@@ -22,5 +22,6 @@ import { UsersModule } from '../users/users.module';
       },
     ]),
   ],
+  exports: [ContractorsService],
 })
 export class ContractorsModule {}
