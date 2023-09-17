@@ -23,3 +23,4 @@ export const ERR_MSG_INVALID_MARITAL_STATUS_ID = 'The marital status ID is inval
 export const ERR_MSG_INVALID_OCUPATION_ID = 'The ocupation ID is invalid or not exist';
 export const ERR_MSG_INVALID_ID = 'The ID is invalid, please enter a correct ID number';
 export const ERR_MSG_INVALID_UID = 'The user UID is invalid, please enter a correct user UID number';
+export const ERR_MSG_INVALID_LOGIN = 'Invalid username/password, please try again.';
