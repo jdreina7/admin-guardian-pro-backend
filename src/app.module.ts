@@ -16,11 +16,10 @@ import { ContractsModule } from './modules/contracts/contracts.module';
 import { LoginModule } from './modules/login/login.module';
 
 @Module({
-  // eslint-disable-next-line prettier/prettier
   imports: [
     ConfigModule.forRoot(),
-    RolesModule,
     MongooseModule.forRoot(process.env.MONGO_URI),
+    RolesModule,
     OcupationsModule,
     MaritalStatusesModule,
     UsersModule,

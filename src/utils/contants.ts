@@ -24,3 +24,5 @@ export const ERR_MSG_INVALID_OCUPATION_ID = 'The ocupation ID is invalid or not 
 export const ERR_MSG_INVALID_ID = 'The ID is invalid, please enter a correct ID number';
 export const ERR_MSG_INVALID_UID = 'The user UID is invalid, please enter a correct user UID number';
 export const ERR_MSG_INVALID_LOGIN = 'Invalid username/password, please try again.';
+export const ERR_MSG_INVALID_TOKEN = 'The current token is not valid';
+export const ERR_MSG_INACTIVE_USER = 'The user that is trying to login is inactive.';
