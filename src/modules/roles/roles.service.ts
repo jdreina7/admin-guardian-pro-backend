@@ -82,13 +82,21 @@ export class RolesService {
 
   // Update Rol
   async update(id: string, updateRoleDto: UpdateRoleDto) {
-    await this.findOne(id);
+    const existingId = await this.findOne(id);
 
     if (updateRoleDto?.name?.length <= 0) {
       throw new BadRequestException({
         success: false,
         message: ERR_MSG_INVALID_PAYLOAD,
         invalidValue: { ...updateRoleDto },
+      });
+    }
+
+    if (!existingId) {
+      throw new NotFoundException({
+        succes: false,
+        message: ERR_MSG_DATA_NOT_FOUND,
+        invalidValue: id,
       });
     }
 
@@ -107,7 +115,15 @@ export class RolesService {
 
   //Delete Rol
   async remove(id: string) {
-    await this.findOne(id);
+    const existId = await this.findOne(id);
+
+    if (!existId) {
+      throw new NotFoundException({
+        succes: false,
+        message: ERR_MSG_DATA_NOT_FOUND,
+        invalidValue: id,
+      });
+    }
 
     try {
       await this.rolModel.findByIdAndDelete(id);

@@ -103,11 +103,13 @@ describe('RolesController', () => {
       expect(mockRolService.findById).toHaveBeenCalledTimes(0);
 
       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
+      jest.spyOn(model, 'findById').mockClear();
       jest.clearAllMocks();
     });
 
-    it('2.3 Controller.FindOne should return a BadRequestException when the rol id is not found', async () => {
+    it('2.3 Controller.FindOne should return a NotFoundException when the rol id is not found', async () => {
       jest.spyOn(model, 'findById').mockResolvedValue(null);
+      jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
 
       const id = mockRol.data.id;
       let respError: any = {};
@@ -121,10 +123,11 @@ describe('RolesController', () => {
       await expect(service.findOne(id)).rejects.toThrow(NotFoundException);
       expect(respError?.response).toBeDefined();
       expect(respError?.response.success).toBeFalsy();
-      expect(respError?.response.message).toBe(ERR_MSG_INVALID_ROLE_ID);
+      expect(respError?.response.message).toBe(ERR_MSG_DATA_NOT_FOUND);
       expect(mockRolService.findById).toHaveBeenCalledTimes(2);
 
       jest.spyOn(model, 'findById').mockClear();
+      jest.spyOn(mongoose, 'isValidObjectId').mockClear();
       jest.clearAllMocks();
     });
   });
@@ -166,14 +169,20 @@ describe('RolesController', () => {
   describe('4- Patch Rol Tests', () => {
     it('4.1- Controller.update should return one updated rol', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
-      jest.spyOn(model, 'findByIdAndUpdate').mockResolvedValue(mockRol);
       jest.spyOn(model, 'findById').mockResolvedValue(mockRol);
+      jest.spyOn(model, 'findByIdAndUpdate').mockImplementation(
+        () =>
+          ({
+            select: jest.fn().mockResolvedValue(mockRol),
+          } as any),
+      );
 
-      const resp = await controller.update(mockRol.data.id, { status: false });
+      const resp = await controller.update(mockRol.data.id, { description: 'testing' });
 
       expect(resp).toBeDefined();
       expect(resp?.success).toBeTruthy();
       expect(resp?.data).toBeDefined();
+      expect(model.findById).toHaveBeenCalledWith(mockRol.data.id);
       expect(mockRolService.findByIdAndUpdate).toHaveBeenCalledTimes(1);
       expect(resp?.data).toEqual(mockRol);
 
@@ -183,6 +192,9 @@ describe('RolesController', () => {
     });
 
     it('4.2- Controller.update should return a BadRequestException when the rol that comes in the request is empty', async () => {
+      jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
+      jest.spyOn(model, 'findById').mockResolvedValue(mockRol);
+
       let respError: any = {};
       const updateObj: UpdateRoleDto = {
         name: '',
@@ -198,7 +210,10 @@ describe('RolesController', () => {
       expect(respError?.response).toBeDefined();
       expect(respError?.response.success).toBeFalsy();
       expect(respError?.response.message).toBe(ERR_MSG_INVALID_PAYLOAD);
-      expect(mockRolService.findById).toHaveBeenCalledTimes(0);
+      expect(mockRolService.findById).toHaveBeenCalledTimes(2);
+
+      jest.spyOn(model, 'findById').mockClear();
+      jest.clearAllMocks();
     });
 
     it('4.3- Controller.update should return a NotFoundException when the rol id was not found', async () => {
@@ -247,6 +262,7 @@ describe('RolesController', () => {
 
       jest.spyOn(model, 'findByIdAndUpdate').mockClear();
       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
+      jest.spyOn(model, 'findById').mockClear();
       jest.clearAllMocks();
     });
 
@@ -278,7 +294,7 @@ describe('RolesController', () => {
   describe('5- Delete Rol Tests', () => {
     it('5.1- Controller.remove should return one removed rol', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
-      jest.spyOn(model, 'deleteOne').mockResolvedValue(mockRol.data.id as any);
+      jest.spyOn(model, 'findByIdAndDelete').mockResolvedValue(mockRol.data.id as any);
       jest.spyOn(model, 'findById').mockResolvedValue(mockRol);
 
       const resp = await controller.remove(mockRol.data.id);
@@ -286,10 +302,10 @@ describe('RolesController', () => {
       expect(resp).toBeDefined();
       expect(resp?.success).toBeTruthy();
       expect(resp?.data).toBeDefined();
-      expect(mockRolService.deleteOne).toHaveBeenCalledTimes(1);
+      expect(mockRolService.findByIdAndDelete).toHaveBeenCalledTimes(1);
       expect(resp?.data).toEqual(mockRol.data.id);
 
-      jest.spyOn(model, 'deleteOne').mockClear();
+      jest.spyOn(model, 'findByIdAndDelete').mockClear();
       jest.spyOn(model, 'findById').mockClear();
       jest.clearAllMocks();
     });
@@ -348,7 +364,7 @@ describe('RolesController', () => {
     it('5.4- Controller.remove should return a general error', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(model, 'findById').mockResolvedValue(true);
-      jest.spyOn(model, 'deleteOne').mockRejectedValue(null);
+      jest.spyOn(model, 'findByIdAndDelete').mockRejectedValue(null);
 
       const id = mockRol.data.id;
       let respError: any = {};
@@ -365,9 +381,9 @@ describe('RolesController', () => {
       expect(respError?.response.success).toBeFalsy();
       expect(respError?.response.message).toBe(`${ERR_MSG_GENERAL}`);
 
-      jest.spyOn(model, 'deleteOne').mockClear();
+      jest.spyOn(model, 'findByIdAndDelete').mockClear();
       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
-      jest.spyOn(model, 'deleteOne').mockClear();
+      jest.spyOn(model, 'findByIdAndDelete').mockClear();
       jest.clearAllMocks();
     });
   });

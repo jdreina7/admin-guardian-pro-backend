@@ -7,6 +7,8 @@ export const mockRolService = {
   findByIdAndUpdate: jest.fn(),
   deleteOne: jest.fn(),
   exec: jest.fn(),
+  findByIdAndDelete: jest.fn(),
+  select: jest.fn(),
 };
 
 // Mock for all existing Roles
