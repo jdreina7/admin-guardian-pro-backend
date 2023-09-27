@@ -17,6 +17,7 @@ export const customHandlerCatchException = async (error: any, data?: any) => {
     });
   }
 
+  /* istanbul ignore next */
   console.log(error);
 
   throw new InternalServerErrorException({
