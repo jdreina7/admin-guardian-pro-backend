@@ -20,6 +20,8 @@ async function initProyect() {
   );
 
   await app.listen(process.env.PORT_DEVELOP);
+
+  /* istanbul ignore next */
   console.log(`API running in port: ${process.env.PORT_DEVELOP}`);
 }
 

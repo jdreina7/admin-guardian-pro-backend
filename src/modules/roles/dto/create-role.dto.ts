@@ -1,5 +1,5 @@
 import { IsBoolean, IsIn, IsOptional, IsString, MinLength } from 'class-validator';
-import { VALID_ROLES } from 'src/utils/contants';
+import { VALID_ROLES } from '../../../utils/contants';
 
 export class CreateRoleDto {
   @IsString()

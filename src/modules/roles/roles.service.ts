@@ -5,13 +5,14 @@ import { Model, isValidObjectId } from 'mongoose';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Rol } from './schemas/role.schema';
-import { customHandlerCatchException } from 'src/utils/utils';
+import { customHandlerCatchException } from '../../utils/utils';
 import {
   ERR_MSG_DATA_NOT_FOUND,
   ERR_MSG_GENERAL,
-  ERR_MSG_INVALID_ID,
   ERR_MSG_INVALID_PAYLOAD,
-} from 'src/utils/contants';
+  ERR_MSG_INVALID_VALUE,
+} from '../..//utils/contants';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class RolesService {
@@ -34,9 +35,10 @@ export class RolesService {
   }
 
   // Get all roles
-  async findAll() {
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
     try {
-      const data = await this.rolModel.find().sort({ name: 1 });
+      const data = await this.rolModel.find().limit(limit).skip(offset).sort({ name: 1 });
 
       return {
         success: true,
@@ -57,7 +59,7 @@ export class RolesService {
     if (!isValidObjectId(id)) {
       throw new BadRequestException({
         success: false,
-        message: ERR_MSG_INVALID_ID,
+        message: ERR_MSG_INVALID_VALUE,
         invalidValue: `Role ID: ${id}`,
       });
     }
@@ -80,13 +82,21 @@ export class RolesService {
 
   // Update Rol
   async update(id: string, updateRoleDto: UpdateRoleDto) {
-    await this.findOne(id);
+    const existingId = await this.findOne(id);
 
     if (updateRoleDto?.name?.length <= 0) {
       throw new BadRequestException({
         success: false,
         message: ERR_MSG_INVALID_PAYLOAD,
         invalidValue: { ...updateRoleDto },
+      });
+    }
+
+    if (!existingId) {
+      throw new NotFoundException({
+        succes: false,
+        message: ERR_MSG_DATA_NOT_FOUND,
+        invalidValue: id,
       });
     }
 
@@ -105,7 +115,15 @@ export class RolesService {
 
   //Delete Rol
   async remove(id: string) {
-    await this.findOne(id);
+    const existId = await this.findOne(id);
+
+    if (!existId) {
+      throw new NotFoundException({
+        succes: false,
+        message: ERR_MSG_DATA_NOT_FOUND,
+        invalidValue: id,
+      });
+    }
 
     try {
       await this.rolModel.findByIdAndDelete(id);
