@@ -12,7 +12,6 @@ import {
   ERR_MSG_DATA_NOT_FOUND,
   ERR_MSG_GENERAL,
   ERR_MSG_INVALID_PAYLOAD,
-  ERR_MSG_INVALID_ROLE_ID,
   ERR_MSG_INVALID_VALUE,
 } from '../../../src/utils/contants';
 import { UpdateRoleDto } from 'src/modules/roles/dto/update-role.dto';
