@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -23,7 +23,7 @@ import {
   imports: [
     MaritalStatusesModule,
     OcupationsModule,
-    RolesModule,
+    forwardRef(() => RolesModule), // Previniendo la dependencia circular entre usuarios y roles
     GendersModule,
     IdentificationsTypesModule,
     MongooseModule.forFeature([

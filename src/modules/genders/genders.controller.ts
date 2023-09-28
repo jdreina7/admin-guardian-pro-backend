@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { GendersService } from './genders.service';
 import { CreateGenderDto } from './dto/create-gender.dto';
 import { UpdateGenderDto } from './dto/update-gender.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('genders')
 export class GendersController {
@@ -13,6 +14,7 @@ export class GendersController {
   }
 
   @Get()
+  @UseGuards(AuthGuard())
   findAll() {
     return this.gendersService.findAll();
   }

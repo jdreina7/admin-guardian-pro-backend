@@ -17,6 +17,7 @@ export class LoginService {
     @Inject(JwtService) private readonly jwtService: JwtService,
   ) {}
 
+  // User login
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
