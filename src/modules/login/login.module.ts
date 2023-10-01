@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { LoginService } from './login.service';
-import { LoginController } from './login.controller';
-import { UsersModule } from '../users/users.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '../users/schemas/user.schema';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+
+import { LoginService } from './login.service';
+import { LoginController } from './login.controller';
+import { UsersModule } from '../users/users.module';
+import { User, UserSchema } from '../users/schemas/user.schema';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({

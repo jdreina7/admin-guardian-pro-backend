@@ -17,6 +17,5 @@ export const encryptPassword = async (password: string) => {
  * @returns Return true or false
  */
 export const comparePasswords = async (loginPassword: string, dbUserPassword: string) => {
-  console.log('20 ENTRO A COMPAREPASS >>>>>>>>> ');
   return bcrypt.compareSync(loginPassword, dbUserPassword);
 };

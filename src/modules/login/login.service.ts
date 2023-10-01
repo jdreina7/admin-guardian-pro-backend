@@ -1,12 +1,13 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { LoginDto } from './dto/login.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../users/schemas/user.schema';
+import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
+
+import { LoginDto } from './dto/login.dto';
+import { User } from '../users/schemas/user.schema';
 import { ERR_MSG_INVALID_LOGIN } from 'src/utils/contants';
 import { comparePasswords } from 'src/utils/password-manager';
 import { IJwtPayload } from './interfaces/jwt-payload.interface';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class LoginService {

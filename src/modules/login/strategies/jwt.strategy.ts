@@ -1,12 +1,13 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { User } from 'src/modules/users/schemas/user.schema';
-import { IJwtPayload } from '../interfaces/jwt-payload.interface';
+import { InjectModel } from '@nestjs/mongoose';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Model } from 'mongoose';
+
+import { User } from 'src/modules/users/schemas/user.schema';
+import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 import { ERR_MSG_INACTIVE_USER, ERR_MSG_INVALID_TOKEN } from 'src/utils/contants';
-import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -17,10 +18,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validateUserLoged(payload: IJwtPayload): Promise<User> {
+  async validate(payload: IJwtPayload): Promise<User> {
     const { email } = payload;
 
-    const user = await this.userModel.findOne({ email });
+    const user = await this.userModel.findOne({ email }).populate('roleId', 'name');
 
     if (!user) {
       throw new UnauthorizedException({
