@@ -1,7 +1,8 @@
 import { Module, forwardRef } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
 import { Rol, RolSchema } from '../roles/schemas/role.schema';
 import { MaritalStatus, MaritalStatusesSchema } from '../marital-statuses/schemas/marital-status.schema';
@@ -16,11 +17,13 @@ import {
   IdentificationTypes,
   IdentificationTypesSchema,
 } from '../identificationsTypes/schemas/identificationTypes.schema';
+import { LoginModule } from '../login/login.module';
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
+    forwardRef(() => LoginModule),
     MaritalStatusesModule,
     OcupationsModule,
     forwardRef(() => RolesModule), // Previniendo la dependencia circular entre usuarios y roles
