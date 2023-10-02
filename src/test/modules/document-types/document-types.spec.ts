@@ -46,7 +46,6 @@ describe('Document-types controller', () => {
     jest.clearAllMocks();
   });
 
-  //Testing creating a document-type ****
   describe('1.Test create a document-type', () => {
     it('1.1 Controller.create should return a new document type created ', async () => {
       jest.spyOn(docTypeModel, 'create').mockResolvedValue(mockOneDocType as any);
@@ -80,7 +79,6 @@ describe('Document-types controller', () => {
     });
   });
 
-  // Testing get a document-type ****
   describe('2. Test get a document-type', () => {
     it('2.1 Controller.get should return one document type by id', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
@@ -143,7 +141,6 @@ describe('Document-types controller', () => {
     });
   });
 
-  // Testing get all documents-types
   describe('3. Test get all existing documents-types', () => {
     it('3.1 Controller.get should return all existing documents-types', async () => {
       jest.spyOn(docTypeModel, 'find').mockImplementation(
@@ -189,7 +186,6 @@ describe('Document-types controller', () => {
     });
   });
 
-  // Test update functionality on a document-type
   describe('4. Testing update document-type functionality', () => {
     it('4.1 Controller.update should return a updated document-type', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
@@ -291,7 +287,7 @@ describe('Document-types controller', () => {
       jest.spyOn(docTypeModel, 'findById').mockClear;
       jest.clearAllMocks();
     });
-    // falla por un error externo
+
     it('4.5 Controller.update should return a error general', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(docTypeModel, 'findById').mockResolvedValue(true);
@@ -326,7 +322,6 @@ describe('Document-types controller', () => {
     });
   });
 
-  // Testing delete document-type functionality
   describe('5. Testing remove document-type functionality', () => {
     it('5.1 Controller.remove should return a id deleted element', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
@@ -422,11 +417,3 @@ describe('Document-types controller', () => {
     });
   });
 });
-
-/* Preguntas 
-1. Podemos poner el ID en el Descr. principal, ya que en la mayoria de test se usa?
-2. Igual con el primero, podriamos crear una respuesta de error que sea un obj vacio 
-3. Que manera hay de poner el jest.spyon(mongose 'Id validp') tambien de manera global 
-   y en cada prueba ponerle su respectivo valor esperado.
-
-*/

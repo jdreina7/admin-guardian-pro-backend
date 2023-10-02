@@ -42,7 +42,6 @@ describe('RolesController', () => {
     jest.clearAllMocks();
   });
 
-  //Testing findAll functionality
   describe('1. Get  Roles tests', () => {
     it('1.1 Controller.Get must return a list of all existing roles', async () => {
       jest.spyOn(model, 'find').mockImplementation(
@@ -89,7 +88,6 @@ describe('RolesController', () => {
     });
   });
 
-  //Testing findOne functionality
   describe('2. Find Role by ID tests', () => {
     it('2.1 Controller.FindOne should return one existing rol', async () => {
       jest.spyOn(model, 'findById').mockResolvedValue(mockRol);
@@ -155,7 +153,6 @@ describe('RolesController', () => {
     });
   });
 
-  //Testing Create functionality
   describe('3. Create Rol Tests', () => {
     it('3.1- Controller.create should return a new rol created', async () => {
       jest.spyOn(model, 'create').mockResolvedValue(mockRol as any);
@@ -188,7 +185,6 @@ describe('RolesController', () => {
     });
   });
 
-  //Testing Update functionality
   describe('4- Patch Rol Tests', () => {
     it('4.1- Controller.update should return one updated rol', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
@@ -315,7 +311,6 @@ describe('RolesController', () => {
       jest.clearAllMocks();
     });
   });
-  //Testing Delete functionality
   describe('5- Delete Rol Tests', () => {
     it('5.1- Controller.remove should return one removed rol', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
