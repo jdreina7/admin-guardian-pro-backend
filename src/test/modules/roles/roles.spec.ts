@@ -4,16 +4,16 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
 import { describe } from 'node:test';
 
-import { RolesController } from '../../../src/modules/roles/roles.controller';
-import { RolesService } from '../../../src/modules/roles/roles.service';
-import { Rol } from '../../../src/modules/roles/schemas/role.schema';
-import { createdRol, mockAllRoles, mockRol, mockRolService } from 'test/mocks/mockRolesService.mock';
+import { RolesController } from '../../../modules/roles/roles.controller';
+import { RolesService } from '../../../modules/roles/roles.service';
+import { Rol } from '../../../modules/roles/schemas/role.schema';
+import { createdRol, mockAllRoles, mockRol, mockRolService } from '../../mocks/mockRolesService.mock';
 import {
   ERR_MSG_DATA_NOT_FOUND,
   ERR_MSG_GENERAL,
   ERR_MSG_INVALID_PAYLOAD,
   ERR_MSG_INVALID_VALUE,
-} from '../../../src/utils/contants';
+} from '../../../utils/contants';
 import { UpdateRoleDto } from 'src/modules/roles/dto/update-role.dto';
 
 describe('RolesController', () => {
@@ -44,7 +44,7 @@ describe('RolesController', () => {
 
   //Testing findAll functionality
   describe('1. Get  Roles tests', () => {
-    it('1.0 Controller.Get must return a list of all existing roles', async () => {
+    it('1.1 Controller.Get must return a list of all existing roles', async () => {
       jest.spyOn(model, 'find').mockImplementation(
         () =>
           ({
@@ -62,6 +62,30 @@ describe('RolesController', () => {
       expect(resp?.success).toBeTruthy();
       expect(resp?.data).toBeDefined();
       expect(mockRolService.find).toHaveBeenCalledTimes(1);
+    });
+
+    it('1.2 Controller.get should return a handled error', async () => {
+      jest.spyOn(model, 'find').mockImplementation(
+        () =>
+          ({
+            limit: () => ({
+              skip: () => ({
+                sort: jest.fn().mockResolvedValue(null),
+              }),
+            }),
+          } as any),
+      );
+
+      let errorResult: any = {};
+
+      try {
+        await controller.findAll({});
+      } catch (error) {
+        errorResult = { ...error };
+      }
+
+      await expect(service.findAll).rejects.toThrow(BadRequestException);
+      expect(errorResult).toBeDefined();
     });
   });
 
@@ -176,7 +200,9 @@ describe('RolesController', () => {
           } as any),
       );
 
-      const resp = await controller.update(mockRol.data.id, { description: 'testing' });
+      const resp = await controller.update(mockRol.data.id, {
+        description: 'testing',
+      });
 
       expect(resp).toBeDefined();
       expect(resp?.success).toBeTruthy();
@@ -217,7 +243,7 @@ describe('RolesController', () => {
 
     it('4.3- Controller.update should return a NotFoundException when the rol id was not found', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
-      jest.spyOn(model, 'findById').mockResolvedValue(null).mockResolvedValue(null);
+      jest.spyOn(model, 'findById').mockResolvedValue(null);
 
       const id = mockRol.data.id;
       let respError: any = {};
@@ -367,7 +393,6 @@ describe('RolesController', () => {
 
       const id = mockRol.data.id;
       let respError: any = {};
-      const error = { message: undefined };
 
       try {
         await controller.remove(id);
