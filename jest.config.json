@@ -4,15 +4,31 @@
     "json",
     "ts"
   ],
-  "rootDir": "test",
-  "testRegex": ".*\\.spec\\.ts$",
+  "rootDir": "src",
+  "testRegex": ".spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
-  "collectCoverageFrom": [
-    "**/*.(t|j)s"
+  "coverageThreshold": {
+    "global": {
+      "branches": 80,
+      "functions": 20,
+      "lines": 60,
+      "statements": 60
+    }
+  },
+  "coveragePathIgnorePatterns": [
+    "node_modules",
+    "test-config",
+    "interfaces",
+    "jestGlobalMocks.ts",
+    ".module.ts",
+    "<rootDir>/src/main.ts",
+    ".mock.ts",
+    ".schema.ts",
+    ".dto.ts"
   ],
-  "coverageDirectory": "../coverage",
+  "coverageDirectory": "./../coverage",
   "testEnvironment": "node",
   "moduleNameMapper": {
     "^test/(.*)$": "<rootDir>/$1"

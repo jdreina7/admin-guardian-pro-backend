@@ -5,7 +5,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { DocumentType } from './schemas/document-type.schema';
 import { Model } from 'mongoose';
 import { customCapitalizeFirstLetter, customHandlerCatchException, customValidateMongoId } from '../../utils/utils';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_PAYLOAD } from 'src/utils/contants';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_INVALID_PAYLOAD } from '../../utils/contants';
+import { isEmpty } from 'class-validator';
 
 @Injectable()
 export class DocumentTypesService {
@@ -49,11 +50,12 @@ export class DocumentTypesService {
 
     if (!existDocType) {
       throw new NotFoundException({
-        succes: false,
+        success: false,
         message: ERR_MSG_DATA_NOT_FOUND,
         invalidValue: `Document-Type ID: ${id}`,
       });
     }
+
     return {
       success: true,
       data: existDocType,
@@ -63,7 +65,7 @@ export class DocumentTypesService {
   //Update a type of doc by id
   async update(id: string, updateDocumentTypeDto: UpdateDocumentTypeDto) {
     await this.findOne(id);
-
+    let { type } = updateDocumentTypeDto;
     if (updateDocumentTypeDto?.type?.length <= 0) {
       throw new BadRequestException({
         success: false,
@@ -72,7 +74,9 @@ export class DocumentTypesService {
       });
     }
 
-    if (updateDocumentTypeDto?.type) {
+    if (isEmpty(type)) {
+      type = '';
+    } else {
       updateDocumentTypeDto.type = await customCapitalizeFirstLetter(updateDocumentTypeDto?.type);
     }
 
@@ -92,14 +96,14 @@ export class DocumentTypesService {
 
   //Remove a type of doc by id
   async remove(id: string) {
-    const docTypeToDelete = await this.findOne(id);
+    await this.findOne(id);
 
     try {
       await this.documetTypeModel.findByIdAndDelete(id);
 
       return {
         success: true,
-        data: docTypeToDelete,
+        data: id,
       };
     } catch (error) {
       return await customHandlerCatchException(error);

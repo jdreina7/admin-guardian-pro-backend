@@ -36,6 +36,8 @@ export const customValidateMongoId = async (id: string) => {
       invalidValue: id,
     });
   }
+
+  return true;
 };
 
 /**
