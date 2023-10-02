@@ -36,14 +36,9 @@ export class RolesService {
 
   // Get all roles
   async findAll(paginationDto: PaginationDto) {
-    const { limit = 10, offset = 0 } = paginationDto;
     try {
+      const { limit = 10, offset = 0 } = paginationDto;
       const data = await this.rolModel.find().limit(limit).skip(offset).sort({ name: 1 });
-
-      return {
-        success: true,
-        data,
-      };
 
       return {
         success: true,

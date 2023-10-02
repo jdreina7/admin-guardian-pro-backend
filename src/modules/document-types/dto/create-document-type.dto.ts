@@ -1,5 +1,5 @@
 import { IsBoolean, IsIn, IsOptional, IsString, MinLength } from 'class-validator';
-import { VALID_DOCUMENT_TYPES } from 'src/utils/contants';
+import { VALID_DOCUMENT_TYPES } from '../../../utils/contants';
 
 export class CreateDocumentTypeDto {
   @IsString()
