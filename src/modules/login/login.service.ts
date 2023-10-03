@@ -31,6 +31,8 @@ export class LoginService {
       });
     }
 
+    // Validar en este punto que existan ambos password?
+
     const validPassword = await comparePasswords(password, dbUser.password);
 
     if (!validPassword) {

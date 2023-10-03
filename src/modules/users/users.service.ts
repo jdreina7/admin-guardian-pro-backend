@@ -183,7 +183,9 @@ export class UsersService {
     updateUserDto.lastName ? (updateUserDto.lastName = await customCapitalizeFirstLetter(updateUserDto.lastName)) : '';
 
     // User password encryption
-    updateUserDto.password = await encryptPassword(updateUserDto.password);
+    updateUserDto.password
+      ? (updateUserDto.password = await encryptPassword(updateUserDto.password))
+      : delete updateUserDto.password;
 
     try {
       const data = await this.userModel
