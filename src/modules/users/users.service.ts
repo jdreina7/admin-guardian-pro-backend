@@ -6,18 +6,24 @@ import { User } from './schemas/user.schema';
 import { Model } from 'mongoose';
 import { isValidObjectId } from 'mongoose';
 
-import { customCapitalizeFirstLetter, customHandlerCatchException, validateUID } from 'src/utils/utils';
 import { Rol } from '../roles/schemas/role.schema';
 import { MaritalStatus } from '../marital-statuses/schemas/marital-status.schema';
 import { Ocupation } from '../ocupations/schemas/ocupation.schema';
 import { IdentificationTypes } from '../identificationsTypes/schemas/identificationTypes.schema';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_UID } from 'src/utils/contants';
+import { PaginationDto } from './../../common/dto/pagination.dto';
 import { MaritalStatusesService } from '../marital-statuses/marital-statuses.service';
 import { GendersService } from '../genders/genders.service';
 import { OcupationsService } from '../ocupations/ocupations.service';
 import { RolesService } from '../roles/roles.service';
 import { IdentificationsTypesService } from '../identificationsTypes/identificationTypes.service';
+import { customCapitalizeFirstLetter, customHandlerCatchException, validateUID } from './../../utils/utils';
+import { encryptPassword } from './../../utils/password-manager';
+import {
+  ERR_MSG_DATA_NOT_FOUND,
+  ERR_MSG_GENERAL,
+  ERR_MSG_INVALID_ID,
+  ERR_MSG_INVALID_UID,
+} from './../../utils/contants';
 
 @Injectable()
 export class UsersService {
@@ -82,6 +88,9 @@ export class UsersService {
       ? (createUserDto.middleName = await customCapitalizeFirstLetter(createUserDto.middleName))
       : '';
     createUserDto.lastName ? (createUserDto.lastName = await customCapitalizeFirstLetter(createUserDto.lastName)) : '';
+
+    // User password encryption
+    createUserDto.password = await encryptPassword(createUserDto.password);
 
     try {
       const userCreated = await this.userModel.create(createUserDto);
@@ -177,6 +186,11 @@ export class UsersService {
       ? (updateUserDto.middleName = await customCapitalizeFirstLetter(updateUserDto.middleName))
       : '';
     updateUserDto.lastName ? (updateUserDto.lastName = await customCapitalizeFirstLetter(updateUserDto.lastName)) : '';
+
+    // User password encryption
+    updateUserDto.password
+      ? (updateUserDto.password = await encryptPassword(updateUserDto.password))
+      : delete updateUserDto.password;
 
     try {
       const data = await this.userModel

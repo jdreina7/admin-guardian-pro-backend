@@ -8,11 +8,11 @@ import { ContractAppend } from '../contract-appends/schemas/contract-append.sche
 import { Contractor } from '../contractors/schemas/contractor.schema';
 import { ContractorsService } from '../contractors/contractors.service';
 import { ContractAppendsService } from '../contract-appends/contract-appends.service';
-import { customHandlerCatchException, customValidateMongoId } from 'src/utils/utils';
 import { User } from '../users/schemas/user.schema';
 import { UsersService } from '../users/users.service';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID } from 'src/utils/contants';
+import { PaginationDto } from './../../common/dto/pagination.dto';
+import { customHandlerCatchException, customValidateMongoId } from './../../utils/utils';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL } from './../../utils/contants';
 
 @Injectable()
 export class ContractsService {

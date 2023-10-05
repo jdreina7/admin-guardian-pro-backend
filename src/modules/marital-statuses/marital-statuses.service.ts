@@ -4,14 +4,14 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { CreateMaritalStatusDto } from './dto/create-marital-status.dto';
 import { UpdateMaritalStatusDto } from './dto/update-marital-status.dto';
-import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/utils/utils';
 import { MaritalStatus } from './schemas/marital-status.schema';
+import { customCapitalizeFirstLetter, customHandlerCatchException } from './../../utils/utils';
 import {
   ERR_MSG_DATA_NOT_FOUND,
   ERR_MSG_GENERAL,
   ERR_MSG_INVALID_ID,
   ERR_MSG_INVALID_PAYLOAD,
-} from 'src/utils/contants';
+} from './../../utils/contants';
 
 @Injectable()
 export class MaritalStatusesService {

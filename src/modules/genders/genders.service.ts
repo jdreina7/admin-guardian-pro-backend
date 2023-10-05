@@ -5,13 +5,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreateGenderDto } from './dto/create-gender.dto';
 import { UpdateGenderDto } from './dto/update-gender.dto';
 import { Gender } from './schemas/gender.schema';
-import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/utils/utils';
+import { customCapitalizeFirstLetter, customHandlerCatchException } from './../../utils/utils';
 import {
   ERR_MSG_DATA_NOT_FOUND,
   ERR_MSG_GENERAL,
   ERR_MSG_INVALID_ID,
   ERR_MSG_INVALID_PAYLOAD,
-} from 'src/utils/contants';
+} from './../../utils/contants';
 
 @Injectable()
 export class GendersService {

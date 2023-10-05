@@ -1,15 +1,4 @@
-import {
-  IsBoolean,
-  IsDate,
-  IsDateString,
-  IsInt,
-  IsMongoId,
-  IsOptional,
-  IsPositive,
-  IsString,
-  IsUrl,
-  MinDate,
-} from 'class-validator';
+import { IsBoolean, IsDate, IsInt, IsMongoId, IsOptional, IsPositive, IsString, IsUrl, MinDate } from 'class-validator';
 
 export class CreateContractDto {
   @IsInt()

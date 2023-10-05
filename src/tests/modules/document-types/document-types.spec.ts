@@ -18,7 +18,8 @@ import {
   ERR_MSG_INVALID_ID,
   ERR_MSG_INVALID_PAYLOAD,
 } from '../../../utils/contants';
-import { UpdateDocumentTypeDto } from 'src/modules/document-types/dto/update-document-type.dto';
+import { UpdateDocumentTypeDto } from '../../../modules/document-types/dto/update-document-type.dto';
+import { MockAuthModule } from '../../mocks/mockAuthModule.mock';
 
 describe('Document-types controller', () => {
   let docTypeController: DocumentTypesController;
@@ -40,6 +41,14 @@ describe('Document-types controller', () => {
     docTypeController = module.get<DocumentTypesController>(DocumentTypesController);
     docTypeService = module.get<DocumentTypesService>(DocumentTypesService);
     docTypeModel = module.get<Model<DocumentType>>(getModelToken(DocumentType.name));
+
+    jest.mock('./../../../common/decorators/auth.decorator.ts', () => {
+      return {
+        AuthModule: {
+          forRootAsync: jest.fn().mockImplementation(() => MockAuthModule),
+        },
+      };
+    });
   });
 
   afterEach(async () => {

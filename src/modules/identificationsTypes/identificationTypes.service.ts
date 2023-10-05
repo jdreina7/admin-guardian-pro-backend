@@ -4,9 +4,9 @@ import { Model } from 'mongoose';
 
 import { CreateIdentificationTypesDto } from './dto/create-identificationTypes.dto';
 import { UpdateIdentificationTypesDto } from './dto/update-identificationTypes.dto';
-import { customHandlerCatchException, customValidateMongoId } from 'src/utils/utils';
+import { customHandlerCatchException, customValidateMongoId } from './../../utils/utils';
 import { IdentificationTypes } from './schemas/identificationTypes.schema';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_PAYLOAD } from 'src/utils/contants';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_PAYLOAD } from './../../utils/contants';
 
 @Injectable()
 export class IdentificationsTypesService {
@@ -54,7 +54,7 @@ export class IdentificationsTypesService {
       throw new NotFoundException({
         succes: false,
         message: ERR_MSG_DATA_NOT_FOUND,
-        invalidValue: id,
+        invalidValue: `Identification Type ID: ${id}`,
       });
     }
 

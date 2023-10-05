@@ -12,7 +12,7 @@ import {
   ERR_MSG_INVALID_PAYLOAD,
   ERR_MSG_INVALID_VALUE,
 } from '../..//utils/contants';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginationDto } from './../../common/dto/pagination.dto';
 
 @Injectable()
 export class RolesService {
