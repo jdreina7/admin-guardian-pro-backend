@@ -5,8 +5,8 @@ import { Model } from 'mongoose';
 
 import { LoginDto } from './dto/login.dto';
 import { User } from '../users/schemas/user.schema';
-import { ERR_MSG_INVALID_LOGIN } from 'src/utils/contants';
-import { comparePasswords } from 'src/utils/password-manager';
+import { ERR_MSG_INVALID_LOGIN } from './../../utils/contants';
+import { comparePasswords } from './../../utils/password-manager';
 import { IJwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()

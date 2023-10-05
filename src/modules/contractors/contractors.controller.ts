@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+
 import { ContractorsService } from './contractors.service';
 import { CreateContractorDto } from './dto/create-contractor.dto';
 import { UpdateContractorDto } from './dto/update-contractor.dto';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { EValidRoles } from 'src/utils/interfaces';
+import { Auth } from './../../common/decorators/auth.decorator';
+import { EValidRoles } from './../../utils/interfaces';
 
 @Controller('contractors')
 export class ContractorsController {

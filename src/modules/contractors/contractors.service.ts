@@ -1,13 +1,19 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, isValidObjectId } from 'mongoose';
+
 import { CreateContractorDto } from './dto/create-contractor.dto';
 import { UpdateContractorDto } from './dto/update-contractor.dto';
-import { InjectModel } from '@nestjs/mongoose';
 import { Contractor } from './schemas/contractor.schema';
-import { Model, isValidObjectId } from 'mongoose';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_UID } from 'src/utils/contants';
 import { User } from '../users/schemas/user.schema';
-import { customHandlerCatchException } from 'src/utils/utils';
 import { UsersService } from '../users/users.service';
+import { customHandlerCatchException } from './../../utils/utils';
+import {
+  ERR_MSG_DATA_NOT_FOUND,
+  ERR_MSG_GENERAL,
+  ERR_MSG_INVALID_ID,
+  ERR_MSG_INVALID_UID,
+} from './../../utils/contants';
 
 @Injectable()
 export class ContractorsService {

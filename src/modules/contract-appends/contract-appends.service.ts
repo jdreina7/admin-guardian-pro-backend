@@ -1,13 +1,19 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, isValidObjectId } from 'mongoose';
+
 import { CreateContractAppendDto } from './dto/create-contract-append.dto';
 import { UpdateContractAppendDto } from './dto/update-contract-append.dto';
-import { InjectModel } from '@nestjs/mongoose';
 import { ContractAppend } from './schemas/contract-append.schema';
-import { Model, isValidObjectId } from 'mongoose';
 import { UsersService } from '../users/users.service';
-import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_UID } from 'src/utils/contants';
-import { customHandlerCatchException } from 'src/utils/utils';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginationDto } from './../../common/dto/pagination.dto';
+import { customHandlerCatchException } from './../../utils/utils';
+import {
+  ERR_MSG_DATA_NOT_FOUND,
+  ERR_MSG_GENERAL,
+  ERR_MSG_INVALID_ID,
+  ERR_MSG_INVALID_UID,
+} from './../../utils/contants';
 
 @Injectable()
 export class ContractAppendsService {

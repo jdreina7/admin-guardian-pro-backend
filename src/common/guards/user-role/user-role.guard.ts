@@ -2,8 +2,12 @@ import { Reflector } from '@nestjs/core';
 import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
-import { ERR_NOT_HAVE_PERMISSIONS_FOR_MODULE, ERR_USER_NOT_EXIST_IN_REQUEST, META_ROLE } from 'src/utils/contants';
-import { User } from 'src/modules/users/schemas/user.schema';
+import {
+  ERR_NOT_HAVE_PERMISSIONS_FOR_MODULE,
+  ERR_USER_NOT_EXIST_IN_REQUEST,
+  META_ROLE,
+} from './../../../utils/contants';
+import { User } from './../../../modules/users/schemas/user.schema';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {

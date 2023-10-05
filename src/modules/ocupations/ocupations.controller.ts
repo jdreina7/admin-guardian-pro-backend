@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { OcupationsService } from './ocupations.service';
 import { CreateOcupationDto } from './dto/create-ocupation.dto';
 import { UpdateOcupationDto } from './dto/update-ocupation.dto';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { EValidRoles } from 'src/utils/interfaces';
+import { Auth } from './../../common/decorators/auth.decorator';
+import { EValidRoles } from './../../utils/interfaces';
 
 @Controller('ocupations')
 export class OcupationsController {

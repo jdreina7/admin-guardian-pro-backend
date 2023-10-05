@@ -3,8 +3,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { GendersService } from './genders.service';
 import { CreateGenderDto } from './dto/create-gender.dto';
 import { UpdateGenderDto } from './dto/update-gender.dto';
-import { EValidRoles } from 'src/utils/interfaces';
-import { Auth } from 'src/common/decorators/auth.decorator';
+import { EValidRoles } from './../../utils/interfaces';
+import { Auth } from './../../common/decorators/auth.decorator';
 
 @Controller('genders')
 export class GendersController {

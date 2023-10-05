@@ -1,10 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+
 import { ContractsService } from './contracts.service';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { EValidRoles } from 'src/utils/interfaces';
+import { PaginationDto } from './../../common/dto/pagination.dto';
+import { Auth } from './../../common/decorators/auth.decorator';
+import { EValidRoles } from './../../utils/interfaces';
 
 @Controller('contracts')
 export class ContractsController {

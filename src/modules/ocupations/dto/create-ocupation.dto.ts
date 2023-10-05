@@ -1,5 +1,5 @@
 import { IsString, MinLength, IsIn, IsOptional, IsBoolean } from 'class-validator';
-import { VALID_OCUPATIONS } from 'src/utils/contants';
+import { VALID_OCUPATIONS } from './../../../utils/contants';
 
 export class CreateOcupationDto {
   @IsString()

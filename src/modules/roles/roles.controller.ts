@@ -4,8 +4,8 @@ import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { EValidRoles } from 'src/utils/interfaces';
+import { Auth } from './../../common/decorators/auth.decorator';
+import { EValidRoles } from './../../utils/interfaces';
 
 @Controller('roles')
 export class RolesController {

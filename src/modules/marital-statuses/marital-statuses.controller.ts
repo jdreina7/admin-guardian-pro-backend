@@ -3,8 +3,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { MaritalStatusesService } from './marital-statuses.service';
 import { CreateMaritalStatusDto } from './dto/create-marital-status.dto';
 import { UpdateMaritalStatusDto } from './dto/update-marital-status.dto';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { EValidRoles } from 'src/utils/interfaces';
+import { Auth } from './../../common/decorators/auth.decorator';
+import { EValidRoles } from './../../utils/interfaces';
 
 @Controller('marital-statuses')
 export class MaritalStatusesController {

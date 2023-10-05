@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+
 import { DocumentTypesService } from './document-types.service';
 import { CreateDocumentTypeDto } from './dto/create-document-type.dto';
 import { UpdateDocumentTypeDto } from './dto/update-document-type.dto';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { EValidRoles } from 'src/utils/interfaces';
+import { Auth } from './../../common/decorators';
+import { EValidRoles } from './../../utils/interfaces';
 
 @Controller('document-types')
 export class DocumentTypesController {

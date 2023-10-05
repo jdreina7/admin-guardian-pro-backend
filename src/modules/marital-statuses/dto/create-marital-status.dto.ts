@@ -1,5 +1,5 @@
 import { IsString, MinLength, IsIn, IsOptional, IsBoolean } from 'class-validator';
-import { VALID_MARITAL_STATUSES } from 'src/utils/contants';
+import { VALID_MARITAL_STATUSES } from './../../../utils/contants';
 
 export class CreateMaritalStatusDto {
   @IsString()

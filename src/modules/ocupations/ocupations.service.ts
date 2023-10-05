@@ -5,13 +5,13 @@ import { Model, isValidObjectId } from 'mongoose';
 import { CreateOcupationDto } from './dto/create-ocupation.dto';
 import { UpdateOcupationDto } from './dto/update-ocupation.dto';
 import { Ocupation } from './schemas/ocupation.schema';
-import { customCapitalizeFirstLetter, customHandlerCatchException } from 'src/utils/utils';
+import { customCapitalizeFirstLetter, customHandlerCatchException } from './../../utils/utils';
 import {
   ERR_MSG_DATA_NOT_FOUND,
   ERR_MSG_GENERAL,
   ERR_MSG_INVALID_ID,
   ERR_MSG_INVALID_PAYLOAD,
-} from 'src/utils/contants';
+} from './../../utils/contants';
 
 @Injectable()
 export class OcupationsService {

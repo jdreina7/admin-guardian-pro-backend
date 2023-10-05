@@ -27,7 +27,7 @@ export const ERR_MSG_INVALID_LOGIN = 'Invalid username/password, please try agai
 export const ERR_MSG_INVALID_TOKEN = 'The current token is not valid';
 export const ERR_MSG_INACTIVE_USER = 'The user that is trying to login is inactive.';
 export const ERR_USER_NOT_EXIST_IN_REQUEST = 'User not present in Auth Guard';
-export const ERR_NOT_HAVE_PERMISSIONS_FOR_MODULE = 'You do not have permissions for this module';
+export const ERR_NOT_HAVE_PERMISSIONS_FOR_MODULE = 'You are not allowed to use this module.';
 
 // Constants
 export const META_ROLE = 'userRole';

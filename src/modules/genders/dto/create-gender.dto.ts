@@ -1,5 +1,5 @@
 import { IsString, MinLength, IsIn, IsOptional, IsBoolean } from 'class-validator';
-import { VALID_GENDERS } from 'src/utils/contants';
+import { VALID_GENDERS } from './../../../utils/contants';
 
 export class CreateGenderDto {
   @IsString()

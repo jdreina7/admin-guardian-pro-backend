@@ -1,5 +1,4 @@
 import { IsString, MinLength, IsOptional, IsBoolean, IsMongoId } from 'class-validator';
-import mongoose from 'mongoose';
 
 export class CreateContractAppendDto {
   @IsString()

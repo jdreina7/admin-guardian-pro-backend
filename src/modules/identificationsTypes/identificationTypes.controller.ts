@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { IdentificationsTypesService } from './identificationTypes.service';
 import { CreateIdentificationTypesDto } from './dto/create-identificationTypes.dto';
 import { UpdateIdentificationTypesDto } from './dto/update-identificationTypes.dto';
-import { Auth } from 'src/common/decorators/auth.decorator';
-import { EValidRoles } from 'src/utils/interfaces';
+import { Auth } from './../../common/decorators/auth.decorator';
+import { EValidRoles } from './../../utils/interfaces';
 
 @Controller('identificationstypes')
 export class IdentificationsTypesController {
