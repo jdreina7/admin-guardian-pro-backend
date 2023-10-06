@@ -9,21 +9,24 @@ import { isValidObjectId } from 'mongoose';
  * @param data The data that causes the error
  */
 export const customHandlerCatchException = async (error: any, data?: any) => {
-  // Returns error if  rol already exist in DB
+  /* istanbul ignore next */
+  if (error) {
+    console.log(error);
+  }
+
+  // Returns error if data already exist in DB
   if (error?.code === DUPLICATED_RECORD) {
     throw new BadRequestException({
       success: false,
       message: ERR_MSG_DUPLICATED_VALUE,
-      invalidValue: data?.rol,
+      invalidValue: data,
     });
   }
-
-  /* istanbul ignore next */
-  console.log(error);
 
   throw new InternalServerErrorException({
     success: false,
     message: ERR_MSG_GENERAL,
+    invalidValue: data,
   });
 };
 
