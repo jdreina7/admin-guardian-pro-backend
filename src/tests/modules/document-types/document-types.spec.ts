@@ -1,6 +1,7 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { PassportModule } from '@nestjs/passport';
 import mongoose, { Model } from 'mongoose';
 
 import { DocumentTypesService } from '../../../modules/document-types/document-types.service';
@@ -20,6 +21,7 @@ import {
 } from '../../../utils/contants';
 import { UpdateDocumentTypeDto } from '../../../modules/document-types/dto/update-document-type.dto';
 import { MockAuthModule } from '../../mocks/mockAuthModule.mock';
+import { LoginModule } from '../../../modules/login/login.module';
 
 describe('Document-types controller', () => {
   let docTypeController: DocumentTypesController;
@@ -28,7 +30,9 @@ describe('Document-types controller', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
       providers: [
+        LoginModule,
         DocumentTypesService,
         {
           provide: getModelToken(DocumentType.name),
@@ -45,6 +49,9 @@ describe('Document-types controller', () => {
     jest.mock('./../../../common/decorators/auth.decorator.ts', () => {
       return {
         AuthModule: {
+          forRootAsync: jest.fn().mockImplementation(() => MockAuthModule),
+        },
+        PassportModule: {
           forRootAsync: jest.fn().mockImplementation(() => MockAuthModule),
         },
       };

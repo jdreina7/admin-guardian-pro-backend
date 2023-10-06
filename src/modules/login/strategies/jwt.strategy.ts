@@ -5,9 +5,9 @@ import { ConfigService } from '@nestjs/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Model } from 'mongoose';
 
-import { User } from 'src/modules/users/schemas/user.schema';
+import { User } from '../../../modules/users/schemas/user.schema';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
-import { ERR_MSG_INACTIVE_USER, ERR_MSG_INVALID_TOKEN } from 'src/utils/contants';
+import { ERR_MSG_INACTIVE_USER, ERR_MSG_INVALID_TOKEN } from '../../../utils/contants';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

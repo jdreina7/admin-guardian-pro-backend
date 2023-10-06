@@ -1,20 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
 import mongoose, { Model } from 'mongoose';
-import { describe } from 'node:test';
 
 import { RolesController } from '../../../modules/roles/roles.controller';
 import { RolesService } from '../../../modules/roles/roles.service';
 import { Rol } from '../../../modules/roles/schemas/role.schema';
 import { createdRol, mockAllRoles, mockRol, mockRolService } from '../../mocks/mockRolesService.mock';
+import { UpdateRoleDto } from '../../../modules/roles/dto/update-role.dto';
+import { MockAuthModule } from '../../mocks/mockAuthModule.mock';
+import { LoginModule } from '../../../modules/login/login.module';
 import {
   ERR_MSG_DATA_NOT_FOUND,
   ERR_MSG_GENERAL,
   ERR_MSG_INVALID_PAYLOAD,
   ERR_MSG_INVALID_VALUE,
 } from '../../../utils/contants';
-import { UpdateRoleDto } from 'src/modules/roles/dto/update-role.dto';
 
 describe('RolesController', () => {
   let controller: RolesController;
@@ -23,7 +25,9 @@ describe('RolesController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
       providers: [
+        LoginModule,
         RolesService,
         {
           provide: getModelToken(Rol.name),
@@ -36,6 +40,17 @@ describe('RolesController', () => {
     controller = module.get<RolesController>(RolesController);
     service = module.get<RolesService>(RolesService);
     model = module.get<Model<Rol>>(getModelToken(Rol.name));
+
+    jest.mock('./../../../common/decorators/auth.decorator.ts', () => {
+      return {
+        AuthModule: {
+          forRootAsync: jest.fn().mockImplementation(() => MockAuthModule),
+        },
+        PassportModule: {
+          forRootAsync: jest.fn().mockImplementation(() => MockAuthModule),
+        },
+      };
+    });
   });
 
   afterEach(async () => {
@@ -290,7 +305,12 @@ describe('RolesController', () => {
     it('4.5- Controller.update should return a general error', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(model, 'findById').mockResolvedValue(true);
-      jest.spyOn(model, 'findByIdAndUpdate').mockRejectedValue(null);
+      jest.spyOn(model, 'findByIdAndUpdate').mockImplementation(
+        () =>
+          ({
+            select: jest.fn().mockRejectedValue(null),
+          } as any),
+      );
 
       const id = mockRol.data.id;
       let respError: any = {};
