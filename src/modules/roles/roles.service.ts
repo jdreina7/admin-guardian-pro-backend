@@ -99,6 +99,7 @@ export class RolesService {
       const fullData = await this.rolModel
         .findByIdAndUpdate(id, updateRoleDto, { new: true })
         .select('-updatedAt -createdAt');
+
       return {
         success: true,
         data: fullData,
