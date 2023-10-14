@@ -24,11 +24,11 @@ import { LoginModule } from '../login/login.module';
   providers: [UsersService],
   imports: [
     forwardRef(() => LoginModule),
-    MaritalStatusesModule,
-    OcupationsModule,
+    forwardRef(() => MaritalStatusesModule),
+    forwardRef(() => OcupationsModule),
     forwardRef(() => RolesModule), // Previniendo la dependencia circular entre usuarios y roles
-    GendersModule,
-    IdentificationsTypesModule,
+    forwardRef(() => GendersModule),
+    forwardRef(() => IdentificationsTypesModule),
     MongooseModule.forFeature([
       {
         name: User.name,
