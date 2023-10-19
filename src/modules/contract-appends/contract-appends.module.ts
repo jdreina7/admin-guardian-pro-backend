@@ -5,13 +5,13 @@ import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ContractAppend, ContractAppendSchema } from './schemas/contract-append.schema';
 import { User, UserSchema } from '../users/schemas/user.schema';
-import { LoginModule } from '../login/login.module';
+// import { LoginModule } from '../login/login.module';
 
 @Module({
   controllers: [ContractAppendsController],
   providers: [ContractAppendsService],
   imports: [
-    forwardRef(() => LoginModule),
+    // forwardRef(() => LoginModule),
     UsersModule,
     MongooseModule.forFeature([
       {
