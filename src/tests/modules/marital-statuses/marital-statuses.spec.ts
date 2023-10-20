@@ -64,9 +64,7 @@ describe('Marital-Status module tests', () => {
     jest.clearAllMocks();
   });
 
-  //controller.create tests
   describe('1. Test create Marital-Status', () => {
-    // Todo funciona bien y retorma el estado civil creado
     it('1.1 Controller.create must return a new marital-status created', async () => {
       jest.spyOn(maritalModel, 'create').mockResolvedValue(mockOneMaritalStatus as any);
 
@@ -80,7 +78,7 @@ describe('Marital-Status module tests', () => {
       jest.spyOn(maritalModel, 'create').mockClear();
       jest.clearAllMocks();
     });
-    // La creacion del estado civil falla
+
     it('1.2 Controller.create must return a handled error', async () => {
       jest.spyOn(maritalModel, 'create').mockRejectedValue(null);
 
@@ -99,9 +97,8 @@ describe('Marital-Status module tests', () => {
       jest.clearAllMocks();
     });
   });
-  //controller.get all tests
+
   describe('2. Test find one Marital-Status', () => {
-    //Todo funciona correctamente, devuelve el estado buscado
     it('2.1 Controller.FindOne must return a existing Marital-Status', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(maritalModel, 'findById').mockResolvedValue(mockOneMaritalStatus);
@@ -119,7 +116,6 @@ describe('Marital-Status module tests', () => {
       jest.clearAllMocks();
     });
 
-    // El id no es valido
     it('2.2 Controller.FindOne must return a BadRequest for a invalid ID', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(false);
 
@@ -140,7 +136,6 @@ describe('Marital-Status module tests', () => {
       jest.clearAllMocks();
     });
 
-    // el id no fue encontrado
     it('2.3 Controller.FindOne must return a Handled error becouse the id was not found', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(maritalModel, 'findById').mockResolvedValue(null);
@@ -162,9 +157,7 @@ describe('Marital-Status module tests', () => {
     });
   });
 
-  //controller.get one tests
   describe('3. Test find all Marital-Statuses', () => {
-    //Todo funciona bien y devuelve todos los estados existentes
     it('3.1 Controller.FindAll must return all existing Marital-Statuses', async () => {
       jest.spyOn(maritalModel, 'find').mockImplementation(
         () =>
@@ -183,7 +176,7 @@ describe('Marital-Status module tests', () => {
       jest.spyOn(maritalModel, 'find').mockClear();
       jest.clearAllMocks();
     });
-    //ALgo falla y devolvemos un error general
+
     it('3.2 Controller.FindAll must return a general error', async () => {
       jest.spyOn(maritalModel, 'find').mockImplementation(
         () =>
@@ -208,9 +201,7 @@ describe('Marital-Status module tests', () => {
     });
   });
 
-  //controller.update one tests
   describe('4. Test update one Marital-Status', () => {
-    //Todo funciona correctamente, devuelve el estado actualizado
     it('4.1 Controller.update must return updated Marital Status', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(maritalModel, 'findById').mockResolvedValue(mockOneMaritalStatus);
@@ -233,7 +224,6 @@ describe('Marital-Status module tests', () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
     });
 
-    // El id no es valido
     it('4.2 Controller.update must return a badrequest for a invalid ID', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(false);
 
@@ -253,7 +243,6 @@ describe('Marital-Status module tests', () => {
       jest.clearAllMocks();
     });
 
-    // el id no fue encontrado
     it('4.3 Controller.update must return a handled error because id was not found', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(maritalModel, 'findById').mockResolvedValue(false);
@@ -274,7 +263,6 @@ describe('Marital-Status module tests', () => {
       jest.clearAllMocks();
     });
 
-    // No envio data para actualizar
     it('4.4 Controller.update must return a handled error becouse empty data was sent', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(maritalModel, 'findById').mockResolvedValue(mockOneMaritalStatus);
@@ -296,7 +284,7 @@ describe('Marital-Status module tests', () => {
       jest.spyOn(maritalModel, 'findByIdAndUpdate').mockClear();
       jest.clearAllMocks();
     });
-    // hay un error general
+
     it('4.5 Controller.update must return a general error', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(maritalModel, 'findById').mockResolvedValue(mockOneMaritalStatus);
@@ -325,9 +313,7 @@ describe('Marital-Status module tests', () => {
     });
   });
 
-  //controller.delete one tests
   describe('5. Test Delete a Marital-Status by id', () => {
-    //Todo funciona correctamente, devuelve el id del estado eliminado
     it('5.1 Controller.Remove must return the removed ID', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(maritalModel, 'findById').mockResolvedValue(mockOneMaritalStatus);
@@ -346,7 +332,6 @@ describe('Marital-Status module tests', () => {
       jest.clearAllMocks();
     });
 
-    // El id no es valido
     it('5.2 Controller.Remove must return badrequet for invalid ID', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(false);
 
@@ -367,7 +352,6 @@ describe('Marital-Status module tests', () => {
       jest.clearAllMocks();
     });
 
-    // el id no fue encontrado
     it('5.3 Controller.Remove must return notFoundException.', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(maritalModel, 'findById').mockResolvedValue(false);
@@ -387,7 +371,6 @@ describe('Marital-Status module tests', () => {
       jest.spyOn(maritalModel, 'findById').mockClear();
     });
 
-    // hay un error general
     it('5.4 Controller.Remove must return a general error', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(maritalModel, 'findById').mockResolvedValue(mockOneMaritalStatus);

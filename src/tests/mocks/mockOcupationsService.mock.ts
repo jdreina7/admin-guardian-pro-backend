@@ -11,6 +11,7 @@ export const mockOcupationService = {
   findByIdAndDelete: jest.fn(),
   select: jest.fn(),
   customValidateMongoId: jest.fn(),
+  customCapitalizeFirstLetter: jest.fn(),
 };
 
 // Mock for one ocupation
