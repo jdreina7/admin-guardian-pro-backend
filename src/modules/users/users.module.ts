@@ -29,7 +29,6 @@ import { LoginService } from './login.service';
   providers: [UsersService, JwtStrategy, LoginService],
   imports: [
     ConfigModule,
-    // forwardRef(() => LoginModule),
     forwardRef(() => MaritalStatusesModule),
     forwardRef(() => OcupationsModule),
     forwardRef(() => RolesModule),

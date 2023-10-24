@@ -286,3 +286,25 @@ export const mockOneUser = {
     id: '64fcc2a26e45b152a7cd25dd',
   },
 };
+
+export const userCreated = {
+  uid: '33418098',
+  identificationTypeId: '64fcb898da86b3322ddd5f13',
+  email: 'test1@gmail.com',
+  firstName: 'Test',
+  middleName: 'Test',
+  lastName: 'Lopez',
+  genderId: '64fcb828b8224d148e5ea6e6',
+  contactPhone: 2563972,
+  address: 'Cra 37B',
+  city: 'Palmira',
+  birthday: '13/09/1990',
+  userImg: '',
+  username: 'gani el terrible',
+  password: 'Hola123',
+  maritalStatusId: '64fcc2756e45b152a7cd25cd',
+  ocupationId: '64fafe1cc85af4d2f85625bc',
+  roleId: '64fa2777f3e9b81d46a2339b',
+  status: '',
+  lastLogin: '',
+};

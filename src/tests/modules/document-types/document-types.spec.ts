@@ -21,7 +21,7 @@ import {
 } from '../../../utils/contants';
 import { UpdateDocumentTypeDto } from '../../../modules/document-types/dto/update-document-type.dto';
 import { MockAuthModule } from '../../mocks/mockAuthModule.mock';
-import { LoginModule } from '../../../modules/login/login.module';
+import { UsersModule } from '../../../modules/users/users.module';
 
 describe('Document-types controller', () => {
   let docTypeController: DocumentTypesController;
@@ -32,7 +32,7 @@ describe('Document-types controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
       providers: [
-        LoginModule,
+        UsersModule,
         DocumentTypesService,
         {
           provide: getModelToken(DocumentType.name),
