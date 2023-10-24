@@ -91,14 +91,14 @@ export class IdentificationsTypesService {
 
   // Delete Identification
   async remove(id: string) {
-    const existIdent = await this.findOne(id);
+    await this.findOne(id);
 
     try {
       await this.IdentificationTypesModel.findByIdAndDelete(id);
 
       return {
         success: true,
-        data: existIdent,
+        data: id,
       };
     } catch (error) {
       throw new BadRequestException({
