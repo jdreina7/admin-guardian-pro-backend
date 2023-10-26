@@ -6,7 +6,6 @@ import mongoose, { Model } from 'mongoose';
 import { IdentificationsTypesController } from '../../../modules/identificationsTypes/identificationTypes.controller';
 import { IdentificationsTypesService } from '../../../modules/identificationsTypes/identificationTypes.service';
 import { IdentificationTypes } from '../../../modules/identificationsTypes/schemas/identificationTypes.schema';
-import { LoginModule } from '../../../modules/login/login.module';
 import { MockAuthModule } from '../../../tests/mocks/mockAuthModule.mock';
 import {
   mockAllIdentificationType,
@@ -34,7 +33,6 @@ describe('Test Indentification Type module', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
       providers: [
-        LoginModule,
         IdentificationsTypesService,
         {
           provide: getModelToken(IdentificationTypes.name),

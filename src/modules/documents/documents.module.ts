@@ -8,13 +8,13 @@ import { DocumentType, DocumentTypeSchema } from '../document-types/schemas/docu
 import { User, UserSchema } from '../users/schemas/user.schema';
 import { UsersModule } from '../users/users.module';
 import { DocumentTypesModule } from '../document-types/document-types.module';
-import { LoginModule } from '../login/login.module';
+// import { LoginModule } from '../login/login.module';
 
 @Module({
   controllers: [DocumentsController],
   providers: [DocumentsService],
   imports: [
-    forwardRef(() => LoginModule),
+    // forwardRef(() => LoginModule),
     UsersModule,
     DocumentTypesModule,
     MongooseModule.forFeature([

@@ -9,8 +9,8 @@ import { isValidObjectId } from 'mongoose';
  * @param data The data that causes the error
  */
 export const customHandlerCatchException = async (error: any, data?: any) => {
-  /* istanbul ignore next */
   if (error) {
+    /* istanbul ignore next */
     console.log(error);
   }
 

@@ -2,11 +2,11 @@ import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 import { MaritalStatusesController } from '../../../modules/marital-statuses/marital-statuses.controller';
 import { MaritalStatusesService } from '../../../modules/marital-statuses/marital-statuses.service';
 import { MaritalStatus } from '../../../modules/marital-statuses/schemas/marital-status.schema';
-import { LoginModule } from '../../../modules/login/login.module';
 import {
   createdMaritalStatusDTO,
   mockALlMaritalStatus,
@@ -20,7 +20,7 @@ import {
   ERR_MSG_INVALID_ID,
   ERR_MSG_INVALID_PAYLOAD,
 } from '../../../utils/contants';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { UsersModule } from '../../../modules/users/users.module';
 
 describe('Marital-Status module tests', () => {
   let maritalService: MaritalStatusesService;
@@ -34,7 +34,7 @@ describe('Marital-Status module tests', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
       providers: [
-        LoginModule,
+        UsersModule,
         MaritalStatusesService,
         {
           provide: getModelToken(MaritalStatus.name),

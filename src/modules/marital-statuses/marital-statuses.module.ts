@@ -4,13 +4,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MaritalStatusesService } from './marital-statuses.service';
 import { MaritalStatusesController } from './marital-statuses.controller';
 import { MaritalStatus, MaritalStatusesSchema } from './schemas/marital-status.schema';
-import { LoginModule } from '../login/login.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   controllers: [MaritalStatusesController],
   providers: [MaritalStatusesService],
   imports: [
-    forwardRef(() => LoginModule),
+    forwardRef(() => UsersModule),
     MongooseModule.forFeature([
       {
         name: MaritalStatus.name,

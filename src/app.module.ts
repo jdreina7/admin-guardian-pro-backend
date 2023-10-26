@@ -13,11 +13,12 @@ import { DocumentsModule } from './modules/documents/documents.module';
 import { ContractorsModule } from './modules/contractors/contractors.module';
 import { ContractAppendsModule } from './modules/contract-appends/contract-appends.module';
 import { ContractsModule } from './modules/contracts/contracts.module';
-import { LoginModule } from './modules/login/login.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     MongooseModule.forRoot(process.env.MONGO_URI),
     RolesModule,
     OcupationsModule,
@@ -30,7 +31,6 @@ import { LoginModule } from './modules/login/login.module';
     ContractorsModule,
     ContractAppendsModule,
     ContractsModule,
-    LoginModule,
   ],
 })
 export class AppModule {}

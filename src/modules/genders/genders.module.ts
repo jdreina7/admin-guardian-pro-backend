@@ -1,17 +1,16 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { LoginModule } from '../login/login.module';
-
 import { GendersService } from './genders.service';
 import { GendersController } from './genders.controller';
 import { Gender, GenderSchema } from './schemas/gender.schema';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   controllers: [GendersController],
   providers: [GendersService],
   imports: [
-    forwardRef(() => LoginModule), // Previniendo la dependencia circular entre usuarios y roles
+    forwardRef(() => UsersModule),
     MongooseModule.forFeature([
       {
         name: Gender.name,
