@@ -13,7 +13,6 @@ import {
   mockOcupationService,
   mockOneOcupation,
 } from '../../../tests/mocks/mockOcupationsService.mock';
-import { LoginModule } from '../../../modules/login/login.module';
 import { MockAuthModule } from '../../../tests/mocks/mockAuthModule.mock';
 import {
   ERR_MSG_DATA_NOT_FOUND,
@@ -34,7 +33,6 @@ describe('Marital-Status module tests', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
       providers: [
-        LoginModule,
         OcupationsService,
         {
           provide: getModelToken(Ocupation.name),

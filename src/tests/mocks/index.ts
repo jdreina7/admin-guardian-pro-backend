@@ -4,7 +4,7 @@ export * as mockGenderService from './mockGenderService.mock';
 export * as mockGeneralService from './mockGeneralCRUDService.mock';
 export * as mockIDTypesService from './mockIDtypesService.mock';
 export * as mockLoginService from './mockLoginService.mock';
-export * as mockMaritalStatus from './mockMaritalStatus.mock';
+export * as mockMaritalStatusService from './mockMaritalStatus.mock';
 export * as mockOcupationService from './mockOcupationService.mock';
 export * as mockRolService from './mockRolesService.mock';
 export * as mockUserService from './mockUsersService.mock';
