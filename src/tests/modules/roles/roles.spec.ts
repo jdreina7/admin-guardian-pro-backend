@@ -10,13 +10,13 @@ import { Rol } from '../../../modules/roles/schemas/role.schema';
 import { createdRol, mockAllRoles, mockRol, mockRolService } from '../../mocks/mockRolesService.mock';
 import { UpdateRoleDto } from '../../../modules/roles/dto/update-role.dto';
 import { MockAuthModule } from '../../mocks/mockAuthModule.mock';
-import { LoginModule } from '../../../modules/login/login.module';
 import {
   ERR_MSG_DATA_NOT_FOUND,
   ERR_MSG_GENERAL,
   ERR_MSG_INVALID_PAYLOAD,
   ERR_MSG_INVALID_VALUE,
 } from '../../../utils/contants';
+import { UsersModule } from '../../../modules/users/users.module';
 
 describe('RolesController', () => {
   let controller: RolesController;
@@ -27,7 +27,7 @@ describe('RolesController', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
       providers: [
-        LoginModule,
+        UsersModule,
         RolesService,
         {
           provide: getModelToken(Rol.name),

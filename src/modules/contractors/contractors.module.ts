@@ -5,13 +5,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Contractor, ContractorSchema } from './schemas/contractor.schema';
 import { User, UserSchema } from '../users/schemas/user.schema';
 import { UsersModule } from '../users/users.module';
-import { LoginModule } from '../login/login.module';
+// import { LoginModule } from '../login/login.module';
 
 @Module({
   controllers: [ContractorsController],
   providers: [ContractorsService],
   imports: [
-    forwardRef(() => LoginModule),
+    // forwardRef(() => LoginModule),
     UsersModule,
     MongooseModule.forFeature([
       {

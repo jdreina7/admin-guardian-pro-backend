@@ -1,11 +1,10 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, isValidObjectId } from 'mongoose';
+
+import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
-import { Model } from 'mongoose';
-import { isValidObjectId } from 'mongoose';
-
 import { Rol } from '../roles/schemas/role.schema';
 import { MaritalStatus } from '../marital-statuses/schemas/marital-status.schema';
 import { Ocupation } from '../ocupations/schemas/ocupation.schema';
@@ -81,13 +80,11 @@ export class UsersService {
       : '';
 
     // capitalize the user names
-    createUserDto.firstName
-      ? (createUserDto.firstName = await customCapitalizeFirstLetter(createUserDto.firstName))
-      : '';
+    createUserDto.firstName = await customCapitalizeFirstLetter(createUserDto.firstName);
     createUserDto.middleName
       ? (createUserDto.middleName = await customCapitalizeFirstLetter(createUserDto.middleName))
       : '';
-    createUserDto.lastName ? (createUserDto.lastName = await customCapitalizeFirstLetter(createUserDto.lastName)) : '';
+    createUserDto.lastName = await customCapitalizeFirstLetter(createUserDto.lastName);
 
     // User password encryption
     createUserDto.password = await encryptPassword(createUserDto.password);
@@ -106,23 +103,26 @@ export class UsersService {
 
   // Get all users
   async findAll(paginationDto: PaginationDto) {
-    const { limit = 10, offset = 0 } = paginationDto;
+    try {
+      const { limit = 10, offset = 0 } = paginationDto;
+      const data = await this.userModel
+        .find()
+        .populate('identificationTypeId', 'type')
+        .populate('genderId', 'name')
+        .populate('maritalStatusId', 'name')
+        .populate('ocupationId', 'name')
+        .populate('roleId', 'name')
+        .limit(limit)
+        .skip(offset)
+        .sort({ firstName: 1 });
 
-    const data = await this.userModel
-      .find()
-      .populate('identificationTypeId', 'type')
-      .populate('genderId', 'name')
-      .populate('maritalStatusId', 'name')
-      .populate('ocupationId', 'name')
-      .populate('roleId', 'name')
-      .limit(limit)
-      .skip(offset)
-      .sort({ firstName: 1 });
-
-    return {
-      success: true,
-      data,
-    };
+      return {
+        success: true,
+        data,
+      };
+    } catch (error) {
+      return await customHandlerCatchException(error);
+    }
   }
 
   // Get one User

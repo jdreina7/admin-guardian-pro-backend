@@ -4,13 +4,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { IdentificationsTypesService } from './identificationTypes.service';
 import { IdentificationsTypesController } from './identificationTypes.controller';
 import { IdentificationTypes, IdentificationTypesSchema } from './schemas/identificationTypes.schema';
-import { LoginModule } from '../login/login.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   controllers: [IdentificationsTypesController],
   providers: [IdentificationsTypesService],
   imports: [
-    forwardRef(() => LoginModule),
+    forwardRef(() => UsersModule),
     MongooseModule.forFeature([
       {
         name: IdentificationTypes.name,

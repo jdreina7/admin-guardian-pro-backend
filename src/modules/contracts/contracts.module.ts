@@ -10,13 +10,13 @@ import { ContractAppendsModule } from '../contract-appends/contract-appends.modu
 import { Contract, ContractSchema } from './schemas/contract.schema';
 import { User, UserSchema } from '../users/schemas/user.schema';
 import { UsersModule } from '../users/users.module';
-import { LoginModule } from '../login/login.module';
+// import { LoginModule } from '../login/login.module';
 
 @Module({
   controllers: [ContractsController],
   providers: [ContractsService],
   imports: [
-    forwardRef(() => LoginModule),
+    // forwardRef(() => LoginModule),
     ContractorsModule,
     ContractAppendsModule,
     UsersModule,

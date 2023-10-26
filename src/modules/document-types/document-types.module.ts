@@ -4,13 +4,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DocumentTypesService } from './document-types.service';
 import { DocumentTypesController } from './document-types.controller';
 import { DocumentType, DocumentTypeSchema } from './schemas/document-type.schema';
-import { LoginModule } from '../login/login.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   controllers: [DocumentTypesController],
   providers: [DocumentTypesService],
   imports: [
-    forwardRef(() => LoginModule),
+    forwardRef(() => UsersModule),
     MongooseModule.forFeature([
       {
         name: DocumentType.name,
