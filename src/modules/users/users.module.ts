@@ -1,4 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { UsersService } from './users.service';
@@ -17,18 +20,20 @@ import {
   IdentificationTypes,
   IdentificationTypesSchema,
 } from '../identificationsTypes/schemas/identificationTypes.schema';
-import { LoginModule } from '../login/login.module';
+// import { LoginModule } from '../login/login.module';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { LoginService } from './login.service';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, JwtStrategy, LoginService],
   imports: [
-    forwardRef(() => LoginModule),
-    MaritalStatusesModule,
-    OcupationsModule,
-    forwardRef(() => RolesModule), // Previniendo la dependencia circular entre usuarios y roles
-    GendersModule,
-    IdentificationsTypesModule,
+    ConfigModule,
+    forwardRef(() => MaritalStatusesModule),
+    forwardRef(() => OcupationsModule),
+    forwardRef(() => RolesModule),
+    forwardRef(() => GendersModule),
+    forwardRef(() => IdentificationsTypesModule),
     MongooseModule.forFeature([
       {
         name: User.name,
@@ -55,7 +60,20 @@ import { LoginModule } from '../login/login.module';
         schema: IdentificationTypesSchema,
       },
     ]),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return {
+          secret: configService.get('JWT_SECRET'),
+          signOptions: {
+            expiresIn: '2h',
+          },
+        };
+      },
+    }),
   ],
-  exports: [UsersService],
+  exports: [UsersService, JwtStrategy, PassportModule, JwtModule],
 })
 export class UsersModule {}

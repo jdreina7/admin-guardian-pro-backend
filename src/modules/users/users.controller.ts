@@ -7,10 +7,17 @@ import { PaginationDto } from './../../common/dto/pagination.dto';
 
 import { Auth } from './../../common/decorators/auth.decorator';
 import { EValidRoles } from './../../utils/interfaces';
+import { LoginDto } from './dto/login.dto';
+import { LoginService } from './login.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService, private readonly loginService: LoginService) {}
+
+  @Post('/login')
+  login(@Body() loginDto: LoginDto) {
+    return this.loginService.login(loginDto);
+  }
 
   @Post()
   @Auth(EValidRoles.superadmin, EValidRoles.admin)
