@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { Model } from 'mongoose';
@@ -6,13 +6,13 @@ import { Model } from 'mongoose';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { Documents } from './schemas/document.schema';
-import { customCapitalizeFirstLetter, customHandlerCatchException, customValidateMongoId } from 'src/utils/utils';
-import { ERR_MSG_GENERAL, ERR_MSG_INVALID_ID, ERR_MSG_INVALID_PAYLOAD } from 'src/utils/contants';
+import { customHandlerCatchException, customValidateMongoId } from '../../utils/utils';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_PAYLOAD } from '../../utils/contants';
 import { User } from '../users/schemas/user.schema';
 import { DocumentType } from '../document-types/schemas/document-type.schema';
 import { UsersService } from '../users/users.service';
 import { DocumentTypesService } from '../document-types/document-types.service';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @Injectable()
 export class DocumentsService {
@@ -81,9 +81,9 @@ export class DocumentsService {
       .populate('userOwnerId', 'uid');
 
     if (!existDoc) {
-      throw new BadRequestException({
+      throw new NotFoundException({
         success: false,
-        message: ERR_MSG_INVALID_ID,
+        message: ERR_MSG_DATA_NOT_FOUND,
         invalidValue: `Document ID: ${id}`,
       });
     }
@@ -96,6 +96,14 @@ export class DocumentsService {
   // Update a document by id
   async update(id: string, updateDocumentDto: UpdateDocumentDto) {
     await this.findOne(id);
+
+    if (updateDocumentDto?.documentName?.length <= 0) {
+      throw new BadRequestException({
+        success: false,
+        message: ERR_MSG_INVALID_PAYLOAD,
+        invalidValue: { ...updateDocumentDto },
+      });
+    }
 
     // UderId validation
     updateDocumentDto.userOwnerId ? await this.userService.findOne(updateDocumentDto.userOwnerId) : '';
@@ -119,14 +127,14 @@ export class DocumentsService {
 
   // Delete a document
   async remove(id: string) {
-    const docToDelete = await this.findOne(id);
+    await this.findOne(id);
 
     try {
       await this.documentModel.findByIdAndDelete(id);
 
       return {
         success: true,
-        data: docToDelete,
+        data: id,
       };
     } catch (error) {
       throw new BadRequestException({
