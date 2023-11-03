@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { DocumentsService } from './documents.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { Auth } from 'src/common/decorators/auth.decorator';
+import { PaginationDto } from '../../common/dto/pagination.dto';
+import { Auth } from '../../common/decorators/auth.decorator';
 
 @Controller('documents')
 export class DocumentsController {
