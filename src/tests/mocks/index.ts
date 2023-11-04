@@ -8,3 +8,4 @@ export * as mockMaritalStatusService from './mockMaritalStatus.mock';
 export * as mockOcupationService from './mockOcupationService.mock';
 export * as mockRolService from './mockRolesService.mock';
 export * as mockUserService from './mockUsersService.mock';
+export * as mockContractsService from './mockContractsService.mock';
