@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -55,8 +55,8 @@ export class ContractsService {
 
   // Find all Contracts
   async findAll(paginationDto: PaginationDto) {
-    const { limit = 10, offset = 0 } = paginationDto;
     try {
+      const { limit = 10, offset = 0 } = paginationDto;
       const allContracts = await this.contractModel
         .find()
         .populate('contractorId', 'userId')
@@ -89,7 +89,7 @@ export class ContractsService {
       .select('-createdAt -updatedAt');
 
     if (!contract) {
-      throw new BadRequestException({
+      throw new NotFoundException({
         success: false,
         message: ERR_MSG_DATA_NOT_FOUND,
         invalidValue: `Contract ID: ${id}`,
@@ -106,16 +106,13 @@ export class ContractsService {
   async update(id: string, updateContractDto: UpdateContractDto) {
     await this.findOne(id);
 
-    updateContractDto.contractAppendsId
-      ? await this.contractAppendsService.findOne(updateContractDto.contractAppendsId)
-      : '';
-    //Contract ID
-    updateContractDto.contractorId ? await this.contractorService.findOne(updateContractDto.contractorId) : '';
-    //User ID
-    updateContractDto.contractHolderuserId
-      ? await this.userService.findOne(updateContractDto.contractHolderuserId)
-      : '';
-    updateContractDto.createdByUserId ? await this.userService.findOne(updateContractDto.createdByUserId) : '';
+    // Contract Append
+    await this.contractAppendsService.findOne(updateContractDto.contractAppendsId);
+    // Contractor ID
+    await this.contractorService.findOne(updateContractDto.contractorId);
+    // User ID
+    await this.userService.findOne(updateContractDto.contractHolderuserId);
+    await this.userService.findOne(updateContractDto.createdByUserId);
 
     try {
       const contractToUpdate = await this.contractModel
