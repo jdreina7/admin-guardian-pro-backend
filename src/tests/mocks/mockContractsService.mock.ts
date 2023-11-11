@@ -1,8 +1,9 @@
-import { CreateContractDto } from 'src/modules/contracts/dto/create-contract.dto';
+import { CreateContractDto } from '../../modules/contracts/dto/create-contract.dto';
 
 export const mockContractsService = {
   create: jest.fn(),
   find: jest.fn(),
+  findOne: jest.fn(),
   findById: jest.fn(),
   findByIdAndUpdate: jest.fn(),
   deleteOne: jest.fn(),
@@ -123,7 +124,7 @@ export const mockOneContract = {
 };
 
 // Mock Create a new Contract
-export const createdRol: Partial<CreateContractDto> = {
+export const mockCreatedContract: Partial<CreateContractDto> = {
   contractNumber: 2245,
   contractorId: '6504dd7a38caeebe4f47966a',
   contractHolderuserId: '64fcc2a26e45b152a7cd25dd',

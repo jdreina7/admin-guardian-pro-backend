@@ -1,32 +1,39 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { BadRequestException, NotFoundException, forwardRef } from '@nestjs/common';
+import { BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import mongoose, { Model } from 'mongoose';
 
 import { Contract, ContractsController, ContractsService } from '../../../modules/contracts';
-import { UsersModule } from '../../../modules/users/users.module';
 import {
   mockAuthModule,
-  mockContractsService,
+  mockContractAppendService,
+  mockContractorsService,
+  allMockContractsService,
   mockIDTypesService,
   mockMaritalStatusService,
   mockOcupationService,
   mockUserService,
 } from '../../mocks';
-import { ContractAppend, ContractAppendsModule, ContractAppendsService } from '../../../modules/contract-appends';
+import { ContractAppend, ContractAppendsService } from '../../../modules/contract-appends';
 import { Contractor, ContractorsService } from '../../../modules/contractors';
 import { User, UsersService } from '../../../modules/users';
-import { Ocupation, OcupationsModule, OcupationsService } from '../../../modules/ocupations';
-import { MaritalStatus, MaritalStatusesModule, MaritalStatusesService } from '../../../modules/marital-statuses';
-import { Rol, RolesModule, RolesService } from '../../../modules/roles';
+import { Ocupation, OcupationsService } from '../../../modules/ocupations';
+import { MaritalStatus, MaritalStatusesService } from '../../../modules/marital-statuses';
+import { Rol, RolesService } from '../../../modules/roles';
 import { IdentificationTypes, IdentificationsTypesService } from '../../../modules/identificationsTypes';
 import { Gender, GendersService } from '../../../modules/genders';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID } from '../../../utils/contants';
+import { mockContractsService } from '../../mocks/mockContractsService.mock';
 
 describe('Contract Unit Tests', () => {
   let contractsController: ContractsController;
   let contractService: ContractsService;
+  let contractorService: ContractorsService;
+  let contractAppendService: ContractAppendsService;
+  let userService: UsersService;
   let contractModel: Model<Contract>;
+  let respError: any = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -47,11 +54,11 @@ describe('Contract Unit Tests', () => {
         },
         {
           provide: getModelToken(ContractAppend.name),
-          useValue: mockContractsService,
+          useValue: mockContractAppendService,
         },
         {
           provide: getModelToken(Contractor.name),
-          useValue: mockContractsService,
+          useValue: mockContractorsService,
         },
         {
           provide: getModelToken(User.name),
@@ -81,9 +88,12 @@ describe('Contract Unit Tests', () => {
       controllers: [ContractsController],
     }).compile();
 
+    contractModel = module.get<Model<Contract>>(getModelToken(Contract.name));
     contractsController = module.get<ContractsController>(ContractsController);
     contractService = module.get<ContractsService>(ContractsService);
-    contractModel = module.get<Model<Contract>>(getModelToken(Contract.name));
+    contractorService = module.get<ContractorsService>(ContractorsService);
+    contractAppendService = module.get<ContractAppendsService>(ContractAppendsService);
+    userService = module.get<UsersService>(UsersService);
 
     jest.mock('./../../../common/decorators/auth.decorator.ts', () => {
       return {
@@ -95,6 +105,12 @@ describe('Contract Unit Tests', () => {
         },
       };
     });
+
+    jest.spyOn(userService, 'findOne').mockResolvedValue(mockUserService.mockOneUser as any);
+    jest.spyOn(contractorService, 'findOne').mockResolvedValue(mockContractorsService.mockOneContractor as any);
+    jest
+      .spyOn(contractAppendService, 'findOne')
+      .mockResolvedValue(mockContractAppendService.mockOneContractAppend as any);
   });
 
   afterEach(async () => {
@@ -113,7 +129,7 @@ describe('Contract Unit Tests', () => {
                     limit: () => ({
                       skip: () => ({
                         sort: () => ({
-                          select: jest.fn().mockResolvedValue([mockContractsService.mockAllContracts]),
+                          select: jest.fn().mockResolvedValue([allMockContractsService.mockAllContracts] as any),
                         }),
                       }),
                     }),
@@ -124,360 +140,499 @@ describe('Contract Unit Tests', () => {
           } as any),
       );
 
-      const resp = await contractsController.findAll({});
+      const resp = await contractService.findAll({});
 
       expect(resp).toBeDefined();
       expect(resp?.success).toBeTruthy();
       expect(resp?.data).toBeDefined();
-      expect(mockContractsService.mockContractsService.find).toHaveBeenCalledTimes(1);
+      expect(mockContractsService.find).toHaveBeenCalledTimes(1);
     });
 
-    // it('1.2 Controller.get should return a handled error', async () => {
-    //   jest.spyOn(model, 'find').mockImplementation(
-    //     () =>
-    //       ({
-    //         limit: () => ({
-    //           skip: () => ({
-    //             sort: jest.fn().mockResolvedValue(null),
-    //           }),
-    //         }),
-    //       } as any),
-    //   );
+    it('1.2 Controller.get should return a handled error', async () => {
+      jest.spyOn(contractModel, 'find').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    limit: () => ({
+                      skip: () => ({
+                        sort: () => ({
+                          select: jest.fn().mockResolvedValue(null),
+                        }),
+                      }),
+                    }),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
 
-    //   let errorResult: any = {};
+      try {
+        await contractsController.findAll({});
+      } catch (error) {
+        respError = { ...error };
+      }
 
-    //   try {
-    //     await contractsController.findAll({});
-    //   } catch (error) {
-    //     errorResult = { ...error };
-    //   }
-
-    //   await expect(service.findAll).rejects.toThrow(BadRequestException);
-    //   expect(errorResult).toBeDefined();
-    // });
+      await expect(contractService.findAll).rejects.toThrow(InternalServerErrorException);
+      expect(respError).toBeDefined();
+    });
   });
 
-  //   describe('2. Find Role by ID tests', () => {
-  //     it('2.1 Controller.FindOne should return one existing rol', async () => {
-  //       jest.spyOn(model, 'findById').mockResolvedValue(mockRol);
+  describe('2. Find Contract by ID tests', () => {
+    it('2.1 Controller.FindOne should return one existing contract', async () => {
+      jest.spyOn(contractModel, 'findById').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    select: jest.fn().mockResolvedValue(allMockContractsService.mockOneContract),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
 
-  //       const resp = await controller.findOne(mockRol.data.id);
+      const resp = await contractService.findOne(allMockContractsService.mockOneContract.data.id);
 
-  //       expect(resp).toBeDefined();
-  //       expect(resp?.success).toBeTruthy();
-  //       expect(resp?.data).toBeDefined();
-  //       expect(model.findById).toHaveBeenCalledWith(mockRol.data.id);
-  //       expect(mockRolService.findById).toHaveBeenCalledTimes(1);
-  //       expect(resp?.data).toEqual(mockRol);
+      expect(resp).toBeDefined();
+      expect(resp?.success).toBeTruthy();
+      expect(resp?.data).toBeDefined();
+      expect(contractModel.findById).toHaveBeenCalledWith(allMockContractsService.mockOneContract.data.id);
+      expect(mockContractsService.findById).toHaveBeenCalledTimes(1);
+      expect(resp?.data).toEqual(allMockContractsService.mockOneContract);
 
-  //       jest.spyOn(model, 'findById').mockClear();
-  //       jest.clearAllMocks();
-  //     });
+      jest.spyOn(contractModel, 'findById').mockClear();
+      jest.clearAllMocks();
+    });
 
-  //     it('2.2 Controller.FindOne should return a BadRequestException when the rol id is invalid', async () => {
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(false);
+    it('2.2 Controller.FindOne should return a BadRequestException when the contract id is invalid', async () => {
+      jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(false);
 
-  //       const id = 'wrong_Id01';
-  //       let respError: any = {};
+      const id = 'wrong_Id01';
 
-  //       try {
-  //         await controller.findOne(id);
-  //       } catch (error) {
-  //         respError = { ...error };
-  //       }
+      try {
+        await contractService.findOne(id);
+      } catch (error) {
+        respError = { ...error };
+      }
 
-  //       await expect(service.findOne(id)).rejects.toThrow(BadRequestException);
-  //       expect(respError?.response).toBeDefined();
-  //       expect(respError?.response.success).toBeFalsy();
-  //       expect(respError?.response.message).toBe(ERR_MSG_INVALID_VALUE);
-  //       expect(mockRolService.findById).toHaveBeenCalledTimes(0);
+      await expect(contractService.findOne(id)).rejects.toThrow(BadRequestException);
+      expect(respError?.response.success).toBeFalsy();
+      expect(respError?.response.message).toBe(ERR_MSG_INVALID_ID);
+      expect(mockContractsService.findById).toHaveBeenCalledTimes(0);
 
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
-  //       jest.spyOn(model, 'findById').mockClear();
-  //       jest.clearAllMocks();
-  //     });
+      jest.spyOn(mongoose, 'isValidObjectId').mockClear();
+      jest.spyOn(contractModel, 'findById').mockClear();
+      jest.clearAllMocks();
+    });
 
-  //     it('2.3 Controller.FindOne should return a NotFoundException when the rol id is not found', async () => {
-  //       jest.spyOn(model, 'findById').mockResolvedValue(null);
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
+    it('2.3 Controller.FindOne should return a NotFoundException when the contract id is not found', async () => {
+      jest.spyOn(contractModel, 'findById').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    select: jest.fn().mockResolvedValue(null),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
+      jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
 
-  //       const id = mockRol.data.id;
-  //       let respError: any = {};
+      const id = allMockContractsService.mockOneContract.data.id;
 
-  //       try {
-  //         await controller.findOne(id);
-  //       } catch (error) {
-  //         respError = { ...error };
-  //       }
+      try {
+        await contractsController.findOne(id);
+      } catch (error) {
+        respError = { ...error };
+      }
 
-  //       await expect(service.findOne(id)).rejects.toThrow(NotFoundException);
-  //       expect(respError?.response).toBeDefined();
-  //       expect(respError?.response.success).toBeFalsy();
-  //       expect(respError?.response.message).toBe(ERR_MSG_DATA_NOT_FOUND);
-  //       expect(mockRolService.findById).toHaveBeenCalledTimes(2);
+      await expect(contractService.findOne(id)).rejects.toThrow(NotFoundException);
+      expect(respError?.response).toBeDefined();
+      expect(respError?.response.success).toBeFalsy();
+      expect(respError?.response.message).toBe(ERR_MSG_DATA_NOT_FOUND);
+      expect(mockContractsService.findById).toHaveBeenCalledTimes(2);
 
-  //       jest.spyOn(model, 'findById').mockClear();
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
-  //       jest.clearAllMocks();
-  //     });
-  //   });
+      jest.spyOn(contractModel, 'findById').mockClear();
+      jest.spyOn(mongoose, 'isValidObjectId').mockClear();
+      jest.clearAllMocks();
+    });
+  });
 
-  //   describe('3. Create Rol Tests', () => {
-  //     it('3.1- Controller.create should return a new rol created', async () => {
-  //       jest.spyOn(model, 'create').mockResolvedValue(mockRol as any);
+  describe('3. Create Rol Tests', () => {
+    it('3.1- Controller.create should return a new contract created', async () => {
+      jest.spyOn(contractModel, 'create').mockResolvedValue(allMockContractsService.mockOneContract as any);
 
-  //       const resp = await controller.create(createdRol as any);
+      const resp = await contractService.create(allMockContractsService.mockCreatedContract as any);
 
-  //       expect(resp).toBeDefined();
-  //       expect(resp?.success).toBeTruthy();
-  //       expect(resp?.data).toBeDefined();
-  //       expect(mockRolService.create).toHaveBeenCalledTimes(1);
+      expect(resp).toBeDefined();
+      expect(resp?.success).toBeTruthy();
+      expect(resp?.data).toBeDefined();
+      expect(mockContractsService.create).toHaveBeenCalledTimes(1);
 
-  //       jest.spyOn(model, 'create').mockClear();
-  //     });
+      jest.spyOn(contractModel, 'create').mockClear();
+    });
 
-  //     it('3.2- Controller.create should throw an unhandled error', async () => {
-  //       jest.spyOn(model, 'create').mockRejectedValue(null);
+    it('3.2- Controller.create should throw an unhandled error', async () => {
+      jest.spyOn(contractModel, 'create').mockRejectedValue(null);
 
-  //       let respError: any = {};
+      try {
+        await contractsController.create({ name: 'ANY' } as any);
+      } catch (error) {
+        respError = { ...error };
+      }
 
-  //       try {
-  //         await controller.create({ name: 'ANY' } as any);
-  //       } catch (error) {
-  //         respError = { ...error };
-  //       }
+      await expect(contractService.create({ name: 'ANY' } as any)).rejects.toThrow();
+      expect(respError?.response).toBeDefined();
+      expect(respError?.response.success).toBeFalsy();
+      expect(respError?.response.message).toBe(`${ERR_MSG_GENERAL}`);
+    });
+  });
 
-  //       await expect(service.create({ name: 'ANY' } as any)).rejects.toThrow();
-  //       expect(respError?.response).toBeDefined();
-  //       expect(respError?.response.success).toBeFalsy();
-  //       expect(respError?.response.message).toBe(`${ERR_MSG_GENERAL}`);
-  //     });
-  //   });
+  describe('4- Patch Contract Tests', () => {
+    it('4.1- Controller.update should return one updated contract', async () => {
+      jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
+      jest.spyOn(contractModel, 'findById').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    select: jest.fn().mockResolvedValue(allMockContractsService.mockOneContract),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
+      jest.spyOn(contractModel, 'findByIdAndUpdate').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    select: jest.fn().mockResolvedValue(allMockContractsService.mockOneContract),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
 
-  //   describe('4- Patch Rol Tests', () => {
-  //     it('4.1- Controller.update should return one updated rol', async () => {
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
-  //       jest.spyOn(model, 'findById').mockResolvedValue(mockRol);
-  //       jest.spyOn(model, 'findByIdAndUpdate').mockImplementation(
-  //         () =>
-  //           ({
-  //             select: jest.fn().mockResolvedValue(mockRol),
-  //           } as any),
-  //       );
+      const resp = await contractService.update(allMockContractsService.mockOneContract.data.id, {
+        contractUrl: 'testing',
+      });
 
-  //       const resp = await controller.update(mockRol.data.id, {
-  //         description: 'testing',
-  //       });
+      expect(resp).toBeDefined();
+      expect(resp?.success).toBeTruthy();
+      expect(resp?.data).toBeDefined();
+      expect(contractModel.findById).toHaveBeenCalledWith(allMockContractsService.mockOneContract.data.id);
+      expect(allMockContractsService.mockContractsService.findByIdAndUpdate).toHaveBeenCalledTimes(1);
+      expect(resp?.data).toEqual(allMockContractsService.mockOneContract);
 
-  //       expect(resp).toBeDefined();
-  //       expect(resp?.success).toBeTruthy();
-  //       expect(resp?.data).toBeDefined();
-  //       expect(model.findById).toHaveBeenCalledWith(mockRol.data.id);
-  //       expect(mockRolService.findByIdAndUpdate).toHaveBeenCalledTimes(1);
-  //       expect(resp?.data).toEqual(mockRol);
+      jest.spyOn(contractModel, 'findByIdAndUpdate').mockClear();
+      jest.spyOn(contractModel, 'findById').mockClear();
+      jest.clearAllMocks();
+    });
 
-  //       jest.spyOn(model, 'findByIdAndUpdate').mockClear();
-  //       jest.spyOn(model, 'findById').mockClear();
-  //       jest.clearAllMocks();
-  //     });
+    it('4.2 controller.update must return a bad request by invalid ID', async () => {
+      jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(false);
 
-  //     it('4.2- Controller.update should return a BadRequestException when the rol that comes in the request is empty', async () => {
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
-  //       jest.spyOn(model, 'findById').mockResolvedValue(mockRol);
+      const id = 'lkncds93';
 
-  //       let respError: any = {};
-  //       const updateObj: UpdateRoleDto = {
-  //         name: '',
-  //       };
+      try {
+        await contractService.update(id, {});
+      } catch (error) {
+        respError = { ...error };
+      }
 
-  //       try {
-  //         await controller.update(mockRol.data.id, updateObj);
-  //       } catch (error) {
-  //         respError = { ...error };
-  //       }
+      await expect(contractService.update(id, {})).rejects.toThrow(BadRequestException);
+      expect(respError?.response.success).toBeFalsy();
+      expect(respError?.response.message).toEqual(`${ERR_MSG_INVALID_ID}`);
+      expect(mockContractsService.findByIdAndUpdate).not.toHaveBeenCalled();
 
-  //       await expect(service.update(mockRol.data.id, updateObj)).rejects.toThrow(BadRequestException);
-  //       expect(respError?.response).toBeDefined();
-  //       expect(respError?.response.success).toBeFalsy();
-  //       expect(respError?.response.message).toBe(ERR_MSG_INVALID_PAYLOAD);
-  //       expect(mockRolService.findById).toHaveBeenCalledTimes(2);
+      jest.spyOn(mongoose, 'isValidObjectId').mockClear();
+    });
 
-  //       jest.spyOn(model, 'findById').mockClear();
-  //       jest.clearAllMocks();
-  //     });
+    it('4.3 controller.update must return a not found error', async () => {
+      jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
+      jest.spyOn(contractModel, 'findById').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    select: jest.fn().mockResolvedValue(null),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
 
-  //     it('4.3- Controller.update should return a NotFoundException when the rol id was not found', async () => {
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
-  //       jest.spyOn(model, 'findById').mockResolvedValue(null);
+      const id = allMockContractsService.mockOneContract.data.id;
 
-  //       const id = mockRol.data.id;
-  //       let respError: any = {};
+      try {
+        await contractsController.update(id, {});
+      } catch (error) {
+        respError = { ...error };
+      }
 
-  //       try {
-  //         await controller.update(id, { status: false });
-  //       } catch (error) {
-  //         respError = { ...error };
-  //       }
+      await expect(contractService.update(id, {})).rejects.toThrow(NotFoundException);
+      expect(respError?.response.success).toBeFalsy();
+      expect(respError?.response.message).toEqual(`${ERR_MSG_DATA_NOT_FOUND}`);
+      expect(mockContractsService.findByIdAndUpdate).not.toHaveBeenCalled();
 
-  //       await expect(service.update(id, { status: false })).rejects.toThrow(NotFoundException);
-  //       expect(respError?.response).toBeDefined();
-  //       expect(respError?.response.success).toBeFalsy();
-  //       expect(respError?.response.message).toBe(ERR_MSG_DATA_NOT_FOUND);
-  //       expect(mockRolService.findById).toHaveBeenCalledTimes(2);
+      jest.spyOn(mongoose, 'isValidObjectId').mockClear();
+      jest.spyOn(contractModel, 'findById').mockClear();
+    });
 
-  //       jest.spyOn(model, 'findByIdAndUpdate').mockClear();
-  //       jest.spyOn(model, 'findById').mockClear();
-  //       jest.clearAllMocks();
-  //     });
+    it('4.4 controller.update must return InternalServerErrorException by invalid data', async () => {
+      jest.spyOn(contractModel, 'findById').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    select: jest.fn().mockResolvedValue(allMockContractsService.mockOneContract),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
+      jest.spyOn(contractModel, 'findByIdAndUpdate').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    select: jest.fn().mockRejectedValue(false),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
 
-  //     it('4.4- Controller.update should return a BadRequestException when the rol id is invalid', async () => {
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(false);
-  //       jest.spyOn(model, 'findByIdAndUpdate').mockResolvedValue(false);
-  //       jest.spyOn(model, 'findById').mockResolvedValue(false);
+      const id = allMockContractsService.mockOneContract.data.id;
 
-  //       const id = 'wring-id';
-  //       let respError: any = {};
+      try {
+        await contractsController.update(id, {});
+      } catch (error) {
+        respError = { ...error };
+      }
 
-  //       try {
-  //         await controller.update(id, { status: false });
-  //       } catch (error) {
-  //         respError = { ...error };
-  //       }
+      await expect(contractService.update(id, {})).rejects.toThrow(InternalServerErrorException);
+      expect(respError?.response.success).toBeFalsy();
+      expect(respError?.response.message).toEqual(`${ERR_MSG_GENERAL}`);
+      expect(mockContractsService.findByIdAndUpdate).toHaveBeenCalledTimes(2);
 
-  //       await expect(service.update(id, { status: false })).rejects.toThrow(BadRequestException);
-  //       expect(respError?.response).toBeDefined();
-  //       expect(respError?.response.success).toBeFalsy();
-  //       expect(respError?.response.message).toBe(ERR_MSG_INVALID_VALUE);
-  //       expect(mockRolService.findById).toHaveBeenCalledTimes(0);
+      jest.spyOn(contractModel, 'findById').mockClear();
+      jest.spyOn(contractModel, 'findByIdAndUpdate').mockClear();
+    });
 
-  //       jest.spyOn(model, 'findByIdAndUpdate').mockClear();
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
-  //       jest.spyOn(model, 'findById').mockClear();
-  //       jest.clearAllMocks();
-  //     });
+    it('4.5 controller.update must return a general error', async () => {
+      jest.spyOn(contractModel, 'findById').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    select: jest.fn().mockResolvedValue(allMockContractsService.mockOneContract),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
+      jest.spyOn(contractModel, 'findByIdAndUpdate').mockImplementation(
+        () =>
+          ({
+            select: jest.fn().mockRejectedValue(null),
+          } as any),
+      );
 
-  //     it('4.5- Controller.update should return a general error', async () => {
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
-  //       jest.spyOn(model, 'findById').mockResolvedValue(true);
-  //       jest.spyOn(model, 'findByIdAndUpdate').mockImplementation(
-  //         () =>
-  //           ({
-  //             select: jest.fn().mockRejectedValue(null),
-  //           } as any),
-  //       );
+      const id = allMockContractsService.mockOneContract.data.id;
 
-  //       const id = mockRol.data.id;
-  //       let respError: any = {};
+      try {
+        await contractsController.update(id, {});
+      } catch (error) {
+        respError = { ...error };
+      }
 
-  //       try {
-  //         await controller.update(id, { status: false });
-  //       } catch (error) {
-  //         respError = { ...error };
-  //       }
+      await expect(contractService.update(id, {})).rejects.toThrow(InternalServerErrorException);
+      expect(respError?.response.success).toBeFalsy();
+      expect(respError?.response.message).toEqual(`${ERR_MSG_GENERAL}`);
 
-  //       await expect(service.update(id, { status: false })).rejects.toThrow();
-  //       expect(respError?.response).toBeDefined();
-  //       expect(respError?.response.success).toBeFalsy();
-  //       expect(respError?.response.message).toBe(`${ERR_MSG_GENERAL}`);
+      jest.spyOn(contractModel, 'findById').mockClear();
+      jest.spyOn(contractModel, 'findByIdAndUpdate').mockClear();
+    });
+  });
 
-  //       jest.spyOn(model, 'findByIdAndUpdate').mockClear();
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
-  //       jest.clearAllMocks();
-  //     });
-  //   });
-  //   describe('5- Delete Rol Tests', () => {
-  //     it('5.1- Controller.remove should return one removed rol', async () => {
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
-  //       jest.spyOn(model, 'findByIdAndDelete').mockResolvedValue(mockRol.data.id as any);
-  //       jest.spyOn(model, 'findById').mockResolvedValue(mockRol);
+  describe('5- Delete Contract Tests', () => {
+    it('5.1- Controller.remove should return one removed contract', async () => {
+      jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
+      jest
+        .spyOn(contractModel, 'findByIdAndDelete')
+        .mockResolvedValue(allMockContractsService.mockOneContract.data.id as any);
+      jest.spyOn(contractModel, 'findById').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    select: jest.fn().mockResolvedValue(allMockContractsService.mockOneContract),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
 
-  //       const resp = await controller.remove(mockRol.data.id);
+      const resp = await contractsController.remove(allMockContractsService.mockOneContract.data.id);
 
-  //       expect(resp).toBeDefined();
-  //       expect(resp?.success).toBeTruthy();
-  //       expect(resp?.data).toBeDefined();
-  //       expect(mockRolService.findByIdAndDelete).toHaveBeenCalledTimes(1);
-  //       expect(resp?.data).toEqual(mockRol.data.id);
+      expect(resp).toBeDefined();
+      expect(resp?.success).toBeTruthy();
+      expect(resp?.data).toBeDefined();
+      expect(mockContractsService.findByIdAndDelete).toHaveBeenCalledTimes(1);
+      expect(resp?.data).toEqual({ id: allMockContractsService.mockOneContract.data.id });
 
-  //       jest.spyOn(model, 'findByIdAndDelete').mockClear();
-  //       jest.spyOn(model, 'findById').mockClear();
-  //       jest.clearAllMocks();
-  //     });
+      jest.spyOn(contractModel, 'findByIdAndDelete').mockClear();
+      jest.spyOn(contractModel, 'findById').mockClear();
+      jest.clearAllMocks();
+    });
 
-  //     it('5.2- Controller.remove should return a NotFoundException when the rol id was not found', async () => {
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
-  //       jest.spyOn(model, 'findById').mockResolvedValue(null).mockResolvedValue(null);
+    it('5.2- Controller.remove should return a NotFoundException when the contract id was not found', async () => {
+      jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
+      jest.spyOn(contractModel, 'findById').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    select: jest.fn().mockResolvedValue(null),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
 
-  //       const id = mockRol.data.id;
-  //       let respError: any = {};
+      const id = allMockContractsService.mockOneContract.data.id;
+      let respError: any = {};
 
-  //       try {
-  //         await controller.remove(id);
-  //       } catch (error) {
-  //         respError = { ...error };
-  //       }
+      try {
+        await contractsController.remove(id);
+      } catch (error) {
+        respError = { ...error };
+      }
 
-  //       await expect(service.remove(id)).rejects.toThrow(NotFoundException);
-  //       expect(respError?.response).toBeDefined();
-  //       expect(respError?.response.success).toBeFalsy();
-  //       expect(respError?.response.message).toBe(ERR_MSG_DATA_NOT_FOUND);
-  //       expect(mockRolService.deleteOne).toHaveBeenCalledTimes(0);
+      await expect(contractService.remove(id)).rejects.toThrow(NotFoundException);
+      expect(respError?.response).toBeDefined();
+      expect(respError?.response.success).toBeFalsy();
+      expect(respError?.response.message).toBe(ERR_MSG_DATA_NOT_FOUND);
+      expect(mockContractsService.deleteOne).toHaveBeenCalledTimes(0);
 
-  //       jest.spyOn(model, 'findByIdAndUpdate').mockClear();
-  //       jest.spyOn(model, 'findById').mockClear();
-  //       jest.spyOn(model, 'deleteOne').mockClear();
-  //       jest.clearAllMocks();
-  //     });
+      jest.spyOn(contractModel, 'findByIdAndUpdate').mockClear();
+      jest.spyOn(contractModel, 'findById').mockClear();
+      jest.spyOn(contractModel, 'deleteOne').mockClear();
+      jest.clearAllMocks();
+    });
 
-  //     it('5.3- Controller.remove should return a BadRequestException when the rol id is invalid', async () => {
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(false);
-  //       jest.spyOn(model, 'findByIdAndUpdate').mockResolvedValue(false);
-  //       jest.spyOn(model, 'findById').mockResolvedValue(false);
+    it('5.3- Controller.remove should return a BadRequestException when the contract id is invalid', async () => {
+      jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(false);
+      jest.spyOn(contractModel, 'findByIdAndUpdate').mockResolvedValue(false);
+      jest.spyOn(contractModel, 'findById').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    select: jest.fn().mockResolvedValue(false),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
 
-  //       const id = 'wrong-id2';
-  //       let respError: any = {};
+      const id = 'wrong-id2';
+      let respError: any = {};
 
-  //       try {
-  //         await controller.remove(id);
-  //       } catch (error) {
-  //         respError = { ...error };
-  //       }
+      try {
+        await contractsController.remove(id);
+      } catch (error) {
+        respError = { ...error };
+      }
 
-  //       await expect(service.remove(id)).rejects.toThrow(BadRequestException);
-  //       expect(respError?.response).toBeDefined();
-  //       expect(respError?.response.success).toBeFalsy();
-  //       expect(respError?.response.message).toBe(ERR_MSG_INVALID_VALUE);
-  //       expect(mockRolService.deleteOne).toHaveBeenCalledTimes(0);
+      await expect(contractService.remove(id)).rejects.toThrow(BadRequestException);
+      expect(respError?.response).toBeDefined();
+      expect(respError?.response.success).toBeFalsy();
+      expect(respError?.response.message).toBe(ERR_MSG_INVALID_ID);
+      expect(mockContractsService.deleteOne).toHaveBeenCalledTimes(0);
 
-  //       jest.spyOn(model, 'findByIdAndUpdate').mockClear();
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
-  //       jest.spyOn(model, 'deleteOne').mockClear();
-  //       jest.clearAllMocks();
-  //     });
+      jest.spyOn(contractModel, 'findByIdAndUpdate').mockClear();
+      jest.spyOn(mongoose, 'isValidObjectId').mockClear();
+      jest.spyOn(contractModel, 'deleteOne').mockClear();
+      jest.clearAllMocks();
+    });
 
-  //     it('5.4- Controller.remove should return a general error', async () => {
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
-  //       jest.spyOn(model, 'findById').mockResolvedValue(true);
-  //       jest.spyOn(model, 'findByIdAndDelete').mockRejectedValue(null);
+    it('5.4- Controller.remove should return a general error', async () => {
+      jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
+      jest.spyOn(contractModel, 'findById').mockImplementation(
+        () =>
+          ({
+            populate: () => ({
+              populate: () => ({
+                populate: () => ({
+                  populate: () => ({
+                    select: jest.fn().mockResolvedValue(allMockContractsService.mockOneContract),
+                  }),
+                }),
+              }),
+            }),
+          } as any),
+      );
+      jest.spyOn(contractModel, 'findByIdAndDelete').mockRejectedValue(null);
 
-  //       const id = mockRol.data.id;
-  //       let respError: any = {};
+      const id = allMockContractsService.mockOneContract.data.id;
+      let respError: any = {};
 
-  //       try {
-  //         await controller.remove(id);
-  //       } catch (error) {
-  //         respError = { ...error };
-  //       }
+      try {
+        await contractsController.remove(id);
+      } catch (error) {
+        respError = { ...error };
+      }
 
-  //       await expect(service.remove(id)).rejects.toThrow();
-  //       expect(respError?.response).toBeDefined();
-  //       expect(respError?.response.success).toBeFalsy();
-  //       expect(respError?.response.message).toBe(`${ERR_MSG_GENERAL}`);
+      await expect(contractService.remove(id)).rejects.toThrow();
+      expect(respError?.response).toBeDefined();
+      expect(respError?.response.success).toBeFalsy();
+      expect(respError?.response.message).toBe(`${ERR_MSG_GENERAL}`);
 
-  //       jest.spyOn(model, 'findByIdAndDelete').mockClear();
-  //       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
-  //       jest.spyOn(model, 'findByIdAndDelete').mockClear();
-  //       jest.clearAllMocks();
-  //     });
-  //   });
+      jest.spyOn(contractModel, 'findByIdAndDelete').mockClear();
+      jest.spyOn(mongoose, 'isValidObjectId').mockClear();
+      jest.spyOn(contractModel, 'findByIdAndDelete').mockClear();
+      jest.clearAllMocks();
+    });
+  });
 });
