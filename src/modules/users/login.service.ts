@@ -8,6 +8,7 @@ import { User } from '../users/schemas/user.schema';
 import { ERR_MSG_INVALID_LOGIN } from './../../utils/contants';
 import { comparePasswords } from './../../utils/password-manager';
 import { IJwtPayload } from './interfaces/jwt-payload.interface';
+import { RolesService } from '../roles';
 
 @Injectable()
 export class LoginService {
@@ -16,13 +17,14 @@ export class LoginService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
     // Services
     @Inject(JwtService) private readonly jwtService: JwtService,
+    @Inject(RolesService) private readonly roleService: RolesService,
   ) {}
 
   // User login
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
-    const dbUser: any = await this.userModel.findOne({ email }).select({ email: true, password: true });
+    const dbUser: any = await this.userModel.findOne({ email }).select({ email: true, password: true, roleId: true });
 
     if (!dbUser) {
       throw new UnauthorizedException({
@@ -30,8 +32,6 @@ export class LoginService {
         message: ERR_MSG_INVALID_LOGIN,
       });
     }
-
-    // Validar en este punto que existan ambos password?
 
     const validPassword = await comparePasswords(password, dbUser.password);
 
@@ -42,8 +42,13 @@ export class LoginService {
       });
     }
 
+    // Getting the role name
+    const role = await this.roleService.findOne(dbUser?._doc?.roleId);
+
     return {
-      ...dbUser._doc,
+      id: dbUser?._doc?._id,
+      email: dbUser?._doc?.email,
+      role: role?.data?.name,
       token: this.getJwtToken({ id: dbUser.id, email: dbUser.email }),
     };
   }

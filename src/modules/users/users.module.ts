@@ -23,10 +23,11 @@ import {
 // import { LoginModule } from '../login/login.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LoginService } from './login.service';
+import { RolesService } from '../roles';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, JwtStrategy, LoginService],
+  providers: [UsersService, RolesService, JwtStrategy, LoginService],
   imports: [
     ConfigModule,
     forwardRef(() => MaritalStatusesModule),
@@ -74,6 +75,6 @@ import { LoginService } from './login.service';
       },
     }),
   ],
-  exports: [UsersService, JwtStrategy, PassportModule, JwtModule],
+  exports: [UsersService, RolesService, JwtStrategy, PassportModule, JwtModule],
 })
 export class UsersModule {}

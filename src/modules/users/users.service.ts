@@ -29,7 +29,7 @@ export class UsersService {
   constructor(
     // Models injection
     @InjectModel(User.name) private readonly userModel: Model<User>,
-    @InjectModel(Rol.name) private readonly rolModel: Model<Rol>,
+    // @InjectModel(Rol.name) private readonly rolModel: Model<Rol>,
     @InjectModel(MaritalStatus.name) private readonly MaritalStatusModel: Model<MaritalStatus>,
     @InjectModel(Ocupation.name) private readonly ocupationModel: Model<Ocupation>,
     @InjectModel(IdentificationTypes.name) private readonly IdentificationTypes: Model<IdentificationTypes>,
