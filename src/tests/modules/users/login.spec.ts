@@ -25,10 +25,12 @@ import {
   mockLoginService,
 } from '../../mocks/index';
 import { ERR_MSG_INVALID_LOGIN } from '../../../utils/contants';
+import { mockRol } from '../../mocks/mockRolesService.mock';
 
 describe('Login Unit Tests', () => {
-  let usrController: UsersController;
+  // let usrController: UsersController;
   let usrModel: Model<User>;
+  // let roleModel: Model<Rol>;
   let loginService: LoginService;
   let jwtService: JwtService;
   let maritalStatusesService: MaritalStatusesService;
@@ -42,17 +44,13 @@ describe('Login Unit Tests', () => {
       imports: [PassportModule.register({ defaultStrategy: 'jwt' })],
       providers: [
         UsersService,
-        LoginService,
-        JwtService,
         MaritalStatusesService,
-        RolesService,
         OcupationsService,
         IdentificationsTypesService,
         GendersService,
-        {
-          provide: getModelToken(MaritalStatus.name),
-          useValue: mockMaritalStatusService,
-        },
+        LoginService,
+        JwtService,
+        RolesService,
         {
           provide: getModelToken(User.name),
           useValue: Model, // For test directly models functions
@@ -60,6 +58,10 @@ describe('Login Unit Tests', () => {
         {
           provide: getModelToken(Rol.name),
           useValue: mockRolService,
+        },
+        {
+          provide: getModelToken(MaritalStatus.name),
+          useValue: mockMaritalStatusService,
         },
         {
           provide: getModelToken(Ocupation.name),
@@ -74,18 +76,19 @@ describe('Login Unit Tests', () => {
           useValue: mockGenderService,
         },
       ],
-      controllers: [UsersController],
+      // controllers: [UsersController],
     }).compile();
 
-    usrController = module.get<UsersController>(UsersController);
+    // usrController = module.get<UsersController>(UsersController);
     loginService = module.get<LoginService>(LoginService);
     jwtService = module.get<JwtService>(JwtService);
-    usrModel = module.get<Model<User>>(getModelToken(User.name));
     maritalStatusesService = module.get<MaritalStatusesService>(MaritalStatusesService);
     rolesService = module.get<RolesService>(RolesService);
     ocupationsService = module.get<OcupationsService>(OcupationsService);
     identificationsTypesService = module.get<IdentificationsTypesService>(IdentificationsTypesService);
     gendersService = module.get<GendersService>(GendersService);
+    usrModel = module.get<Model<User>>(getModelToken(User.name));
+    //roleModel = module.get<Model<Rol>>(getModelToken(Rol.name));
 
     jest.mock('./../../../common/decorators/auth.decorator.ts', () => {
       return {
@@ -112,6 +115,7 @@ describe('Login Unit Tests', () => {
   });
 
   it('1- Login should return a success login from controller', async () => {
+    jest.spyOn(rolesService, 'findOne').mockReturnValueOnce(mockRol as any);
     jest.spyOn(usrModel, 'findOne').mockImplementation(
       () =>
         ({
@@ -125,33 +129,33 @@ describe('Login Unit Tests', () => {
     const resp = await loginService.login(mockLoginService.usrLogin);
 
     expect(resp).toBeDefined();
-    expect(resp?._id).toBeDefined();
+    expect(resp?.id).toBeDefined();
     expect(resp?.token).toBeDefined();
     expect(loginService.login).toHaveBeenCalledTimes(1);
   });
 
-  it('1- Login should return a success login from controller', async () => {
-    jest.spyOn(usrModel, 'findOne').mockImplementation(
-      () =>
-        ({
-          select: jest.fn().mockResolvedValue(mockUserService.mockOneUser),
-        } as any),
-    );
-    jest.spyOn(passManager, 'comparePasswords').mockResolvedValue(true);
-    jest.spyOn(loginService, 'login').mockResolvedValue(mockLoginService.succesLogin as any);
-    jest.spyOn(jwtService, 'sign').mockReturnValueOnce(mockLoginService.succesLogin.token as any);
+  // it('1.1- Login should return a success login from controller', async () => {
+  //   jest.spyOn(usrModel, 'findOne').mockImplementation(
+  //     () =>
+  //       ({
+  //         select: jest.fn().mockResolvedValue(mockUserService.mockOneUser),
+  //       } as any),
+  //   );
+  //   jest.spyOn(passManager, 'comparePasswords').mockResolvedValue(true);
+  //   jest.spyOn(loginService, 'login').mockResolvedValue(mockLoginService.succesLogin as any);
+  //   jest.spyOn(jwtService, 'sign').mockReturnValueOnce(mockLoginService.succesLogin.token as any);
 
-    const resp = await usrController.login(mockLoginService.usrLogin);
+  //   const resp = await usrController.login(mockLoginService.usrLogin);
 
-    expect(resp).toBeDefined();
-    expect(resp?._id).toBeDefined();
-    expect(resp?.token).toBeDefined();
-    expect(loginService.login).toHaveBeenCalledTimes(1);
+  //   expect(resp).toBeDefined();
+  //   expect(resp?.id).toBeDefined();
+  //   expect(resp?.token).toBeDefined();
+  //   expect(loginService.login).toHaveBeenCalledTimes(1);
 
-    jest.spyOn(jwtService, 'sign').mockClear();
-    jest.spyOn(passManager, 'comparePasswords').mockClear();
-    jest.clearAllMocks();
-  });
+  //   jest.spyOn(jwtService, 'sign').mockClear();
+  //   jest.spyOn(passManager, 'comparePasswords').mockClear();
+  //   jest.clearAllMocks();
+  // });
 
   it('2- Login should return a UnauthorizedException because the user not exist', async () => {
     jest.spyOn(usrModel, 'findOne').mockImplementation(

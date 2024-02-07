@@ -8,7 +8,7 @@ import { User } from '../users/schemas/user.schema';
 import { ERR_MSG_INVALID_LOGIN } from './../../utils/contants';
 import { comparePasswords } from './../../utils/password-manager';
 import { IJwtPayload } from './interfaces/jwt-payload.interface';
-import { Rol, RolesService } from '../roles';
+import { RolesService } from '../roles';
 
 @Injectable()
 export class LoginService {
