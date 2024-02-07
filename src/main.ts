@@ -19,6 +19,9 @@ async function initProyect() {
     }),
   );
 
+  // Enable CORS
+  app.enableCors();
+
   await app.listen(process.env.PORT_DEVELOP);
 
   /* istanbul ignore next */
