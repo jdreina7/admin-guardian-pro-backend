@@ -1,4 +1,4 @@
-import { CreateContractorDto } from '../../modules/contractors/dto/create-contractor.dto';
+import { CreateContractorDto } from 'src/modules/contractors/dto/create-contractor.dto';
 
 export const mockContractorsService = {
   create: jest.fn(),
