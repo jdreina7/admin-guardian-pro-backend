@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
 
 @Schema({
   // Esto oculta el campo __v y transforma el _id en id en las respuestas
@@ -12,7 +12,7 @@ import mongoose, { Document } from 'mongoose';
   },
   timestamps: true,
 })
-export class Contractor extends Document {
+export class Contractor extends mongoose.Document {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
