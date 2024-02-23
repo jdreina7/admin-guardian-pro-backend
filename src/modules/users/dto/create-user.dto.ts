@@ -95,9 +95,13 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsObject()
-  settings?: { layout?: Record<string, any>; theme?: Record<string, any> };
+  settings?: any;
 
   @IsOptional()
   @IsArray()
   shortcuts?: string[];
+
+  @IsString()
+  @IsOptional()
+  loginRedirectUrl: string;
 }

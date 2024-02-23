@@ -24,7 +24,8 @@ export class LoginService {
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
-    const dbUser: any = await this.userModel.findOne({ email }).select({ email: true, password: true, roleId: true });
+    // const dbUser: User = await this.userModel.findOne({ email }).select({ email: true, password: true, roleId: true });
+    const dbUser: User = await this.userModel.findOne({ email });
 
     if (!dbUser) {
       throw new UnauthorizedException({
@@ -43,14 +44,40 @@ export class LoginService {
     }
 
     // Getting the role name
-    const role = await this.roleService.findOne(dbUser?._doc?.roleId);
+    const role = await this.roleService.findOne(String(dbUser?.roleId));
+
+    delete dbUser?.settings?.id;
+    delete dbUser?.settings?._id;
+
+    if (Object.keys(dbUser?.settings).length === 0) {
+      dbUser.settings = {
+        layout: {},
+        theme: {},
+      };
+    }
 
     return {
-      id: dbUser?._doc?._id,
-      email: dbUser?._doc?.email,
-      role: role?.data?.name,
-      token: this.getJwtToken({ id: dbUser.id, email: dbUser.email }),
+      user: {
+        uid: dbUser?.id,
+        role: role?.data?.name,
+        data: {
+          displayName: dbUser?.username ? dbUser?.username : `${dbUser?.firstName} ${dbUser?.lastName}`,
+          photoURL: dbUser?.userImg ? dbUser?.userImg : '',
+          email: dbUser?.email,
+          settings: dbUser?.settings,
+          shortcuts: dbUser?.shortcuts,
+          loginRedirectUrl: dbUser?.loginRedirectUrl,
+        },
+      },
+      access_token: this.getJwtToken({ id: dbUser.id, email: dbUser.email }),
     };
+
+    // return {
+    //   id: dbUser?._doc?._id,
+    //   email: dbUser?._doc?.email,
+    //   role: role?.data?.name,
+    //   token: this.getJwtToken({ id: dbUser.id, email: dbUser.email }),
+    // };
   }
 
   /**
