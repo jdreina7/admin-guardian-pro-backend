@@ -87,7 +87,7 @@ export const mockOneContractAppend = {
 };
 
 // Mock Create a new Contract appends
-export const createdContractor: Partial<CreateContractAppendDto> = {
+export const createdContracAppend: Partial<CreateContractAppendDto> = {
   title: 'Append #1',
   content: 'This is the content example',
   createdByUserId: '64fb308f4751d652d08903d0',
