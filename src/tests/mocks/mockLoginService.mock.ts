@@ -8,9 +8,21 @@ export const usrLogin = {
 };
 
 export const succesLogin = {
-  id: '64fb308f4751d652d08903d0',
-  email: 'judareiro@gmail.com',
-  role: 'admin',
-  token:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZmIzMDhmNDc1MWQ2NTJkMDg5MDNkMCIsImVtYWlsIjoianVkYXJlaXJvQGdtYWlsLmNvbSIsImlhdCI6MTY5ODEwNDQ3OSwiZXhwIjoxNjk4MTExNjc5fQ.kjRiWvtm-hyd37PrpfS7m1xy5_mmiaG9Ya9fEX5Qd5k',
+  user: {
+    uid: '65d8459da53425574021dac0',
+    role: 'superadmin',
+    data: {
+      displayName: 'judareiro',
+      photoURL: '',
+      email: 'judareiro@gmail.com',
+      settings: {
+        layout: {},
+        theme: {},
+      },
+      shortcuts: ['app.mail', 'app.calendar'],
+      loginRedirectUrl: '/dashboards/project',
+    },
+  },
+  access_token:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZDg0NTlkYTUzNDI1NTc0MDIxZGFjMCIsImVtYWlsIjoianVkYXJlaXJvQGdtYWlsLmNvbSIsImlhdCI6MTcwODY3NTAyOSwiZXhwIjoxNzA4NjgyMjI5fQ.MpVhHPkVZEsHY4Pp1HOf8kNMdHrSztTHUzm8fOY7Wgk',
 };

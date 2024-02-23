@@ -49,7 +49,7 @@ export class LoginService {
     delete dbUser?.settings?.id;
     delete dbUser?.settings?._id;
 
-    if (Object.keys(dbUser?.settings).length === 0) {
+    if (dbUser?.settings && Object.keys(dbUser?.settings).length === 0) {
       dbUser.settings = {
         layout: {},
         theme: {},
