@@ -5,7 +5,6 @@ import { Model, isValidObjectId } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Rol } from '../roles/schemas/role.schema';
 import { MaritalStatus } from '../marital-statuses/schemas/marital-status.schema';
 import { Ocupation } from '../ocupations/schemas/ocupation.schema';
 import { IdentificationTypes } from '../identificationsTypes/schemas/identificationTypes.schema';

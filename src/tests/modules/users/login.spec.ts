@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
-import { User, LoginService, UsersController, UsersService } from '../../../modules/users';
+import { User, LoginService, UsersService } from '../../../modules/users';
 import * as passManager from '../../../utils/password-manager';
 import { MaritalStatus, MaritalStatusesService } from '../../../modules/marital-statuses';
 import { Rol, RolesService } from '../../../modules/roles';
@@ -123,47 +123,19 @@ describe('Login Unit Tests', () => {
         } as any),
     );
     jest.spyOn(passManager, 'comparePasswords').mockResolvedValue(true);
-    jest.spyOn(jwtService, 'sign').mockReturnValueOnce(mockLoginService.succesLogin.token as any);
+    jest.spyOn(jwtService, 'sign').mockReturnValueOnce(mockLoginService.succesLogin.access_token as any);
     jest.spyOn(loginService, 'login').mockResolvedValue(mockLoginService.succesLogin as any);
 
     const resp = await loginService.login(mockLoginService.usrLogin);
 
     expect(resp).toBeDefined();
-    expect(resp?.id).toBeDefined();
-    expect(resp?.token).toBeDefined();
+    expect(resp?.user).toBeDefined();
+    expect(resp?.access_token).toBeDefined();
     expect(loginService.login).toHaveBeenCalledTimes(1);
   });
 
-  // it('1.1- Login should return a success login from controller', async () => {
-  //   jest.spyOn(usrModel, 'findOne').mockImplementation(
-  //     () =>
-  //       ({
-  //         select: jest.fn().mockResolvedValue(mockUserService.mockOneUser),
-  //       } as any),
-  //   );
-  //   jest.spyOn(passManager, 'comparePasswords').mockResolvedValue(true);
-  //   jest.spyOn(loginService, 'login').mockResolvedValue(mockLoginService.succesLogin as any);
-  //   jest.spyOn(jwtService, 'sign').mockReturnValueOnce(mockLoginService.succesLogin.token as any);
-
-  //   const resp = await usrController.login(mockLoginService.usrLogin);
-
-  //   expect(resp).toBeDefined();
-  //   expect(resp?.id).toBeDefined();
-  //   expect(resp?.token).toBeDefined();
-  //   expect(loginService.login).toHaveBeenCalledTimes(1);
-
-  //   jest.spyOn(jwtService, 'sign').mockClear();
-  //   jest.spyOn(passManager, 'comparePasswords').mockClear();
-  //   jest.clearAllMocks();
-  // });
-
   it('2- Login should return a UnauthorizedException because the user not exist', async () => {
-    jest.spyOn(usrModel, 'findOne').mockImplementation(
-      () =>
-        ({
-          select: jest.fn().mockResolvedValue(null),
-        } as any),
-    );
+    jest.spyOn(usrModel, 'findOne').mockReturnValue(null);
 
     let respError: any = {};
 
