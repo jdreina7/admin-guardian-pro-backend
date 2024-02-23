@@ -109,6 +109,22 @@ export class User extends mongoose.Document {
 
   @Prop()
   lastLogin: string;
+
+  @Prop({
+    type: {
+      layout: { type: Object },
+      theme: { type: Object },
+    },
+    default: {
+      layout: {},
+      theme: {},
+      _id: false,
+    },
+  })
+  settings: { layout: Record<string, any>; theme: Record<string, any> };
+
+  @Prop()
+  shortcuts: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

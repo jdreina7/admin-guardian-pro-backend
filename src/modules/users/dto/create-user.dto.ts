@@ -1,8 +1,10 @@
 import {
+  IsArray,
   IsBoolean,
   IsEmail,
   IsMongoId,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   Matches,
@@ -90,4 +92,12 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   lastLogin: string;
+
+  @IsOptional()
+  @IsObject()
+  settings?: { layout?: Record<string, any>; theme?: Record<string, any> };
+
+  @IsOptional()
+  @IsArray()
+  shortcuts?: string[];
 }
