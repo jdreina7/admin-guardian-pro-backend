@@ -11,6 +11,7 @@ import { mockOneUser, mockUserService } from '../../../tests/mocks/mockUsersServ
 import { MockAuthModule } from '../../../tests/mocks/mockAuthModule.mock';
 import {
   createdContracAppend,
+  mockAllContractAppends,
   mockContractAppendsService,
   mockOneContractAppend,
 } from './../../mocks/mockContractAppendsService.mock';
@@ -29,6 +30,7 @@ import { Ocupation, OcupationsService } from '../../../modules/ocupations';
 import { IdentificationTypes, IdentificationsTypesService } from '../../../modules/identificationsTypes';
 import { Gender, GendersService } from '../../../modules/genders';
 import {
+  mockContractAppendService,
   mockGenderService,
   mockIDTypesService,
   mockMaritalStatusService,
@@ -40,6 +42,7 @@ import { mockRol } from '../../../tests/mocks/mockRolesService.mock';
 import { mockOneOcupation } from '../../../tests/mocks/mockOcupationService.mock';
 import { mockOneIDTypes } from '../../../tests/mocks/mockIDtypesService.mock';
 import { mockOneGender } from '../../../tests/mocks/mockGenderService.mock';
+import { UpdateContractAppendDto } from 'src/modules/contract-appends/dto/update-contract-append.dto';
 
 describe('Contract-Appends module Test', () => {
   let conAppController: ContractAppendsController;
@@ -208,6 +211,7 @@ describe('Contract-Appends module Test', () => {
     });
 
     it('2.3 controller.get must return not found error', async () => {
+      jest.spyOn(userService, 'findOne').mockResolvedValue(mockOneUser as any);
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(conAppModel, 'findById').mockImplementation(
         () =>
@@ -231,231 +235,197 @@ describe('Contract-Appends module Test', () => {
 
       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
       jest.spyOn(conAppModel, 'findById').mockClear();
+      jest.spyOn(userService, 'findOne').mockClear();
     });
   });
-  /*
-  describe('3. Test get all existing Documents', () => {
-    it('3.1 controller.get must return all existing documents', async () => {
-      jest.spyOn(docModel, 'find').mockImplementation(
+
+  describe('3. Test get all existing Contract-Append', () => {
+    it('3.1 controller.get must return all existing Contract-Append', async () => {
+      jest.spyOn(conAppModel, 'find').mockImplementation(
         () =>
           ({
             populate: () => ({
-              populate: () => ({
-                limit: () => ({
-                  skip: () => ({
-                    sort: () => ({
-                      select: jest.fn().mockResolvedValue(mockAllDocuments as any),
-                    }),
-                  }),
+              limit: () => ({
+                skip: () => ({
+                  sort: jest.fn().mockResolvedValue(mockAllContractAppends.data[0].title),
                 }),
               }),
             }),
           } as any),
       );
 
-      result = await docController.findAll({ limit: 10, offset: 0 });
+      result = await conAppController.findAll({ limit: 10, offset: 0 });
 
       expect(result?.success).toBeTruthy();
       expect(result?.data).toBeDefined();
-      expect(result?.data).toBe(mockAllDocuments);
-      expect(mockDocumentsService.find).toHaveBeenCalled();
+      expect(result?.data).toBe(mockAllContractAppends.data[0].title);
+      expect(mockContractAppendsService.find).toHaveBeenCalled();
 
-      jest.spyOn(docModel, 'find').mockClear();
-    });
-
-    it('3.2 controller.get must return a general error', async () => {
-      jest.spyOn(docModel, 'find').mockImplementation(
-        () =>
-          ({
-            populate: () => ({
-              populate: () => ({
-                limit: () => ({
-                  skip: () => ({
-                    sort: () => ({
-                      select: jest.fn().mockRejectedValue(null),
-                    }),
-                  }),
-                }),
-              }),
-            }),
-          } as any),
-      );
-
-      try {
-        await docController.findAll({ limit: 10, offset: 0 });
-      } catch (error) {
-        errorResult = { ...error };
-      }
-
-      await expect(docServices.findAll({ limit: 10, offset: 0 })).rejects.toThrow(InternalServerErrorException);
-      expect(errorResult?.response.success).toBeFalsy();
-      expect(errorResult?.response.message).toEqual(`${ERR_MSG_GENERAL}`);
-      expect(mockDocumentsService.find).toHaveBeenCalled();
-
-      jest.spyOn(docModel, 'find').mockClear();
+      jest.spyOn(conAppModel, 'find').mockClear();
     });
   });
 
-  describe('4. test update Document by id', () => {
+  describe('4. test update Contract-Append by id', () => {
     let data: any = {
-      documentName: 'Test',
-      documentTypeId: '64fcb898da86b3322ddd5f13',
-      userOwnerId: '64fcb828b8224d148e5ea6e6',
-      description: 'erfds',
+      status: false,
     };
-    it('4.1 controller.update must return the updated document', async () => {
+    it('4.1 controller.update must return the updated Contract-Append', async () => {
       //Mongoose --- jest.spyOn()
-      jest.spyOn(docModel, 'findById').mockImplementation(
+      jest.spyOn(conAppModel, 'findById').mockImplementation(
         () =>
           ({
-            populate: () => ({
-              populate: jest.fn().mockResolvedValue(mockOneDocument),
-            }),
+            populate: jest.fn().mockResolvedValue(mockOneContractAppend),
           } as any),
       );
-      jest.spyOn(docModel, 'findByIdAndUpdate').mockImplementation(
+      jest.spyOn(conAppModel, 'findByIdAndUpdate').mockImplementation(
         () =>
           ({
-            select: jest.fn().mockReturnValue(mockOneDocument),
+            select: jest.fn().mockReturnValue(mockOneContractAppend),
           } as any),
       );
 
-      id = mockOneDocument.data.id;
-      result = await docController.update(id, data);
+      id = mockOneContractAppend.data[0].id;
+      result = await conAppController.update(id, data);
 
       expect(result?.success).toBeTruthy();
       expect(result?.data).toBeDefined();
-      expect(result?.data).toBe(mockOneDocument);
-      expect(mockDocumentsService.findByIdAndUpdate).toHaveBeenCalled();
+      expect(result?.data).toBe(mockOneContractAppend);
+      expect(mockContractAppendsService.findByIdAndUpdate).toHaveBeenCalled();
 
-      jest.spyOn(docModel, 'findById').mockClear();
-      jest.spyOn(docModel, 'findByIdAndUpdate').mockClear();
+      jest.spyOn(conAppModel, 'findById').mockClear();
+      jest.spyOn(conAppModel, 'findByIdAndUpdate').mockClear();
     });
 
     it('4.2 controller.update must return a bad request by invalid ID', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(false);
+      jest.spyOn(conAppModel, 'findById').mockImplementation(
+        () =>
+          ({
+            populate: jest.fn().mockReturnValue(false),
+          } as any),
+      );
 
-      id = 'lkncds93';
+      id = '123';
 
       try {
-        await docController.update(id, data);
+        await conAppController.update(id, data);
       } catch (error) {
         errorResult = { ...error };
       }
 
-      await expect(docServices.update(id, data)).rejects.toThrow(BadRequestException);
+      await expect(conAppServices.findOne(id)).rejects.toThrow(BadRequestException);
       expect(errorResult?.response.success).toBeFalsy();
-      expect(errorResult?.response.message).toEqual(`${ERR_MSG_INVALID_ID}`);
-      expect(mockDocumentsService.findByIdAndUpdate).not.toHaveBeenCalled();
+      expect(mockContractAppendsService.findByIdAndUpdate).toHaveBeenCalledTimes(1);
 
       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
+      jest.spyOn(conAppModel, 'findById').mockClear();
     });
 
     it('4.3 controller.update must return a not found error', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
-      jest.spyOn(docModel, 'findById').mockImplementation(
+      jest.spyOn(conAppModel, 'findById').mockImplementation(
         () =>
           ({
             populate: () => ({
-              populate: jest.fn().mockResolvedValue(null),
+              populate: jest.fn().mockReturnValue(false),
             }),
           } as any),
       );
 
-      id = mockOneDocument.data.id;
-
+      id = mockOneContractAppend.data[0].id;
+      // Debo mockear      UpdateContractAppendDto.createdByUserI = '33lon321';
       try {
-        await docController.update(id, data);
+        await conAppController.update(id, data[0]);
       } catch (error) {
         errorResult = { ...error };
       }
 
-      await expect(docServices.update(id, data)).rejects.toThrow(NotFoundException);
+      await expect(conAppServices.update(id, data[0])).rejects.toThrow(NotFoundException);
       expect(errorResult?.response.success).toBeFalsy();
       expect(errorResult?.response.message).toEqual(`${ERR_MSG_DATA_NOT_FOUND}`);
-      expect(mockDocumentsService.findByIdAndUpdate).not.toHaveBeenCalled();
+      expect(mockContractAppendsService.findByIdAndUpdate).not.toHaveBeenCalled();
 
       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
-      jest.spyOn(docModel, 'findById').mockClear();
+      jest.spyOn(conAppModel, 'findById').mockClear();
     });
 
     it('4.4 controller.update must return badrequest by invalid data', async () => {
-      jest.spyOn(docModel, 'findById').mockImplementation(
+      jest.spyOn(conAppModel, 'findById').mockImplementation(
         () =>
           ({
             populate: () => ({
-              populate: jest.fn().mockResolvedValue(mockOneDocument),
+              populate: jest.fn().mockResolvedValue(mockOneContractAppend),
             }),
           } as any),
       );
-      jest.spyOn(docModel, 'findByIdAndUpdate').mockImplementation(
+      jest.spyOn(conAppModel, 'findByIdAndUpdate').mockImplementation(
         () =>
           ({
             select: jest.fn().mockResolvedValue(false),
           } as any),
       );
 
-      data = { documentName: '' };
+      data = { title: '' };
       try {
-        await docController.update(id, data);
+        await conAppController.update(id, data);
       } catch (error) {
         errorResult = { ...error };
       }
 
-      await expect(docServices.update(id, data)).rejects.toThrow(BadRequestException);
+      await expect(conAppServices.update(id, data)).rejects.toThrow(BadRequestException);
       expect(errorResult?.response.success).toBeFalsy();
       expect(errorResult?.response.message).toEqual(`${ERR_MSG_INVALID_PAYLOAD}`);
-      expect(mockDocumentsService.findByIdAndUpdate).not.toHaveBeenCalled();
+      expect(mockContractAppendsService.findByIdAndUpdate).not.toHaveBeenCalled();
 
-      jest.spyOn(docModel, 'findById').mockClear();
-      jest.spyOn(docModel, 'findByIdAndUpdate').mockClear();
+      jest.spyOn(conAppModel, 'findById').mockClear();
+      jest.spyOn(conAppModel, 'findByIdAndUpdate').mockClear();
     });
 
     it('4.5 controller.update must return a general error', async () => {
-      jest.spyOn(docModel, 'findById').mockImplementation(
+      jest.spyOn(conAppModel, 'findById').mockImplementation(
         () =>
           ({
             populate: () => ({
-              populate: jest.fn().mockResolvedValue(mockOneDocument),
+              populate: jest.fn().mockResolvedValue(mockOneContractAppend),
             }),
           } as any),
       );
-      jest.spyOn(docModel, 'findByIdAndUpdate').mockImplementation(
+      jest.spyOn(conAppModel, 'findByIdAndUpdate').mockImplementation(
         () =>
           ({
             select: jest.fn().mockRejectedValue(null),
           } as any),
       );
 
-      data = { documentName: 'testing again' };
+      data = { title: 'testing again' };
       try {
-        await docController.update(id, data);
+        await conAppController.update(id, data);
       } catch (error) {
         errorResult = { ...error };
       }
 
-      await expect(docServices.update(id, data)).rejects.toThrow(InternalServerErrorException);
+      await expect(conAppServices.update(id, data)).rejects.toThrow(InternalServerErrorException);
       expect(errorResult?.response.success).toBeFalsy();
       expect(errorResult?.response.message).toEqual(`${ERR_MSG_GENERAL}`);
 
-      jest.spyOn(docModel, 'findById').mockClear();
-      jest.spyOn(docModel, 'findByIdAndUpdate').mockClear();
+      jest.spyOn(conAppModel, 'findById').mockClear();
+      jest.spyOn(conAppModel, 'findByIdAndUpdate').mockClear();
     });
   });
 
   describe('5. Test delete Document', () => {
     it('5.1 controller.remove must return the deleted Id', async () => {
       jest.spyOn(userService, 'findOne').mockResolvedValue(mockOneUser as any);
-      jest.spyOn(docModel, 'findByIdAndDelete').mockResolvedValue(id);
+      jest.spyOn(conAppModel, 'findByIdAndDelete').mockResolvedValue(id);
 
-      result = await docController.remove(id);
+      result = await conAppController.remove(id);
 
       expect(result?.success).toBeTruthy();
       expect(result?.data).toBe(id);
-      expect(mockDocumentsService.findByIdAndDelete).toHaveBeenCalled();
+      expect(mockContractAppendsService.findByIdAndDelete).toHaveBeenCalled();
 
       jest.spyOn(userService, 'findOne').mockClear();
-      jest.spyOn(docModel, 'findByIdAndDelete').mockClear();
+      jest.spyOn(conAppModel, 'findByIdAndDelete').mockClear();
     });
 
     it('5.2 controller.remove must a bad request by  invalid Id', async () => {
@@ -464,22 +434,22 @@ describe('Contract-Appends module Test', () => {
       id = 'lkncds93';
 
       try {
-        await docController.remove(id);
+        await conAppController.remove(id);
       } catch (error) {
         errorResult = { ...error };
       }
 
-      await expect(docServices.remove(id)).rejects.toThrow(BadRequestException);
+      await expect(conAppServices.remove(id)).rejects.toThrow(BadRequestException);
       expect(errorResult?.response.success).toBeFalsy();
       expect(errorResult?.response.message).toEqual(`${ERR_MSG_INVALID_ID}`);
-      expect(mockDocumentsService.findByIdAndDelete).not.toHaveBeenCalled();
+      expect(mockContractAppendsService.findByIdAndDelete).not.toHaveBeenCalled();
 
       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
     });
 
     it('5.3 controller.remove must a not found error', async () => {
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
-      jest.spyOn(docModel, 'findById').mockImplementation(
+      jest.spyOn(conAppModel, 'findById').mockImplementation(
         () =>
           ({
             populate: () => ({
@@ -488,46 +458,46 @@ describe('Contract-Appends module Test', () => {
           } as any),
       );
 
-      id = mockOneDocument.data.id;
+      id = mockOneContractAppend.data[0].id;
 
       try {
-        await docController.remove(id);
+        await conAppController.remove(id);
       } catch (error) {
         errorResult = { ...error };
       }
 
-      await expect(docServices.remove(id)).rejects.toThrow(NotFoundException);
+      await expect(conAppServices.remove(id)).rejects.toThrow(NotFoundException);
       expect(errorResult?.response.success).toBeFalsy();
       expect(errorResult?.response.message).toEqual(`${ERR_MSG_DATA_NOT_FOUND}`);
-      expect(mockDocumentsService.findByIdAndDelete).not.toHaveBeenCalled();
+      expect(mockContractAppendsService.findByIdAndDelete).not.toHaveBeenCalled();
 
-      jest.spyOn(docModel, 'findById').mockClear();
+      jest.spyOn(conAppModel, 'findById').mockClear();
       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
     });
 
     it('5.4 controller.remove must a general error', async () => {
-      jest.spyOn(docModel, 'findById').mockImplementation(
+      jest.spyOn(conAppModel, 'findById').mockImplementation(
         () =>
           ({
             populate: () => ({
-              populate: jest.fn().mockResolvedValue(mockOneDocument),
+              populate: jest.fn().mockResolvedValue(mockOneContractAppend),
             }),
           } as any),
       );
-      jest.spyOn(docModel, 'findByIdAndDelete').mockRejectedValue(null);
+      jest.spyOn(conAppModel, 'findByIdAndDelete').mockRejectedValue(null);
 
       try {
-        await docController.remove(id);
+        await conAppController.remove(id);
       } catch (error) {
         errorResult = { ...error };
       }
 
-      await expect(docServices.remove(id)).rejects.toThrow(BadRequestException);
+      await expect(conAppServices.remove(id)).rejects.toThrow(BadRequestException);
       expect(errorResult?.response.success).toBeFalsy();
       expect(errorResult?.response.message).toEqual(`${ERR_MSG_GENERAL}`);
 
-      jest.spyOn(docModel, 'findById').mockClear();
-      jest.spyOn(docModel, 'findByIdAndDelete').mockClear();
+      jest.spyOn(conAppModel, 'findById').mockClear();
+      jest.spyOn(conAppModel, 'findByIdAndDelete').mockClear();
     });
-  }); */
+  });
 });
