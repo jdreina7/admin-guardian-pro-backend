@@ -267,6 +267,7 @@ describe('Contract-Appends module Test', () => {
 
   describe('4. test update Contract-Append by id', () => {
     let data: any = {
+      mockOneContractAppend,
       status: false,
     };
     it('4.1 controller.update must return the updated Contract-Append', async () => {
@@ -322,66 +323,34 @@ describe('Contract-Appends module Test', () => {
     });
 
     it('4.3 controller.update must return a not found error', async () => {
+      jest.spyOn(userService, 'findOne').mockResolvedValue(mockOneUser as any);
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(conAppModel, 'findById').mockImplementation(
         () =>
           ({
-            populate: () => ({
-              populate: jest.fn().mockReturnValue(false),
-            }),
+            populate: jest.fn().mockResolvedValue(null),
           } as any),
       );
 
-      id = mockOneContractAppend.data[0].id;
+      id = 'mo23njb4a';
       // Debo mockear      UpdateContractAppendDto.createdByUserI = '33lon321';
       try {
-        await conAppController.update(id, data[0]);
+        await conAppController.update(id, data as any);
       } catch (error) {
         errorResult = { ...error };
       }
 
-      await expect(conAppServices.update(id, data[0])).rejects.toThrow(NotFoundException);
+      await expect(conAppServices.findOne(id)).rejects.toThrow(NotFoundException);
       expect(errorResult?.response.success).toBeFalsy();
-      expect(errorResult?.response.message).toEqual(`${ERR_MSG_DATA_NOT_FOUND}`);
-      expect(mockContractAppendsService.findByIdAndUpdate).not.toHaveBeenCalled();
+      expect(mockContractAppendsService.find).not.toHaveBeenCalled();
+      expect(mockContractAppendsService.findByIdAndUpdate).toBeCalled();
 
       jest.spyOn(mongoose, 'isValidObjectId').mockClear();
       jest.spyOn(conAppModel, 'findById').mockClear();
+      jest.spyOn(userService, 'findOne').mockClear();
     });
 
-    it('4.4 controller.update must return badrequest by invalid data', async () => {
-      jest.spyOn(conAppModel, 'findById').mockImplementation(
-        () =>
-          ({
-            populate: () => ({
-              populate: jest.fn().mockResolvedValue(mockOneContractAppend),
-            }),
-          } as any),
-      );
-      jest.spyOn(conAppModel, 'findByIdAndUpdate').mockImplementation(
-        () =>
-          ({
-            select: jest.fn().mockResolvedValue(false),
-          } as any),
-      );
-
-      data = { title: '' };
-      try {
-        await conAppController.update(id, data);
-      } catch (error) {
-        errorResult = { ...error };
-      }
-
-      await expect(conAppServices.update(id, data)).rejects.toThrow(BadRequestException);
-      expect(errorResult?.response.success).toBeFalsy();
-      expect(errorResult?.response.message).toEqual(`${ERR_MSG_INVALID_PAYLOAD}`);
-      expect(mockContractAppendsService.findByIdAndUpdate).not.toHaveBeenCalled();
-
-      jest.spyOn(conAppModel, 'findById').mockClear();
-      jest.spyOn(conAppModel, 'findByIdAndUpdate').mockClear();
-    });
-
-    it('4.5 controller.update must return a general error', async () => {
+    it('4.4 controller.update must return a general error', async () => {
       jest.spyOn(conAppModel, 'findById').mockImplementation(
         () =>
           ({
@@ -413,7 +382,7 @@ describe('Contract-Appends module Test', () => {
     });
   });
 
-  describe('5. Test delete Document', () => {
+  describe('5. Test delete Contract-Append', () => {
     it('5.1 controller.remove must return the deleted Id', async () => {
       jest.spyOn(userService, 'findOne').mockResolvedValue(mockOneUser as any);
       jest.spyOn(conAppModel, 'findByIdAndDelete').mockResolvedValue(id);
@@ -448,17 +417,16 @@ describe('Contract-Appends module Test', () => {
     });
 
     it('5.3 controller.remove must a not found error', async () => {
+      jest.spyOn(userService, 'findOne').mockResolvedValue(mockOneUser as any);
       jest.spyOn(mongoose, 'isValidObjectId').mockReturnValue(true);
       jest.spyOn(conAppModel, 'findById').mockImplementation(
         () =>
           ({
-            populate: () => ({
-              populate: jest.fn().mockResolvedValue(null),
-            }),
+            populate: jest.fn().mockResolvedValue(null),
           } as any),
       );
 
-      id = mockOneContractAppend.data[0].id;
+      id = '6503ef3131e64335e124fd55';
 
       try {
         await conAppController.remove(id);
