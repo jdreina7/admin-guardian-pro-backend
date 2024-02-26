@@ -19,7 +19,7 @@ export const customHandlerCatchException = async (error: any, data?: any) => {
     throw new BadRequestException({
       success: false,
       message: ERR_MSG_DUPLICATED_VALUE,
-      invalidValue: data,
+      invalidValue: error?.keyValue ? error?.keyValue : data?.uid,
     });
   }
 
