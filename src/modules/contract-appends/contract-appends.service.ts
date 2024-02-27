@@ -94,7 +94,6 @@ export class ContractAppendsService {
     }
 
     const existContractAppend: ContractAppend = await this.contractAppendModel.findById(id).populate('createdByUserId');
-
     if (!existContractAppend) {
       throw new NotFoundException({
         succes: false,
