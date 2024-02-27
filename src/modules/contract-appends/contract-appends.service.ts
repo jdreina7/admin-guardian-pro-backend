@@ -94,7 +94,6 @@ export class ContractAppendsService {
     }
 
     const existContractAppend: ContractAppend = await this.contractAppendModel.findById(id).populate('createdByUserId');
-    console.log('98 existContractAppend >>> ', existContractAppend);
     if (!existContractAppend) {
       throw new NotFoundException({
         succes: false,
@@ -113,7 +112,6 @@ export class ContractAppendsService {
   async update(id: string, updateContractAppendDto: UpdateContractAppendDto) {
     if (updateContractAppendDto.createdByUserId) {
       await this.findOne(id);
-      //console.log('117 id >>> ', id);
       await this.userService.findOne(updateContractAppendDto.createdByUserId);
     }
 

@@ -16,12 +16,7 @@ import {
   mockOneContractAppend,
 } from './../../mocks/mockContractAppendsService.mock';
 import { ContractAppendsController } from './../../../modules/contract-appends/contract-appends.controller';
-import {
-  ERR_MSG_DATA_NOT_FOUND,
-  ERR_MSG_GENERAL,
-  ERR_MSG_INVALID_ID,
-  ERR_MSG_INVALID_PAYLOAD,
-} from '../../../utils/contants';
+import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID } from '../../../utils/contants';
 import { ContractAppendsService } from '../../../modules/contract-appends/contract-appends.service';
 import { ContractAppend } from '../../../modules/contract-appends/schemas/contract-append.schema';
 import { Rol, RolesService } from '../../../modules/roles';
@@ -30,7 +25,6 @@ import { Ocupation, OcupationsService } from '../../../modules/ocupations';
 import { IdentificationTypes, IdentificationsTypesService } from '../../../modules/identificationsTypes';
 import { Gender, GendersService } from '../../../modules/genders';
 import {
-  mockContractAppendService,
   mockGenderService,
   mockIDTypesService,
   mockMaritalStatusService,
@@ -42,7 +36,6 @@ import { mockRol } from '../../../tests/mocks/mockRolesService.mock';
 import { mockOneOcupation } from '../../../tests/mocks/mockOcupationService.mock';
 import { mockOneIDTypes } from '../../../tests/mocks/mockIDtypesService.mock';
 import { mockOneGender } from '../../../tests/mocks/mockGenderService.mock';
-import { UpdateContractAppendDto } from 'src/modules/contract-appends/dto/update-contract-append.dto';
 
 describe('Contract-Appends module Test', () => {
   let conAppController: ContractAppendsController;
@@ -271,7 +264,6 @@ describe('Contract-Appends module Test', () => {
       status: false,
     };
     it('4.1 controller.update must return the updated Contract-Append', async () => {
-      //Mongoose --- jest.spyOn()
       jest.spyOn(conAppModel, 'findById').mockImplementation(
         () =>
           ({
@@ -333,7 +325,6 @@ describe('Contract-Appends module Test', () => {
       );
 
       id = 'mo23njb4a';
-      // Debo mockear      UpdateContractAppendDto.createdByUserI = '33lon321';
       try {
         await conAppController.update(id, data as any);
       } catch (error) {
