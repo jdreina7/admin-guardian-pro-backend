@@ -23,7 +23,7 @@ import { MockAuthModule } from '../../../tests/mocks/mockAuthModule.mock';
 import { MaritalStatus, MaritalStatusesService } from '../../../modules/marital-statuses';
 import { Rol, RolesService } from '../../../modules/roles';
 import { Ocupation, OcupationsService } from '../../../modules/ocupations';
-import { IdentificationTypes, IdentificationsTypesService } from '../../../modules/identificationsTypes';
+import { IdentificationTypes, IdentificationsTypesService } from '../../../modules/identifications-types';
 import { Gender, GendersService } from '../../../modules/genders';
 import { mockMaritalStatusService, mockOneMaritalStatus } from '../../../tests/mocks/mockMaritalStatus.mock';
 import { mockRol, mockRolService } from '../../../tests/mocks/mockRolesService.mock';

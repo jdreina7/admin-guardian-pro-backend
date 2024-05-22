@@ -8,7 +8,7 @@ import { MaritalStatusesModule } from './modules/marital-statuses/marital-status
 import { UsersModule } from './modules/users/users.module';
 import { GendersModule } from './modules/genders/genders.module';
 import { DocumentTypesModule } from './modules/document-types/document-types.module';
-import { IdentificationsTypesModule } from './modules/identificationsTypes/identificationTypes.module';
+import { IdentificationsTypesModule } from './modules/identifications-types/identification-types.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { ContractorsModule } from './modules/contractors/contractors.module';
 import { ContractAppendsModule } from './modules/contract-appends/contract-appends.module';

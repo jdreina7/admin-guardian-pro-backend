@@ -61,8 +61,8 @@ export class CreateUserDto {
   userImg: string;
 
   @IsString()
-  @MinLength(5)
   @IsOptional()
+  @MinLength(5)
   username: string;
 
   @IsString()

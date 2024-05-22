@@ -15,11 +15,11 @@ import { OcupationsModule } from '../ocupations/ocupations.module';
 import { RolesModule } from '../roles/roles.module';
 import { Gender, GenderSchema } from '../genders/schemas/gender.schema';
 import { GendersModule } from '../genders/genders.module';
-import { IdentificationsTypesModule } from '../identificationsTypes/identificationTypes.module';
+import { IdentificationsTypesModule } from '../identifications-types/identification-types.module';
 import {
   IdentificationTypes,
   IdentificationTypesSchema,
-} from '../identificationsTypes/schemas/identificationTypes.schema';
+} from '../identifications-types/schemas/identification-types.schema';
 // import { LoginModule } from '../login/login.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LoginService } from './login.service';
@@ -69,7 +69,7 @@ import { RolesService } from '../roles';
         return {
           secret: configService.get('JWT_SECRET'),
           signOptions: {
-            expiresIn: '2h',
+            expiresIn: '48h',
           },
         };
       },

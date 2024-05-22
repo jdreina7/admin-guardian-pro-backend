@@ -1,5 +1,5 @@
 import { IsBoolean, IsIn, IsOptional, IsString, MinLength } from 'class-validator';
-import { VALID_CREDENTIALS } from './../../../utils/contants';
+import { VALID_CREDENTIALS } from '../../../utils/contants';
 
 export class CreateIdentificationTypesDto {
   @IsString()

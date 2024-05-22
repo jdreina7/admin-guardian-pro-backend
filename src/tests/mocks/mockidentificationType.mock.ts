@@ -1,4 +1,4 @@
-import { CreateIdentificationTypesDto } from '../../modules/identificationsTypes/dto/create-identificationTypes.dto';
+import { CreateIdentificationTypesDto } from '../../modules/identifications-types/dto/create-identification-types.dto';
 
 export const mockIdentificationTypeService = {
   create: jest.fn(),
