@@ -3,9 +3,9 @@ import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
 import mongoose, { Model } from 'mongoose';
 
-import { IdentificationsTypesController } from '../../../modules/identificationsTypes/identificationTypes.controller';
-import { IdentificationsTypesService } from '../../../modules/identificationsTypes/identificationTypes.service';
-import { IdentificationTypes } from '../../../modules/identificationsTypes/schemas/identificationTypes.schema';
+import { IdentificationsTypesController } from '../../../modules/identifications-types/identification-types.controller';
+import { IdentificationsTypesService } from '../../../modules/identifications-types/identification-types.service';
+import { IdentificationTypes } from '../../../modules/identifications-types/schemas/identification-types.schema';
 import { MockAuthModule } from '../../../tests/mocks/mockAuthModule.mock';
 import {
   mockAllIdentificationType,

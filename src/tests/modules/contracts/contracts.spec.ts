@@ -21,7 +21,7 @@ import { User, UsersService } from '../../../modules/users';
 import { Ocupation, OcupationsService } from '../../../modules/ocupations';
 import { MaritalStatus, MaritalStatusesService } from '../../../modules/marital-statuses';
 import { Rol, RolesService } from '../../../modules/roles';
-import { IdentificationTypes, IdentificationsTypesService } from '../../../modules/identificationsTypes';
+import { IdentificationTypes, IdentificationsTypesService } from '../../../modules/identifications-types';
 import { Gender, GendersService } from '../../../modules/genders';
 import { ERR_MSG_DATA_NOT_FOUND, ERR_MSG_GENERAL, ERR_MSG_INVALID_ID } from '../../../utils/contants';
 import { mockContractsService } from '../../mocks/mockContractsService.mock';

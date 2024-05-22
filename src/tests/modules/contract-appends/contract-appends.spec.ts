@@ -22,7 +22,7 @@ import { ContractAppend } from '../../../modules/contract-appends/schemas/contra
 import { Rol, RolesService } from '../../../modules/roles';
 import { MaritalStatus, MaritalStatusesService } from '../../../modules/marital-statuses';
 import { Ocupation, OcupationsService } from '../../../modules/ocupations';
-import { IdentificationTypes, IdentificationsTypesService } from '../../../modules/identificationsTypes';
+import { IdentificationTypes, IdentificationsTypesService } from '../../../modules/identifications-types';
 import { Gender, GendersService } from '../../../modules/genders';
 import {
   mockGenderService,
