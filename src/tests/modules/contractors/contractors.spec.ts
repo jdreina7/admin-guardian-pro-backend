@@ -20,7 +20,7 @@ import { DocumentType, DocumentTypesService } from '../../../modules/document-ty
 import { MaritalStatus, MaritalStatusesService } from '../../../modules/marital-statuses';
 import { Rol, RolesService } from '../../../modules/roles';
 import { Ocupation, OcupationsService } from '../../../modules/ocupations';
-import { IdentificationTypes, IdentificationsTypesService } from '../../../modules/identificationsTypes';
+import { IdentificationTypes, IdentificationsTypesService } from '../../../modules/identifications-types';
 import { Gender, GendersService } from '../../../modules/genders';
 import { mockDocumentTypeService, mockOneDocType } from '../../../tests/mocks/mockDocumentTypeService.mock';
 import { mockMaritalStatusService, mockOneMaritalStatus } from '../../../tests/mocks/mockMaritalStatus.mock';

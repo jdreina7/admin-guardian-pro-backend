@@ -1,9 +1,9 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { IdentificationsTypesService } from './identificationTypes.service';
-import { IdentificationsTypesController } from './identificationTypes.controller';
-import { IdentificationTypes, IdentificationTypesSchema } from './schemas/identificationTypes.schema';
+import { IdentificationsTypesService } from './identification-types.service';
+import { IdentificationsTypesController } from './identification-types.controller';
+import { IdentificationTypes, IdentificationTypesSchema } from './schemas/identification-types.schema';
 import { UsersModule } from '../users/users.module';
 
 @Module({
