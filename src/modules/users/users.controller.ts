@@ -27,8 +27,8 @@ export class UsersController {
 
   @Get()
   @Auth(EValidRoles.superadmin, EValidRoles.admin)
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.usersService.findAll(paginationDto);
+  findAll() {
+    return this.usersService.findAll();
   }
 
   @Get(':id')
