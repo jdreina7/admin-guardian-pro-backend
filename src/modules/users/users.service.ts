@@ -101,9 +101,8 @@ export class UsersService {
   }
 
   // Get all users
-  async findAll(paginationDto: PaginationDto) {
+  async findAll() {
     try {
-      const { limit = 10, offset = 0 } = paginationDto;
       const data = await this.userModel
         .find()
         .populate('identificationTypeId', 'type')
@@ -111,8 +110,6 @@ export class UsersService {
         .populate('maritalStatusId', 'name')
         .populate('ocupationId', 'name')
         .populate('roleId', 'name')
-        .limit(limit)
-        .skip(offset)
         .sort({ firstName: 1 });
 
       return {
