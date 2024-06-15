@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 
 import { LoginDto } from './dto/login.dto';
 import { User } from '../users/schemas/user.schema';
-import { ERR_MSG_INVALID_LOGIN } from './../../utils/contants';
+import { ERR_MSG_INACTIVE_USER, ERR_MSG_INVALID_LOGIN } from './../../utils/contants';
 import { comparePasswords } from './../../utils/password-manager';
 import { IJwtPayload } from './interfaces/jwt-payload.interface';
 import { RolesService } from '../roles';
@@ -26,6 +26,14 @@ export class LoginService {
 
     // const dbUser: User = await this.userModel.findOne({ email }).select({ email: true, password: true, roleId: true });
     const dbUser: User = await this.userModel.findOne({ email });
+
+    // Validate user status
+    if (!dbUser.status) {
+      throw new UnauthorizedException({
+        success: false,
+        message: ERR_MSG_INACTIVE_USER,
+      });
+    }
 
     if (!dbUser) {
       throw new UnauthorizedException({
