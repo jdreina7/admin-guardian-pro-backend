@@ -8,7 +8,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { MaritalStatus } from '../marital-statuses/schemas/marital-status.schema';
 import { Ocupation } from '../ocupations/schemas/ocupation.schema';
 import { IdentificationTypes } from '../identifications-types/schemas/identification-types.schema';
-import { PaginationDto } from './../../common/dto/pagination.dto';
 import { MaritalStatusesService } from '../marital-statuses/marital-statuses.service';
 import { GendersService } from '../genders/genders.service';
 import { OcupationsService } from '../ocupations/ocupations.service';
