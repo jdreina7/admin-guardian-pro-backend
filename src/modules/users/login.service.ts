@@ -27,18 +27,18 @@ export class LoginService {
     // const dbUser: User = await this.userModel.findOne({ email }).select({ email: true, password: true, roleId: true });
     const dbUser: User = await this.userModel.findOne({ email });
 
+    if (!dbUser) {
+      throw new UnauthorizedException({
+        success: false,
+        message: ERR_MSG_INVALID_LOGIN,
+      });
+    }
+
     // Validate user status
     if (!dbUser.status) {
       throw new UnauthorizedException({
         success: false,
         message: ERR_MSG_INACTIVE_USER,
-      });
-    }
-
-    if (!dbUser) {
-      throw new UnauthorizedException({
-        success: false,
-        message: ERR_MSG_INVALID_LOGIN,
       });
     }
 
